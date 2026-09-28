@@ -1,576 +1,1688 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>سوق العراق</title>
-  <style>
-    /* CSS الأساسي للواجهات والتصميم */
-    :root {
-      --primary: #007bff;
-      --bg: #f8f9fa;
-      --text: #212529;
-      --border: #dee2e6;
-      --success: #28a745;
-      --danger: #dc3545;
-    }
-    * { box-sizing: border-box; }
-    body {
-      font-family: system-ui, -apple-system, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      margin: 0;
-      padding-bottom: 80px;
-    }
-    .modal-open-scroll-lock { overflow: hidden; }
-    .top-bar {
-      background: #fff;
-      border-bottom: 1px solid var(--border);
-      padding: 12px 16px;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-    .top-bar h2 { margin: 0; font-size: 20px; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#007bff">
+<meta name="description" content="سوق العراق - منصة البيع والشراء الأولى">
+<title>سوق العراق</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #007bff;
+  --primary-focus: #0056b3;
+  --accent: #f5a623;
+  --bg: #f4f6f9;
+  --card-bg: #ffffff;
+  --text-main: #212529;
+  --text-muted: #6c757d;
+  --border-color: #e9ecef;
+  --danger: #dc3545;
+  --success: #28a745;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
 
-    #categories {
-      display: flex;
-      gap: 8px;
-      padding: 12px;
-      overflow-x: auto;
-      background: #fff;
-      border-bottom: 1px solid var(--border);
-    }
-    #categories span {
-      padding: 6px 14px;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      font-size: 14px;
-      white-space: nowrap;
-      cursor: pointer;
-      user-select: none;
-    }
-    #categories span.active {
-      background: var(--primary);
-      color: #fff;
-      border-color: var(--primary);
-    }
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Tajawal',sans-serif}
+body{background:var(--bg);padding-bottom:calc(80px + var(--safe-bottom));color:var(--text-main)}
+body.modal-open-scroll-lock { overflow: hidden !important; }
 
-    #adsList {
-      padding: 12px;
-      display: grid;
-      gap: 12px;
-    }
-    .ad-card {
-      background: #fff;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 12px;
-      cursor: pointer;
-      transition: box-shadow 0.2s;
-    }
-    .ad-card:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-    .ad-card h4 { margin: 0 0 6px; font-size: 16px; }
-    .ad-card .price { color: var(--success); font-weight: bold; }
+:focus-visible {
+  outline: 3px solid var(--primary);
+  outline-offset: 2px;
+}
+.form-control:focus-visible,
+.search-box:focus-within,
+.city-filter:focus-visible {
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+  outline: none;
+}
 
-    #bottomNav {
-      position: fixed;
-      bottom: 0;
-      width: 100%;
-      background: #fff;
-      border-top: 1px solid var(--border);
-      padding: 10px 16px;
-      z-index: 100;
-    }
-    #bottomNav .btn { width: 100%; }
+.top-bar{
+  background:var(--card-bg);
+  padding:calc(14px + var(--safe-top)) 20px 14px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  border-bottom:1px solid var(--border-color);
+  position:sticky;
+  top:0;
+  z-index:10;
+  box-shadow:0 2px 4px rgba(0,0,0,.02)
+}
+.top-bar b{font-size:18px;font-weight:900;color:var(--text-main)}
+.top-bar-left{display:flex;align-items:center;gap:10px}
+.back-btn{background:none;border:none;font-size:20px;cursor:pointer;color:var(--text-main)}
 
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.5);
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
-      padding: 16px;
-    }
-    .modal.open { display: flex; }
-    .modal-content {
-      background: #fff;
-      padding: 20px;
-      border-radius: 8px;
-      width: 90%;
-      max-width: 500px;
-      max-height: 90vh;
-      overflow-y: auto;
-    }
-    .modal-content h3 { margin-top: 0; }
-    .modal-content .form-group { margin-bottom: 12px; }
-    .modal-content label { display: block; margin-bottom: 4px; font-size: 14px; }
-    .modal-content input[type="text"],
-    .modal-content input[type="tel"],
-    .modal-content input[type="email"],
-    .modal-content input[type="number"],
-    .modal-content select {
-      width: 100%;
-      padding: 8px 10px;
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      font-size: 14px;
-      font-family: inherit;
-    }
-    .modal-content .checkbox-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 12px;
-    }
+.filter-container {
+  display: flex;
+  gap: 8px;
+  padding: 10px 16px 0;
+  flex-wrap: wrap;
+}
+.search-box{
+  flex: 1 1 100%;
+  display:flex;
+  gap:8px;
+  padding:8px 16px;
+  background:var(--card-bg);
+  border-radius:12px;
+  border:1px solid var(--border-color);
+  align-items:center;
+}
+.search-box input{border:none;background:transparent;outline:none;width:100%;font-size:14px}
+.city-filter {
+  flex: 1;
+  padding: 8px;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  background: var(--card-bg);
+  font-size: 13px;
+  outline: none;
+}
 
-    .btn {
-      padding: 8px 16px;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 14px;
-      font-family: inherit;
-    }
-    .btn-primary { background: var(--primary); color: #fff; }
-    .btn-secondary { background: var(--bg); color: var(--text); border: 1px solid var(--border); }
-    .btn-danger { background: var(--danger); color: #fff; }
-    .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+.page{display:none}.page.active{display:block}
 
-    .text-muted { color: #6c757d; font-size: 14px; }
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      background: var(--success);
-      color: white;
-      padding: 2px 8px;
-      border-radius: 4px;
-      font-size: 12px;
-    }
-    .modal-footer {
-      display: flex;
-      gap: 8px;
-      justify-content: flex-end;
-      margin-top: 16px;
-      flex-wrap: wrap;
-    }
+.home-grid{display:grid;grid-template-columns:repeat(auto-fill, minmax(85px, 1fr));gap:12px;padding:16px}
+@media(max-width:480px){.home-grid{grid-template-columns:repeat(4, 1fr)}}
 
-    .toast {
-      position: fixed;
-      bottom: 90px;
-      left: 50%;
-      transform: translateX(-50%) translateY(20px);
-      background: #333;
-      color: #fff;
-      padding: 10px 20px;
-      border-radius: 6px;
-      font-size: 14px;
-      opacity: 0;
-      transition: all 0.3s;
-      z-index: 2000;
-      pointer-events: none;
-      max-width: 90%;
-      text-align: center;
-    }
-    .toast.show {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
-    }
-  </style>
+.cat-box{background:var(--card-bg);border:1px solid var(--border-color);border-radius:16px;padding:12px 6px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:transform .15s ease}
+.cat-box:active{transform:scale(0.95)}
+.cat-box.active{border-color:var(--primary);background:#eef6ff}
+.cat-box .icon{font-size:28px;margin-bottom:6px}
+.cat-box b{font-size:11px;font-weight:700}
+
+.ads-list{padding:16px;display:flex;flex-direction:column;gap:12px}
+.ad-card{background:var(--card-bg);border-radius:16px;padding:12px;border:1px solid var(--border-color);display:flex;gap:12px;cursor:pointer}
+.ad-img{width:100px;height:100px;border-radius:12px;object-fit:cover;background:#eee;flex-shrink:0}
+.ad-info{
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  flex:1;
+  min-width: 0;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+.ad-title{font-size:15px;font-weight:700;line-height:1.3}
+.ad-price{color:var(--primary);font-weight:900;font-size:16px}
+.ad-meta{font-size:11px;color:var(--text-muted);display:flex;justify-content:space-between}
+
+.empty-state{text-align:center;padding:40px 20px;color:var(--text-muted)}
+.empty-state span{font-size:40px;display:block;margin-bottom:8px}
+
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--card-bg);border-top:1px solid var(--border-color);display:flex;justify-content:space-around;align-items:center;padding:8px 0 calc(8px + var(--safe-bottom));z-index:100}
+.nav-item{background:none;border:none;font-size:11px;color:var(--text-muted);flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;font-weight:500}
+.nav-item.active{color:var(--primary);font-weight:700}
+.nav-item > span:not(.add-btn){font-size:20px}
+
+.add-btn{width:48px;height:48px;background:var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;color:#fff;margin-top:-20px;border:3px solid var(--card-bg);box-shadow:0 4px 10px rgba(245,166,35,.4)}
+
+.form-group{padding:16px;display:flex;flex-direction:column;gap:12px}
+.form-control{width:100%;padding:12px;border-radius:10px;border:1px solid var(--border-color);outline:none;background:var(--card-bg);font-size:14px}
+.char-count{font-size:11px;color:var(--text-muted);text-align:end;margin-top:-8px;margin-bottom:4px}
+.btn-primary{width:100%;background:var(--primary);color:#fff;padding:14px;border:none;border-radius:10px;font-weight:700;cursor:pointer;font-size:15px}
+.btn-primary:disabled{background:#ccc;cursor:not-allowed}
+.btn-accent{background:var(--accent);color:#fff}
+.btn-danger{background:var(--danger);color:#fff}
+.img-preview{width:100%;height:150px;border-radius:10px;border:2px dashed var(--border-color);display:flex;align-items:center;justify-content:center;background:#fafafa;cursor:pointer;overflow:hidden}
+
+.modal{
+  position:fixed;
+  inset:0;
+  height: 100dvh;
+  background:var(--card-bg);
+  z-index:500;
+  display:none;
+  flex-direction:column;
+}
+.modal.open{display:flex}
+.modal:focus{outline:none}
+.modal-header{
+  padding:calc(16px + var(--safe-top)) 16px 16px;
+  background:#111;
+  color:#fff;
+  display:flex;
+  justify-content:space-between;
+  align-items:center
+}
+.modal-body{
+  padding:16px;
+  flex:1;
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  background:var(--bg)
+}
+
+.toast{
+  position:fixed;
+  top:calc(20px + var(--safe-top));
+  left:50%;
+  transform:translateX(-50%);
+  background:#111;
+  color:#fff;
+  padding:12px 24px;
+  border-radius:20px;
+  font-size:14px;
+  z-index:1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  box-shadow:0 4px 12px rgba(0,0,0,0.2);
+  pointer-events: none;
+}
+.toast.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.cards-summary{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:16px}
+.card-sum{background:var(--card-bg);padding:16px;border-radius:12px;border:1px solid var(--border-color)}
+
+.profile-tabs-scroll {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 12px 16px;
+  background: var(--card-bg);
+  border-bottom: 1px solid var(--border-color);
+  scrollbar-width: none;
+}
+.profile-tabs-scroll::-webkit-scrollbar { display: none; }
+.profile-tab {
+  white-space: nowrap;
+  padding: 8px 16px;
+  border-radius: 20px;
+  background: var(--bg);
+  border: 1px solid var(--border-color);
+  font-size: 13px;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-weight: 500;
+}
+.profile-tab.active {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+  font-weight: 700;
+}
+
+.profile-avatar-container {
+  display: flex;
+  justify-content: center;
+  margin: 16px 0;
+}
+.profile-avatar-box {
+  width: 100px;
+  height: 100px;
+  border: 2px dashed var(--border-color);
+  border-radius: 16px;
+  background: var(--card-bg);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  overflow: hidden;
+}
+.profile-avatar-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.avatar-edit-badge {
+  position: absolute;
+  bottom: 6px;
+  left: 6px;
+  background: var(--primary);
+  color: #fff;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+.input-with-action {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.input-with-action .form-control {
+  flex: 1;
+}
+.btn-inline-action {
+  padding: 12px 16px;
+  border-radius: 10px;
+  border: none;
+  background: var(--primary);
+  color: #fff;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.badge-verified {
+  padding: 12px 14px;
+  background: #e6f4ea;
+  color: var(--success);
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.checkbox-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--text-main);
+  cursor: pointer;
+  margin-top: -4px;
+}
+.checkbox-group input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--primary);
+  cursor: pointer;
+}
+
+.account-type-box {
+  background: #f0f7ff;
+  border: 1px solid #b3d7ff;
+  border-radius: 12px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.account-type-box b {
+  color: var(--primary);
+  font-size: 14px;
+}
+.account-type-box p {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+</style>
 </head>
+
 <body>
 
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<!-- 1. الرئيسية -->
+<div id="home" class="page active">
   <div class="top-bar">
-    <h2>سوق العراق</h2>
+    <b style="color:var(--primary)">سوق العراق</b>
+    <span id="topBarCityTag" style="font-size:12px;color:var(--text-muted)">🇮🇶 جميع المحافظات</span>
+  </div>
+  
+  <div class="filter-container">
+    <div class="search-box">
+      <span>🔍</span>
+      <input type="text" id="searchInput" aria-label="بحث" placeholder="ابحث عن سيارة، موبايل، قسم..." oninput="debouncedRender()">
+    </div>
+    <select id="homeCityFilter" aria-label="المحافظة" class="city-filter" onchange="renderAds()">
+      <option value="">كل المحافظات</option>
+    </select>
+    <select id="sortSelect" aria-label="الترتيب" class="city-filter" onchange="renderAds()">
+      <option value="new">الأحدث</option>
+      <option value="cheap">الأرخص</option>
+      <option value="expensive">الأغلى</option>
+      <option value="views">الأكثر مشاهدة</option>
+    </select>
+    <button type="button" id="favFilterBtn" class="city-filter" onclick="toggleFavFilter()" style="cursor:pointer">🤍 المفضلة</button>
   </div>
 
-  <main id="mainContainer">
-    <div id="categories">
-      <span class="active" data-cat="all">الكل</span>
-      <span data-cat="sports">معدات رياضية</span>
-      <span data-cat="electronics">إلكترونيات</span>
-      <span data-cat="vehicles">سيارات</span>
-      <span data-cat="home">أثاث منزلي</span>
+  <div class="home-grid" id="categoriesGrid"></div>
+  
+  <div id="listTitle" style="padding:0 16px;font-weight:900;margin-top:10px">أحدث الإعلانات</div>
+  <div class="ads-list" id="adsContainer"></div>
+</div>
+
+<!-- 2. إعلاناتي -->
+<div id="myads" class="page">
+  <div class="top-bar"><b>إعلاناتي وإحصائياتي</b></div>
+  <div class="cards-summary">
+    <div class="card-sum"><div id="myAdsCount" style="font-size:22px;font-weight:900;color:var(--primary)">0</div><div>إعلاناتي الناشطة</div></div>
+    <div class="card-sum"><div id="myViewsCount" style="font-size:22px;font-weight:900;color:var(--accent)">0</div><div>إجمالي المشاهدات</div></div>
+  </div>
+  <div style="padding:0 16px;font-weight:700">إعلاناتي المنشورة:</div>
+  <div class="ads-list" id="myAdsContainer"></div>
+</div>
+
+<!-- 3. إضافة إعلان -->
+<div id="add" class="page">
+  <div class="top-bar"><b>أضف إعلان جديد</b></div>
+  <form class="form-group" id="addAdForm" onsubmit="handleCreateAd(event)">
+    <label style="font-weight:700">صورة الإعلان:</label>
+    <input type="file" id="adImgInput" accept="image/*" style="display:none" onchange="handleImageCompress(event)">
+    <div class="img-preview" tabindex="0" onclick="document.getElementById('adImgInput').click()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault(); document.getElementById('adImgInput').click();}" id="previewBox">
+      <span>📷 اضغط هنا لرفع صورة</span>
     </div>
-    <div id="adsList"></div>
-  </main>
 
-  <nav id="bottomNav">
-    <button onclick="openModal('createAdModal')" class="btn btn-primary">+ إضافة إعلان</button>
-  </nav>
+    <div>
+      <input type="text" id="adTitle" aria-label="عنوان الإعلان" class="form-control" placeholder="عنوان الإعلان (مثال: أيفون 13 برو)" maxlength="80" oninput="updateCharCount(this, 'titleCount', 80)" required>
+      <div id="titleCount" class="char-count">0 / 80</div>
+    </div>
 
-  <!-- Modal: تفاصيل الإعلان -->
-  <div id="detailsModal" class="modal" tabindex="-1">
-    <div class="modal-content">
-      <h3 id="adTitle"></h3>
-      <p id="adDescription"></p>
-      <div id="adPhoneContainer"></div>
-      <div class="modal-footer">
-        <button id="btnDeleteAd" class="btn btn-danger" style="display:none;">حذف الإعلان</button>
-        <button type="button" onclick="closeModal('detailsModal')" class="btn btn-secondary">إغلاق</button>
+    <select id="adCat" aria-label="القسم" class="form-control" required></select>
+    
+    <div style="display:flex;gap:8px">
+      <input type="text" id="adPrice" aria-label="السعر" class="form-control" placeholder="السعر" inputmode="numeric" oninput="cleanPriceInput(this)" required>
+      <select id="adCurrency" aria-label="العملة" class="form-control" style="width:110px">
+        <option value="د.ع">د.ع</option>
+        <option value="$">$ USD</option>
+      </select>
+    </div>
+
+    <select id="adCity" aria-label="المحافظة" class="form-control" required>
+      <option value="">اختر المحافظة</option>
+    </select>
+
+    <select id="adCondition" aria-label="حالة السلعة" class="form-control">
+      <option value="مستعمل">مستعمل</option>
+      <option value="جديد">جديد</option>
+    </select>
+
+    <input type="tel" id="adPhone" aria-label="رقم الهاتف" class="form-control" placeholder="رقم الهاتف (07XXXXXXXXX)" inputmode="numeric" oninput="this.value = parseArabicNumbers(this.value)" required>
+
+    <div>
+      <textarea id="adDesc" aria-label="وصف الإعلان" class="form-control" rows="3" placeholder="تفاصيل وصف السلعة..." maxlength="1000" oninput="updateCharCount(this, 'descCount', 1000)" required></textarea>
+      <div id="descCount" class="char-count">0 / 1000</div>
+    </div>
+    
+    <button type="submit" id="submitAdBtn" class="btn-primary btn-accent">🚀 نشر الإعلان الآن</button>
+  </form>
+</div>
+
+<!-- 4. حسابي -->
+<div id="account" class="page">
+  <div class="top-bar">
+    <div class="top-bar-left">
+      <button type="button" class="back-btn" onclick="showPage('home')" aria-label="الرجوع للرئيسية">➔</button>
+      <b>إدارة الحساب</b>
+    </div>
+  </div>
+
+  <div class="profile-tabs-scroll">
+    <button type="button" class="profile-tab" onclick="switchProfileSubTab('summary', this)">الملخص</button>
+    <button type="button" class="profile-tab" onclick="switchProfileSubTab('ratings', this)">التقييم</button>
+    <button type="button" class="profile-tab active" onclick="switchProfileSubTab('edit', this)">تعديل حسابي</button>
+    <button type="button" class="profile-tab" onclick="switchProfileSubTab('store', this)">تعديل متجري</button>
+    <button type="button" class="profile-tab" onclick="switchProfileSubTab('profile', this)">الملف</button>
+  </div>
+
+  <div id="accSubTabEdit">
+    <form class="form-group" onsubmit="saveAcc(event)">
+      <label style="font-weight:700">الصورة الشخصية:</label>
+      <div class="profile-avatar-container">
+        <input type="file" id="profileImgInput" accept="image/*" style="display:none" onchange="handleProfileAvatarUpload(event)">
+        <div class="profile-avatar-box" id="avatarBox" tabindex="0" onclick="document.getElementById('profileImgInput').click()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault(); document.getElementById('profileImgInput').click();}" aria-label="تغيير الصورة الشخصية">
+          <div id="avatarPlaceholder" style="font-size:32px;color:var(--text-muted)">👤</div>
+          <img id="avatarImage" src="" alt="الصورة الشخصية" style="display:none">
+          <div class="avatar-edit-badge">✏️</div>
+        </div>
       </div>
-    </div>
-  </div>
 
-  <!-- Modal: تأكيد الحذف -->
-  <div id="confirmModal" class="modal" tabindex="-1">
-    <div class="modal-content">
-      <p id="confirmMessage">هل أنت متأكد من رغبتك في حذف هذا الإعلان؟</p>
-      <div class="modal-footer">
-        <button id="confirmOkBtn" class="btn btn-danger" type="button">نعم، احذف</button>
-        <button type="button" onclick="closeModal('confirmModal')" class="btn btn-secondary">إلغاء</button>
+      <label style="font-weight:700">الاسم الكامل:</label>
+      <input id="f_name" aria-label="الاسم الكامل" type="text" class="form-control" placeholder="أدخل اسمك الكامل" maxlength="50" required>
+
+      <label style="font-weight:700">البريد الإلكتروني:</label>
+      <div class="input-with-action">
+        <input id="f_email" aria-label="البريد الإلكتروني" type="email" class="form-control" placeholder="example@domain.com" oninput="onEmailChanged()" required>
+        <button type="button" id="btnVerifyEmail" class="btn-inline-action" onclick="requestOTP('email')">توثيق</button>
+        <div id="badgeEmailVerified" class="badge-verified" style="display:none">✔️ مُوثّق</div>
       </div>
-    </div>
+
+      <label style="font-weight:700">رقم الموبايل:</label>
+      <div class="input-with-action">
+        <input id="f_phone" aria-label="رقم الموبايل" type="tel" class="form-control" placeholder="07XXXXXXXXX" inputmode="numeric" oninput="this.value = parseArabicNumbers(this.value); onPhoneChanged();">
+        <button type="button" id="btnVerifyPhone" class="btn-inline-action" onclick="requestOTP('phone')">توثيق</button>
+        <div id="badgePhoneVerified" class="badge-verified" style="display:none">✔️ مُوثّق</div>
+      </div>
+
+      <label class="checkbox-group">
+        <input type="checkbox" id="f_hidePhone">
+        <span>إخفاء رقم الموبايل على ملفي الشخصي وإعلاناتي</span>
+      </label>
+
+      <label style="font-weight:700">رابط الصفحة الشخصية:</label>
+      <input id="f_profileLink" aria-label="رابط الصفحة الشخصية" type="text" class="form-control" readonly style="background:#e9ecef;color:var(--text-muted);cursor:not-allowed">
+
+      <label style="font-weight:700">الجنس:</label>
+      <select id="f_gender" aria-label="الجنس" class="form-control">
+        <option value="">اختر الجنس</option>
+        <option value="male">رجل</option>
+        <option value="female">امرأة</option>
+      </select>
+
+      <label style="font-weight:700">تاريخ الميلاد:</label>
+      <input id="f_dob" aria-label="تاريخ الميلاد" type="date" class="form-control">
+
+      <div class="account-type-box">
+        <b>🏷️ نوع الحساب: [استعمال تجاري / احترافي]</b>
+        <p>يتيح لك هذا الحساب الوصول إلى أدوات إدارة المتجر، إحصائيات المبيعات، ونشر المنسوجات والمنتجات بلا حدود للمشتريين.</p>
+      </div>
+
+      <button type="submit" class="btn-primary" style="margin-top:8px">حفظ التغييرات</button>
+    </form>
   </div>
 
-  <!-- Modal: إضافة إعلان -->
-  <div id="createAdModal" class="modal" tabindex="-1">
-    <div class="modal-content">
-      <h3>إضافة إعلان جديد</h3>
-      <form id="createAdForm" onsubmit="handleCreateAd(event)">
-        <div class="form-group">
-          <label for="f_title">عنوان الإعلان *</label>
-          <input type="text" id="f_title" required maxlength="80" placeholder="مثال: دراجة هوائية للبيع">
-        </div>
-        <div class="form-group">
-          <label for="f_desc">الوصف</label>
-          <input type="text" id="f_desc" maxlength="200" placeholder="وصف مختصر">
-        </div>
-        <div class="form-group">
-          <label for="f_price">السعر (د.ع)</label>
-          <input type="number" id="f_price" min="0" placeholder="0">
-        </div>
-        <div class="form-group">
-          <label for="f_phone">رقم الهاتف *</label>
-          <input type="tel" id="f_phone" required placeholder="07XXXXXXXXX" pattern="[0-9+ -]{7,}">
-        </div>
-        <div class="form-group">
-          <label for="f_category">القسم</label>
-          <select id="f_category">
-            <option value="sports">معدات رياضية</option>
-            <option value="electronics">إلكترونيات</option>
-            <option value="vehicles">سيارات</option>
-            <option value="home">أثاث منزلي</option>
-          </select>
-        </div>
-        <div class="checkbox-row">
-          <input type="checkbox" id="f_hidePhone">
-          <label for="f_hidePhone" style="margin:0;">إخفاء رقم الهاتف عن المشترين (التواصل عبر الرسائل فقط)</label>
-        </div>
-        <div class="modal-footer">
-          <button type="button" onclick="closeModal('createAdModal')" class="btn btn-secondary">إلغاء</button>
-          <button type="submit" id="submitAdBtn" class="btn btn-primary">نشر الإعلان</button>
-        </div>
-      </form>
+  <div id="accSubTabOther" style="display:none;padding:30px 16px;text-align:center;color:var(--text-muted)">
+    <span style="font-size:36px;display:block;margin-bottom:8px">📂</span>
+    <div id="accSubTabOtherTitle">قسم إضافي</div>
+  </div>
+</div>
+
+<!-- الشريط السفلي -->
+<nav class="bottom-nav" id="bottomNav">
+  <button type="button" class="nav-item active" id="n_home" onclick="showPage('home')"><span>🏠</span>الرئيسية</button>
+  <button type="button" class="nav-item" id="n_add" onclick="showPage('add')"><span class="add-btn">+</span>إعلان</button>
+  <button type="button" class="nav-item" id="n_myads" onclick="showPage('myads')"><span>📄</span>إعلاناتي</button>
+  <button type="button" class="nav-item" id="n_account" onclick="showPage('account')"><span>👤</span>حسابي</button>
+</nav>
+
+<!-- 1. النافذة المنبثقة للتفاصيل -->
+<div id="detailsModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="mTitle" tabindex="-1">
+  <div class="modal-header">
+    <b id="mTitle">تفاصيل الإعلان</b>
+    <button type="button" onclick="closeModal('detailsModal')" aria-label="إغلاق النافذة" style="color:#fff;background:none;border:none;font-size:18px;cursor:pointer">✕</button>
+  </div>
+  <div class="modal-body" id="mBody"></div>
+</div>
+
+<!-- 2. النافذة المنبثقة لتعديل الإعلان -->
+<div id="editAdModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="editModalTitle" tabindex="-1">
+  <div class="modal-header">
+    <b id="editModalTitle">تعديل الإعلان</b>
+    <button type="button" onclick="closeModal('editAdModal')" aria-label="إغلاق النافذة" style="color:#fff;background:none;border:none;font-size:18px;cursor:pointer">✕</button>
+  </div>
+  <div class="modal-body">
+    <form id="editAdForm" onsubmit="handleSaveEditAd(event)" class="form-group" style="padding:0">
+      <input type="hidden" id="editAdId">
+      
+      <label style="font-weight:700">العنوان:</label>
+      <div>
+        <input type="text" id="editAdTitle" class="form-control" maxlength="80" oninput="updateCharCount(this, 'editTitleCount', 80)" required>
+        <div id="editTitleCount" class="char-count">0 / 80</div>
+      </div>
+
+      <label style="font-weight:700">السعر والعملة:</label>
+      <div style="display:flex;gap:8px">
+        <input type="text" id="editAdPrice" class="form-control" inputmode="numeric" oninput="cleanPriceInput(this)" required>
+        <select id="editAdCurrency" class="form-control" style="width:110px">
+          <option value="د.ع">د.ع</option>
+          <option value="$">$ USD</option>
+        </select>
+      </div>
+
+      <label style="font-weight:700">القسم:</label>
+      <select id="editAdCat" class="form-control" required></select>
+
+      <label style="font-weight:700">المحافظة:</label>
+      <select id="editAdCity" class="form-control" required></select>
+
+      <label style="font-weight:700">الحالة:</label>
+      <select id="editAdCondition" class="form-control">
+        <option value="مستعمل">مستعمل</option>
+        <option value="جديد">جديد</option>
+      </select>
+
+      <label style="font-weight:700">الوصف:</label>
+      <div>
+        <textarea id="editAdDesc" class="form-control" rows="4" maxlength="1000" oninput="updateCharCount(this, 'editDescCount', 1000)" required></textarea>
+        <div id="editDescCount" class="char-count">0 / 1000</div>
+      </div>
+
+      <button type="submit" class="btn-primary" style="margin-top:10px">حفظ التعديلات</button>
+    </form>
+  </div>
+</div>
+
+<!-- 3. نافذة التوثيق بـ OTP -->
+<div id="otpModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="otpTitle" tabindex="-1">
+  <div class="modal-header">
+    <b id="otpTitle">إدخال رمز التوثيق</b>
+    <button type="button" onclick="closeModal('otpModal')" aria-label="إغلاق النافذة" style="color:#fff;background:none;border:none;font-size:18px;cursor:pointer">✕</button>
+  </div>
+  <div class="modal-body" style="justify-content:center;align-items:center;text-align:center">
+    <p id="otpDescription" style="font-size:14px;color:var(--text-main);margin-bottom:12px"></p>
+    <input type="text" id="otpInput" class="form-control" placeholder="1234" maxlength="4" inputmode="numeric" style="width:150px;text-align:center;font-size:24px;letter-spacing:6px">
+    <button type="button" class="btn-primary" style="margin-top:16px;width:150px" onclick="confirmOTP()">تأكيد</button>
+  </div>
+</div>
+
+<!-- 4. نافذة التأكيد المخصصة -->
+<div id="confirmModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="confirmTitle" tabindex="-1">
+  <div class="modal-header">
+    <b id="confirmTitle">تأكيد الإجراء</b>
+    <button type="button" onclick="closeModal('confirmModal')" aria-label="إغلاق النافذة" style="color:#fff;background:none;border:none;font-size:18px;cursor:pointer">✕</button>
+  </div>
+  <div class="modal-body" style="justify-content:center;align-items:center;text-align:center">
+    <p id="confirmMessage" style="font-size:15px;font-weight:700;margin-bottom:20px"></p>
+    <div style="display:flex;gap:12px;width:100%">
+      <button type="button" id="confirmOkBtn" class="btn-primary btn-danger">تأكيد</button>
+      <button type="button" class="btn-primary" style="background:#ccc" onclick="closeModal('confirmModal')">إلغاء</button>
     </div>
   </div>
+</div>
 
-  <!-- Toast container -->
-  <div id="toast" class="toast"></div>
+<script>
+// --- IndexedDB لرفع الصور بأمان لتجاوز حد 5MB ---
+const ImageStore = {
+  dbName: 'SouqImageDB',
+  storeName: 'images',
+  db: null,
+  async init() {
+    return new Promise((resolve, reject) => {
+      const req = indexedDB.open(this.dbName, 1);
+      req.onupgradeneeded = e => {
+        const db = e.target.result;
+        if (!db.objectStoreNames.contains(this.storeName)) {
+          db.createObjectStore(this.storeName);
+        }
+      };
+      req.onsuccess = e => { this.db = e.target.result; resolve(); };
+      req.onerror = e => reject(e);
+    });
+  },
+  async set(key, val) {
+    if (!this.db) await this.init();
+    return new Promise((resolve, reject) => {
+      const tx = this.db.transaction(this.storeName, 'readwrite');
+      tx.objectStore(this.storeName).put(val, key);
+      tx.oncomplete = () => resolve();
+      tx.onerror = e => reject(e);
+    });
+  },
+  async get(key) {
+    if (!this.db) await this.init();
+    return new Promise((resolve) => {
+      const tx = this.db.transaction(this.storeName, 'readonly');
+      const req = tx.objectStore(this.storeName).get(key);
+      req.onsuccess = () => resolve(req.result || null);
+      req.onerror = () => resolve(null);
+    });
+  },
+  async delete(key) {
+    if (!this.db) await this.init();
+    return new Promise((resolve) => {
+      const tx = this.db.transaction(this.storeName, 'readwrite');
+      tx.objectStore(this.storeName).delete(key);
+      tx.oncomplete = () => resolve();
+    });
+  }
+};
 
-  <script>
-    // --- IndexedDB Wrapper ---
-    const ImageStore = {
-      db: null,
-      async init() {
-        return new Promise((resolve, reject) => {
-          const req = indexedDB.open('IraqMarketDB', 1);
-          req.onupgradeneeded = e => {
-            const db = e.target.result;
-            if (!db.objectStoreNames.contains('images')) {
-              db.createObjectStore('images');
-            }
-          };
-          req.onsuccess = e => { this.db = e.target.result; resolve(); };
-          req.onerror = e => reject(e);
-        });
-      },
-      async set(key, val) {
-        if (!this.db) return;
-        return new Promise((resolve, reject) => {
-          const tx = this.db.transaction('images', 'readwrite');
-          const req = tx.objectStore('images').put(val, key);
-          req.onsuccess = () => resolve();
-          req.onerror = () => reject(req.error);
-        });
-      },
-      async delete(key) {
-        if (!this.db) return;
-        return new Promise((resolve) => {
-          const tx = this.db.transaction('images', 'readwrite');
-          tx.objectStore('images').delete(key);
-          tx.oncomplete = () => resolve();
-        });
-      }
-    };
+const FALLBACK_IMAGE = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'><rect width='100%' height='100%' fill='%23e9ecef'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='12' fill='%236c757d'>لا توجد صورة</text></svg>";
 
-    // --- State ---
-    let modalStack = [];
-    let adsState = [];
-    let pendingConfirmAction = null;
-    let generatedOTPCode = null;
-    let pendingOTPType = null;
-    let currentFilter = 'all';
+const MAX_ALLOWED_PRICE = 999999999999;
+const ADS_KEY = 'souq_ads_v1';
+const FAV_KEY = 'souq_favs';
 
-    function getStorage(key) {
-      try { return JSON.parse(localStorage.getItem(key)); }
-      catch { return null; }
+const USD_RATE = 1450;
+const toIQD = a => a.currency === '$' ? a.price * USD_RATE : a.price;
+
+const IRAQ_CITIES = [
+  "بغداد", "نينوى", "البصرة", "أربيل", "السليمانية", "دهوك", 
+  "كركوك", "الأنبار", "صلاح الدين", "ديالى", "بابل", "كربلاء", 
+  "النجف", "القادسية", "واسط", "ميسان", "ذي قار", "المثنى"
+];
+
+const CATEGORIES = [
+  {id: 'real_sale', name: 'عقارات للبيع', icon: '🏢'},
+  {id: 'real_rent', name: 'عقارات للإيجار', icon: '🏠'},
+  {id: 'cars', name: 'سيارات ومركبات', icon: '🚗'},
+  {id: 'bikes', name: 'دراجات نارية', icon: '🏍️'},
+  {id: 'mobiles', name: 'موبايل وتابلت', icon: '📱'},
+  {id: 'computers', name: 'كمبيوتر ولابتوب', icon: '💻'},
+  {id: 'electronics', name: 'إلكترونيات', icon: '📺'},
+  {id: 'stores', name: 'المتاجر', icon: '🏬'},
+  {id: 'services', name: 'الخدمات', icon: '🔧'},
+  {id: 'jobs', name: 'وظائف شاغرة', icon: '💼'},
+  {id: 'sports', name: 'م معدات رياضية', icon: '🏃'},
+  {id: 'games', name: 'ألعاب فيديو', icon: '🎮'},
+  {id: 'animals', name: 'حيوانات ومستلزمات', icon: '🐱'},
+  {id: 'fashion', name: 'موضة وأزياء', icon: '👕'},
+  {id: 'home', name: 'أثاث ومنزل', icon: '🛋️'},
+  {id: 'appliances', name: 'أجهزة منزلية', icon: '🧊'}
+];
+
+let adsState = [];
+let selectedCategory = 'all';
+let currentImgBase64 = null;
+let profileAvatarBase64 = null;
+let toastTimer = null;
+let searchTimer = null;
+let currentPage = 'home';
+let showFavsOnly = false;
+
+// إدارة مكدس النوافذ والحالة
+let modalStack = [];
+let pendingOTPType = null;
+let generatedOTPCode = null;
+let pendingConfirmAction = null;
+
+function getStorage(key) { 
+  try { return localStorage.getItem(key); } catch(e) { return null; } 
+}
+
+function setStorage(key, val) { 
+  try { localStorage.setItem(key, val); return true; } catch(e) { return false; } 
+}
+
+function getFavs() {
+  try { return JSON.parse(getStorage(FAV_KEY) || '[]'); } catch(e) { return []; }
+}
+
+function toggleFav(id) {
+  let favs = getFavs();
+  favs = favs.includes(id) ? favs.filter(f => f !== id) : [...favs, id];
+  setStorage(FAV_KEY, JSON.stringify(favs));
+  return favs.includes(id);
+}
+
+function toggleFavFilter() {
+  showFavsOnly = !showFavsOnly;
+  document.getElementById('favFilterBtn').textContent = showFavsOnly ? '❤️ المفضلة' : '🤍 المفضلة';
+  renderAds();
+}
+
+function timeAgo(ts) {
+  const s = Math.floor((Date.now() - ts) / 1000);
+  if (s < 60) return 'الآن';
+  if (s < 3600) return `قبل ${Math.floor(s / 60)} دقيقة`;
+  if (s < 86400) return `قبل ${Math.floor(s / 3600)} ساعة`;
+  return `قبل ${Math.floor(s / 86400)} يوم`;
+}
+
+function saveAds() {
+  const ok = setStorage(ADS_KEY, JSON.stringify(adsState));
+  if (!ok) showToast('تعذر الحفظ: المساحة ممتلئة');
+  return ok;
+}
+
+function loadAds() {
+  try {
+    const arr = JSON.parse(getStorage(ADS_KEY) || '[]');
+    const MONTH = 30 * 24 * 60 * 60 * 1000;
+    const valid = Array.isArray(arr)
+      ? arr.filter(a => a && typeof a.title === 'string' && Number.isFinite(a.price) && Number.isFinite(a.id))
+      : [];
+    valid.forEach(a => { a.views = Number(a.views) || 0; });
+    
+    // إزالة الإعلانات القديمة وحفظ النتيجة النظيفة في التخزين
+    adsState = valid.filter(a => Date.now() - a.id < MONTH);
+    if (adsState.length !== valid.length) {
+      saveAds();
     }
-    function setStorage(key, val) {
-      localStorage.setItem(key, JSON.stringify(val));
-    }
+    
+    const ids = new Set(adsState.map(a => a.id));
+    const favs = getFavs();
+    const cleanFavs = favs.filter(f => ids.has(f));
+    if (cleanFavs.length !== favs.length) setStorage(FAV_KEY, JSON.stringify(cleanFavs));
+  } catch (e) { adsState = []; }
+}
 
-    // --- 1. إدارة النوافذ (Modal Stack) ---
-    function openModal(id, trigger = null) {
-      modalStack.push({ id, trigger: trigger || document.activeElement });
-      const modal = document.getElementById(id);
-      if (!modal) return;
-      modal.classList.add('open');
-      modal.focus();
-      document.querySelectorAll('.top-bar, #bottomNav, #mainContainer')
-        .forEach(el => el.setAttribute('inert', ''));
-      document.body.classList.add('modal-open-scroll-lock');
-      history.pushState({ modalDepth: modalStack.length }, '');
-    }
+function debouncedRender() {
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(renderAds, 250);
+}
 
-    function closeModal(id) {
-      const i = modalStack.findIndex(m => m.id === id);
-      if (i !== -1) {
-        history.go(-(modalStack.length - i));
-      }
-    }
+function parseArabicNumbers(str) {
+  if (!str) return '';
+  return str.replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d));
+}
 
-    window.addEventListener('popstate', e => {
-      const depth = (e.state && e.state.modalDepth) || 0;
-      let last = null;
-      while (modalStack.length > depth) {
-        last = modalStack.pop();
-        document.getElementById(last.id)?.classList.remove('open');
-      }
-      if (!modalStack.length) {
+function cleanPriceInput(input) {
+  let val = parseArabicNumbers(input.value);
+  val = val.replace(/[^0-9]/g, '');
+  if (val && parseFloat(val) > MAX_ALLOWED_PRICE) {
+    val = MAX_ALLOWED_PRICE.toString();
+  }
+  input.value = val;
+}
+
+function formatIraqiPhone(phoneStr) {
+  if (!phoneStr) return null;
+  let cleaned = parseArabicNumbers(phoneStr).replace(/[^0-9]/g, '');
+
+  if (cleaned.startsWith('00964')) cleaned = cleaned.substring(5);
+  else if (cleaned.startsWith('964')) cleaned = cleaned.substring(3);
+  else if (cleaned.startsWith('07')) cleaned = cleaned.substring(1);
+
+  const rawPhone = '0' + cleaned;
+  
+  if (!/^07\d{9}$/.test(rawPhone)) {
+    return null;
+  }
+
+  return {
+    raw: rawPhone,
+    whatsapp: '964' + cleaned
+  };
+}
+
+function updateCharCount(inputEl, targetId, maxLen) {
+  const count = inputEl.value.length;
+  document.getElementById(targetId).textContent = `${count} / ${maxLen}`;
+}
+
+function normalizeArabic(str) {
+  if (!str) return '';
+  return str
+    .replace(/[أإآ]/g, 'ا')
+    .replace(/ة/g, 'ه')
+    .replace(/ى/g, 'ي')
+    .toLowerCase()
+    .trim();
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  if (toastTimer) clearTimeout(toastTimer);
+  
+  t.textContent = msg;
+  t.classList.add('show');
+  
+  toastTimer = setTimeout(() => {
+    t.classList.remove('show');
+    toastTimer = null;
+  }, 3000);
+}
+
+window.addEventListener('DOMContentLoaded', async () => {
+  await ImageStore.init();
+  initCategories();
+  initCities();
+  loadAccount();
+  loadAds();
+
+  window.addEventListener('storage', e => {
+    if (e.key === ADS_KEY) { loadAds(); renderAds(); }
+  });
+
+  renderAds();
+
+  const previewBox = document.getElementById('previewBox');
+  previewBox.setAttribute('role', 'button');
+  previewBox.setAttribute('aria-label', 'رفع صورة');
+
+  const initialHash = window.location.hash.replace('#', '');
+  const validPages = ['home', 'add', 'myads', 'account'];
+  const startPage = validPages.includes(initialHash) ? initialHash : 'home';
+  
+  showPage(startPage, false);
+  history.replaceState({ page: startPage }, '', `#${startPage}`);
+
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modalStack.length > 0) {
+      const topModal = modalStack[modalStack.length - 1];
+      closeModal(topModal.id);
+    }
+  });
+
+  window.addEventListener('popstate', (e) => {
+    if (modalStack.length > 0) {
+      const topModal = modalStack.pop();
+      const el = document.getElementById(topModal.id);
+      if (el) el.classList.remove('open');
+
+      if (modalStack.length === 0) {
         document.querySelectorAll('[inert]').forEach(el => el.removeAttribute('inert'));
         document.body.classList.remove('modal-open-scroll-lock');
       }
-      if (last?.trigger && document.body.contains(last.trigger)) {
-        last.trigger.focus({ preventScroll: true });
+
+      if (topModal.trigger && typeof topModal.trigger.focus === 'function' && document.body.contains(topModal.trigger)) {
+        topModal.trigger.focus({ preventScroll: true });
       }
+      return;
+    }
+
+    if (e.state && e.state.page) {
+      showPage(e.state.page, false);
+    }
+  });
+});
+
+function initCities() {
+  const select = document.getElementById('adCity');
+  const editCitySelect = document.getElementById('editAdCity');
+  const homeFilter = document.getElementById('homeCityFilter');
+  
+  IRAQ_CITIES.forEach(c => {
+    const opt = document.createElement('option');
+    opt.value = c;
+    opt.textContent = c;
+    select.appendChild(opt);
+    editCitySelect.appendChild(opt.cloneNode(true));
+    homeFilter.appendChild(opt.cloneNode(true));
+  });
+}
+
+function initCategories() {
+  const grid = document.getElementById('categoriesGrid');
+  const select = document.getElementById('adCat');
+  const editCatSelect = document.getElementById('editAdCat');
+  grid.innerHTML = '';
+  select.innerHTML = '<option value="">اختر القسم</option>';
+  editCatSelect.innerHTML = '<option value="">اختر القسم</option>';
+
+  CATEGORIES.forEach(cat => {
+    const box = document.createElement('div');
+    box.className = 'cat-box';
+    box.tabIndex = 0;
+    box.setAttribute('role', 'button');
+    box.setAttribute('aria-label', cat.name);
+    
+    box.onclick = () => filterCategory(cat.id, box);
+    box.onkeydown = (e) => { 
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        filterCategory(cat.id, box); 
+      }
+    };
+    
+    const icon = document.createElement('div');
+    icon.className = 'icon';
+    icon.textContent = cat.icon;
+    
+    const label = document.createElement('b');
+    label.textContent = cat.name;
+
+    box.appendChild(icon);
+    box.appendChild(label);
+    grid.appendChild(box);
+
+    const opt = document.createElement('option');
+    opt.value = cat.id;
+    opt.textContent = `${cat.icon} ${cat.name}`;
+    select.appendChild(opt);
+    editCatSelect.appendChild(opt.cloneNode(true));
+  });
+}
+
+function filterCategory(catId, el) {
+  document.querySelectorAll('.cat-box').forEach(b => b.classList.remove('active'));
+  if(selectedCategory === catId) {
+    selectedCategory = 'all';
+  } else {
+    selectedCategory = catId;
+    el.classList.add('active');
+  }
+  renderAds();
+}
+
+function adTitleText(ad, favsList) {
+  const t = ad.condition ? `${ad.title} (${ad.condition})` : ad.title;
+  return favsList.includes(ad.id) ? '❤️ ' + t : t;
+}
+
+function buildAdCard(ad, favsList) {
+  const card = document.createElement('div');
+  card.className = 'ad-card';
+  card.dataset.id = ad.id;
+  card.tabIndex = 0;
+  card.setAttribute('role', 'button');
+  card.setAttribute('aria-label', `إعلان: ${ad.title}`);
+  
+  card.onclick = (e) => openAdDetails(ad.id, e.currentTarget);
+  card.onkeydown = (e) => { 
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      openAdDetails(ad.id, e.currentTarget); 
+    }
+  };
+
+  const img = document.createElement('img');
+  img.className = 'ad-img';
+  img.alt = ad.title;
+  img.loading = 'lazy';
+  img.decoding = 'async';
+  img.src = FALLBACK_IMAGE;
+
+  if (ad.imgKey) {
+    ImageStore.get(ad.imgKey).then(src => {
+      if (src) img.src = src;
     });
+  } else if (ad.img) {
+    img.src = ad.img;
+  }
 
-    // --- 2. إدارة الإعلانات ---
-    function loadAds() {
-      const raw = getStorage('ads_data') || [];
-      const now = Date.now();
-      const thirtyDaysMs = 30 * 24 * 60 * 60 * 1000;
+  img.onerror = function() { 
+    this.onerror = null; 
+    this.src = FALLBACK_IMAGE; 
+  };
 
-      const valid = raw.filter(ad => (now - ad.createdAt) < thirtyDaysMs);
+  const info = document.createElement('div');
+  info.className = 'ad-info';
 
-      // تنظيف الصور اليتيمة للإعلانات المنتهية
-      raw.filter(a => !valid.includes(a) && a.imgKey)
-         .forEach(a => ImageStore.delete(a.imgKey));
+  const title = document.createElement('div');
+  title.className = 'ad-title';
+  title.textContent = adTitleText(ad, favsList);
 
-      adsState = valid;
-      saveAds();
-      renderAds();
+  const price = document.createElement('div');
+  price.className = 'ad-price';
+  price.textContent = `${ad.price.toLocaleString('en-US')} ${ad.currency}`;
+
+  const meta = document.createElement('div');
+  meta.className = 'ad-meta';
+  
+  const city = document.createElement('span');
+  city.textContent = `📍 ${ad.city} • ${timeAgo(ad.id)}`;
+  
+  const views = document.createElement('span');
+  views.className = 'ad-views-tag';
+  views.textContent = `👁 ${ad.views}`;
+
+  meta.appendChild(city);
+  meta.appendChild(views);
+
+  info.appendChild(title);
+  info.appendChild(price);
+  info.appendChild(meta);
+
+  card.appendChild(img);
+  card.appendChild(info);
+
+  return card;
+}
+
+function renderAds() {
+  const container = document.getElementById('adsContainer');
+  const myContainer = document.getElementById('myAdsContainer');
+  const rawQuery = normalizeArabic(document.getElementById('searchInput').value);
+  const searchTokens = rawQuery ? rawQuery.split(/\s+/).filter(Boolean) : [];
+  
+  const selectedCity = document.getElementById('homeCityFilter').value;
+  
+  document.getElementById('topBarCityTag').textContent = selectedCity ? `📍 ${selectedCity}` : '🇮🇶 جميع المحافظات';
+
+  const isFiltering = searchTokens.length > 0 || selectedCity || selectedCategory !== 'all' || showFavsOnly;
+  document.getElementById('listTitle').textContent = isFiltering ? 'نتائج البحث' : 'أحدث الإعلانات';
+
+  container.innerHTML = '';
+  myContainer.innerHTML = '';
+
+  let totalViews = 0;
+  let myCount = 0;
+  let matchCount = 0;
+
+  const sortMode = document.getElementById('sortSelect').value;
+  const sorted = [...adsState].sort((a, b) => {
+    if (sortMode === 'cheap') return toIQD(a) - toIQD(b);
+    if (sortMode === 'expensive') return toIQD(b) - toIQD(a);
+    if (sortMode === 'views') return b.views - a.views;
+    return b.id - a.id;
+  });
+
+  const currentFavs = getFavs();
+
+  sorted.forEach(ad => {
+    const catObj = CATEGORIES.find(c => c.id === ad.category);
+    const catName = catObj ? catObj.name : '';
+
+    const matchCat = selectedCategory === 'all' || ad.category === selectedCategory;
+    const matchCity = !selectedCity || ad.city === selectedCity;
+    const matchFav = !showFavsOnly || currentFavs.includes(ad.id);
+    
+    const searchTarget = normalizeArabic(`${ad.title} ${ad.desc} ${ad.city} ${catName} ${ad.condition || ''}`);
+    const matchSearch = searchTokens.every(token => searchTarget.includes(token));
+
+    if (ad.isMine) {
+      myCount++;
+      totalViews += Number(ad.views) || 0;
+      myContainer.appendChild(buildAdCard(ad, currentFavs));
     }
 
-    function saveAds() {
-      try {
-        setStorage('ads_data', adsState);
-        return true;
-      } catch (e) {
-        showToast('تعذر حفظ البيانات');
-        return false;
-      }
+    if (matchCat && matchCity && matchSearch && matchFav) {
+      matchCount++;
+      container.appendChild(buildAdCard(ad, currentFavs));
     }
+  });
 
-    function renderAds() {
-      const list = document.getElementById('adsList');
-      if (!list) return;
-      const filtered = currentFilter === 'all'
-        ? adsState
-        : adsState.filter(a => a.category === currentFilter);
+  if (adsState.length === 0) {
+    container.innerHTML = `<div class="empty-state"><span>📦</span>لا توجد إعلانات منشورة حتى الآن. كن أول من يضيف إعلاناً!</div>`;
+  } else if (matchCount === 0) {
+    container.innerHTML = `<div class="empty-state"><span>🔍</span>لا توجد إعلانات مطابقة لعملية البحث أو الفلتر الحالي</div>`;
+  }
 
-      if (!filtered.length) {
-        list.innerHTML = '<p class="text-muted" style="text-align:center;padding:30px;">لا توجد إعلانات في هذا القسم بعد</p>';
-        return;
-      }
+  if (myCount === 0) {
+    myContainer.innerHTML = `<div class="empty-state"><span>📄</span>لم تقم بنشر أي إعلان بعد</div>`;
+  }
 
-      list.innerHTML = '';
-      filtered.forEach(ad => {
-        const card = document.createElement('div');
-        card.className = 'ad-card';
-        const price = ad.price ? `<span class="price">${escapeHtml(ad.price)} د.ع</span>` : '';
-        card.innerHTML = `
-          <h4>${escapeHtml(ad.title)}</h4>
-          ${ad.desc ? `<p class="text-muted" style="margin:4px 0;">${escapeHtml(ad.desc)}</p>` : ''}
-          ${price}
-        `;
-        card.onclick = () => showAdDetails(ad);
-        list.appendChild(card);
-      });
-    }
+  document.getElementById('myAdsCount').textContent = myCount;
+  document.getElementById('myViewsCount').textContent = totalViews;
+}
 
-    function escapeHtml(s) {
-      return String(s || '').replace(/[&<>"']/g, c => ({
-        '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
-      }[c]));
-    }
+function handleImageCompress(e) {
+  const file = e.target.files[0];
+  if (!file) return;
 
-    async function handleCreateAd(event) {
-      if (event) event.preventDefault();
-      const submitAdBtn = document.getElementById('submitAdBtn');
-      if (submitAdBtn) submitAdBtn.disabled = true;
+  if (file.size > 5 * 1024 * 1024) {
+    showToast('خطأ: حجم ملف الصورة أكبر من 5 ميجابايت!');
+    e.target.value = '';
+    return;
+  }
 
-      const adId = 'ad_' + Date.now();
+  const submitBtn = document.getElementById('submitAdBtn');
+  submitBtn.disabled = true;
+  submitBtn.textContent = '⏳ جاري ضغط الصورة...';
 
-      try {
-        const newAd = {
-          id: adId,
-          title: document.getElementById('f_title')?.value.trim() || '',
-          desc: document.getElementById('f_desc')?.value.trim() || '',
-          price: document.getElementById('f_price')?.value.trim() || '',
-          phone: document.getElementById('f_phone')?.value.trim() || '',
-          category: document.getElementById('f_category')?.value || 'sports',
-          hidePhone: document.getElementById('f_hidePhone')?.checked || false,
-          imgKey: null,
-          isMine: true,
-          createdAt: Date.now()
-        };
+  const reader = new FileReader();
+  reader.onload = function(evt) {
+    const img = new Image();
+    
+    img.onerror = function() {
+      showToast('خطأ: الملف المختار ليس صورة سليمة!');
+      document.getElementById('adImgInput').value = '';
+      document.getElementById('previewBox').innerHTML = '<span>📷 اضغط هنا لرفع صورة</span>';
+      currentImgBase64 = null;
+      submitBtn.disabled = false;
+      submitBtn.textContent = '🚀 نشر الإعلان الآن';
+    };
 
-        adsState.unshift(newAd);
-        if (!saveAds()) {
-          adsState.shift();
-          return;
+    img.onload = function() {
+      const canvas = document.createElement('canvas');
+      const MAX_WIDTH = 600;
+      const MAX_HEIGHT = 600;
+      let width = img.width;
+      let height = img.height;
+
+      if (width > height) {
+        if (width > MAX_WIDTH) {
+          height = Math.round(height * (MAX_WIDTH / width));
+          width = MAX_WIDTH;
         }
+      } else {
+        if (height > MAX_HEIGHT) {
+          width = Math.round(width * (MAX_HEIGHT / height));
+          height = MAX_HEIGHT;
+        }
+      }
 
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d');
+
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, width, height);
+      ctx.drawImage(img, 0, 0, width, height);
+
+      currentImgBase64 = canvas.toDataURL('image/jpeg', 0.6);
+      
+      const box = document.getElementById('previewBox');
+      box.innerHTML = '';
+      const prevImg = document.createElement('img');
+      prevImg.src = currentImgBase64;
+      prevImg.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:10px;';
+      box.appendChild(prevImg);
+
+      submitBtn.disabled = false;
+      submitBtn.textContent = '🚀 نشر الإعلان الآن';
+    };
+    img.src = evt.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+async function handleCreateAd(e) {
+  e.preventDefault();
+  
+  const title = document.getElementById('adTitle').value.trim().slice(0, 80);
+  const category = document.getElementById('adCat').value;
+  const rawPrice = document.getElementById('adPrice').value;
+  const price = Math.min(parseFloat(rawPrice), MAX_ALLOWED_PRICE);
+  
+  if (!Number.isFinite(price) || price <= 0) {
+    showToast('خطأ: يرجى إدخال سعر صحيح أكبر من صفر');
+    return;
+  }
+
+  const currency = document.getElementById('adCurrency').value;
+  const city = document.getElementById('adCity').value;
+  const condition = document.getElementById('adCondition').value;
+  const rawPhone = document.getElementById('adPhone').value;
+  
+  const parsedPhone = formatIraqiPhone(rawPhone);
+  if (!parsedPhone) {
+    showToast('خطأ: أدخل رقم هاتف عراقي محلي صحيح يتكون من 11 رقماً ويبدأ بـ 07');
+    return;
+  }
+
+  const desc = document.getElementById('adDesc').value.trim().slice(0, 1000);
+
+  const adId = Date.now();
+  let imgKey = null;
+
+  if (currentImgBase64) {
+    imgKey = 'img_' + adId;
+    await ImageStore.set(imgKey, currentImgBase64);
+  }
+
+  const newAd = {
+    id: adId,
+    title,
+    category,
+    price,
+    currency,
+    city,
+    condition,
+    phone: parsedPhone.raw,
+    whatsapp: parsedPhone.whatsapp,
+    desc,
+    imgKey: imgKey,
+    views: 0,
+    isMine: true
+  };
+
+  adsState.unshift(newAd);
+
+  if (!saveAds()) {
+    adsState.shift();
+    return;
+  }
+
+  selectedCategory = 'all';
+  document.querySelectorAll('.cat-box').forEach(b => b.classList.remove('active'));
+  document.getElementById('searchInput').value = '';
+  document.getElementById('homeCityFilter').value = '';
+  document.getElementById('sortSelect').value = 'new';
+
+  renderAds();
+  
+  document.getElementById('addAdForm').reset();
+  document.getElementById('previewBox').innerHTML = '<span>📷 اضغط هنا لرفع صورة</span>';
+  document.getElementById('titleCount').textContent = '0 / 80';
+  document.getElementById('descCount').textContent = '0 / 1000';
+  currentImgBase64 = null;
+  
+  showToast('تم نشر إعلانك بنجاح!');
+  showPage('home');
+}
+
+function openAdDetails(id, triggerElement = null) {
+  const ad = adsState.find(a => String(a.id) === String(id));
+  if (!ad) return;
+
+  const vKey = 'v' + ad.id;
+  let seen = false;
+  try { seen = !!sessionStorage.getItem(vKey); } catch(e) {}
+  if (!seen) {
+    ad.views++;
+    try { sessionStorage.setItem(vKey, '1'); } catch(e) {}
+    saveAds();
+    document.querySelectorAll(`.ad-card[data-id="${ad.id}"] .ad-views-tag`).forEach(tag => {
+      tag.textContent = `👁 ${ad.views}`;
+    });
+    document.getElementById('myViewsCount').textContent =
+      adsState.filter(a => a.isMine).reduce((s, a) => s + a.views, 0);
+  }
+
+  document.getElementById('mTitle').textContent = ad.title;
+  const body = document.getElementById('mBody');
+  body.innerHTML = '';
+
+  const img = document.createElement('img');
+  img.src = FALLBACK_IMAGE;
+  img.style.cssText = 'width:100%;height:220px;object-fit:cover;border-radius:12px;';
+
+  if (ad.imgKey) {
+    ImageStore.get(ad.imgKey).then(src => {
+      if (src) img.src = src;
+    });
+  } else if (ad.img) {
+    img.src = ad.img;
+  }
+
+  img.onerror = function() { 
+    this.onerror = null; 
+    this.src = FALLBACK_IMAGE; 
+  };
+
+  const price = document.createElement('h2');
+  price.style.color = 'var(--primary)';
+  price.textContent = `${ad.price.toLocaleString('en-US')} ${ad.currency}`;
+
+  const location = document.createElement('div');
+  location.textContent = `📍 المحافظة: ${ad.city} ${ad.condition ? '• الحالة: ' + ad.condition : ''}`;
+
+  const desc = document.createElement('p');
+  desc.style.cssText = 'background:#fff;padding:12px;border-radius:8px;line-height:1.5;white-space:pre-wrap;word-break:break-word;';
+  desc.textContent = ad.desc;
+
+  const phoneBox = document.createElement('div');
+  phoneBox.style.cssText = 'display:flex;flex-direction:column;gap:8px;margin-top:8px;';
+
+  // تطبيق منطق إخفاء رقم الهاتف
+  const hidePhoneSetting = getStorage('user_hide_phone') === '1';
+
+  if (ad.isMine && hidePhoneSetting) {
+    const btnPrivate = document.createElement('button');
+    btnPrivate.type = 'button';
+    btnPrivate.className = 'btn-primary';
+    btnPrivate.style.background = '#6c757d';
+    btnPrivate.textContent = '🔒 الرقم مخفي بناءً على إعدادات الخصوصية';
+    phoneBox.appendChild(btnPrivate);
+  } else {
+    const btnCall = document.createElement('a');
+    btnCall.href = `tel:${ad.phone}`;
+    btnCall.className = 'btn-primary';
+    btnCall.style.cssText = 'text-decoration:none;text-align:center;display:block;';
+    btnCall.textContent = `📞 اتصال بالبائع (${ad.phone})`;
+
+    const btnWa = document.createElement('a');
+    btnWa.href = `https://wa.me/${ad.whatsapp}`;
+    btnWa.target = '_blank';
+    btnWa.rel = 'noopener';
+    btnWa.className = 'btn-primary btn-accent';
+    btnWa.style.cssText = 'text-decoration:none;text-align:center;display:block;';
+    btnWa.textContent = '💬 مراسلة عبر واتساب';
+
+    phoneBox.appendChild(btnCall);
+    phoneBox.appendChild(btnWa);
+  }
+
+  body.appendChild(img);
+  body.appendChild(price);
+  body.appendChild(location);
+  body.appendChild(desc);
+  body.appendChild(phoneBox);
+
+  const btnFav = document.createElement('button');
+  btnFav.type = 'button';
+  btnFav.className = 'btn-primary';
+  btnFav.style.cssText = 'background:#fff;color:var(--danger);border:1px solid var(--danger);margin-top:8px;';
+  btnFav.textContent = getFavs().includes(ad.id) ? '❤️ في المفضلة' : '🤍 أضف للمفضلة';
+  btnFav.onclick = () => {
+    const isFav = toggleFav(ad.id);
+    btnFav.textContent = isFav ? '❤️ في المفضلة' : '🤍 أضف للمفضلة';
+    const favsList = getFavs();
+    document.querySelectorAll(`.ad-card[data-id="${ad.id}"] .ad-title`)
+      .forEach(t => t.textContent = adTitleText(ad, favsList));
+  };
+  body.appendChild(btnFav);
+
+  const btnShare = document.createElement('button');
+  btnShare.type = 'button';
+  btnShare.className = 'btn-primary';
+  btnShare.style.cssText = 'background:#fff;color:var(--primary);border:1px solid var(--primary);margin-top:8px;';
+  btnShare.textContent = '🔗 مشاركة';
+  btnShare.onclick = async () => {
+    const text = `${ad.title} - ${ad.price.toLocaleString('en-US')} ${ad.currency} (${ad.city})`;
+    try {
+      if (navigator.share) await navigator.share({ title: ad.title, text });
+      else { await navigator.clipboard.writeText(text); showToast('تم النسخ'); }
+    } catch(e) {}
+  };
+  body.appendChild(btnShare);
+
+  if (ad.isMine) {
+    const btnEdit = document.createElement('button');
+    btnEdit.type = 'button';
+    btnEdit.className = 'btn-primary';
+    btnEdit.style.marginTop = '12px';
+    btnEdit.textContent = '✏️ تعديل الإعلان';
+    btnEdit.onclick = () => openEditModal(ad);
+    body.appendChild(btnEdit);
+
+    const btnDel = document.createElement('button');
+    btnDel.type = 'button';
+    btnDel.className = 'btn-primary btn-danger';
+    btnDel.style.marginTop = '8px';
+    btnDel.textContent = '🗑️ حذف الإعلان';
+    btnDel.onclick = () => {
+      showCustomConfirm('هل أنت أمتأكد من إرادتك لحذف هذا الإعلان؟', async () => {
+        if (ad.imgKey) await ImageStore.delete(ad.imgKey);
+        adsState = adsState.filter(a => String(a.id) !== String(ad.id));
+        saveAds();
+        setStorage(FAV_KEY, JSON.stringify(getFavs().filter(f => f !== ad.id)));
         renderAds();
-        document.getElementById('createAdForm')?.reset();
-        closeModal('createAdModal');
-        showToast('تم نشر الإعلان بنجاح');
-      } finally {
-        if (submitAdBtn) submitAdBtn.disabled = false;
-      }
-    }
-
-    // --- 3. التفاصيل والحذف ---
-    function showAdDetails(ad) {
-      document.getElementById('adTitle').innerText = ad.title;
-      document.getElementById('adDescription').innerText =
-        (ad.desc || '') + (ad.price ? ` — السعر: ${ad.price} د.ع` : '');
-
-      const phoneContainer = document.getElementById('adPhoneContainer');
-      if (ad.hidePhone && !ad.isMine) {
-        phoneContainer.innerHTML = '<span class="text-muted">صاحب الإعلان يفضل التواصل عبر الرسائل فقط للمشترين</span>';
-      } else {
-        phoneContainer.innerHTML = `<a href="tel:${encodeURIComponent(ad.phone)}" class="btn btn-primary" style="display:inline-block;text-decoration:none;">اتصال: ${escapeHtml(ad.phone)}</a>`;
-      }
-
-      const btnDelete = document.getElementById('btnDeleteAd');
-      if (ad.isMine) {
-        btnDelete.style.display = 'block';
-        btnDelete.onclick = () => {
-          showCustomConfirm('هل أنت متأكد من رغبتك في حذف هذا الإعلان؟', () => {
-            handleDeleteAd(ad.id);
-          });
-        };
-      } else {
-        btnDelete.style.display = 'none';
-      }
-
-      openModal('detailsModal');
-    }
-
-    function showCustomConfirm(message, onConfirm) {
-      document.getElementById('confirmMessage').innerText = message;
-      pendingConfirmAction = onConfirm;
-      const okBtn = document.getElementById('confirmOkBtn');
-      okBtn.onclick = () => {
-        const action = pendingConfirmAction;
-        pendingConfirmAction = null;
-        closeModal('confirmModal');
-        if (typeof action === 'function') {
-          setTimeout(action, 100);
-        }
-      };
-      openModal('confirmModal');
-    }
-
-    function handleDeleteAd(adId) {
-      const ad = adsState.find(a => a.id === adId);
-      if (ad && ad.imgKey) {
-        ImageStore.delete(ad.imgKey);
-      }
-      adsState = adsState.filter(a => a.id !== adId);
-      saveAds();
-      renderAds();
-      closeModal('detailsModal');
-      showToast('تم حذف الإعلان بنجاح');
-    }
-
-    // --- 4. نظام التوثيق (OTP) ---
-    function currentContact(type) {
-      if (type === 'email') {
-        return document.getElementById('f_email')?.value.trim() || '';
-      }
-      return document.getElementById('f_phone')?.value.trim() || '';
-    }
-
-    function updateVerificationUI() {
-      [['email', 'Email'], ['phone', 'Phone']].forEach(([t, N]) => {
-        const cur = currentContact(t);
-        const ok = cur && getStorage(`user_${t}_verified`) === cur;
-        const btn = document.getElementById('btnVerify' + N);
-        const badge = document.getElementById('badge' + N + 'Verified');
-        if (btn) btn.style.display = ok ? 'none' : '';
-        if (badge) badge.style.display = ok ? 'inline-flex' : 'none';
+        closeModal('detailsModal');
+        showToast('تم حذف الإعلان بنجاح');
       });
+    };
+    body.appendChild(btnDel);
+  }
+
+  openModal('detailsModal', triggerElement);
+}
+
+function openEditModal(ad) {
+  document.getElementById('editAdId').value = ad.id;
+  document.getElementById('editAdTitle').value = ad.title;
+  document.getElementById('editAdPrice').value = ad.price;
+  document.getElementById('editAdCurrency').value = ad.currency;
+  document.getElementById('editAdCat').value = ad.category;
+  document.getElementById('editAdCity').value = ad.city;
+  document.getElementById('editAdCondition').value = ad.condition || 'مستعمل';
+  document.getElementById('editAdDesc').value = ad.desc;
+
+  updateCharCount(document.getElementById('editAdTitle'), 'editTitleCount', 80);
+  updateCharCount(document.getElementById('editAdDesc'), 'editDescCount', 1000);
+
+  openModal('editAdModal');
+}
+
+function handleSaveEditAd(e) {
+  e.preventDefault();
+  const id = document.getElementById('editAdId').value;
+  const ad = adsState.find(a => String(a.id) === String(id));
+  if (!ad) return;
+
+  const t = document.getElementById('editAdTitle').value.trim().slice(0, 80);
+  const p = parseFloat(document.getElementById('editAdPrice').value);
+  const c = document.getElementById('editAdCurrency').value;
+  const cat = document.getElementById('editAdCat').value;
+  const city = document.getElementById('editAdCity').value;
+  const cond = document.getElementById('editAdCondition').value;
+  const d = document.getElementById('editAdDesc').value.trim().slice(0, 1000);
+
+  if (!t || !Number.isFinite(p) || p <= 0 || !cat || !city) {
+    showToast('خطأ: يرجى إدخال كافة البيانات بشكل صحيح');
+    return;
+  }
+
+  ad.title = t;
+  ad.price = Math.min(p, MAX_ALLOWED_PRICE);
+  ad.currency = c;
+  ad.category = cat;
+  ad.city = city;
+  ad.condition = cond;
+  ad.desc = d;
+
+  saveAds();
+  renderAds();
+  
+  // إغلاق نافذة التعديل مع التراجع السليم عن السجل المتداخل
+  closeMultipleModals(2);
+  showToast('تم تعديل الإعلان بنجاح!');
+}
+
+function openModal(id, triggerElement = null) {
+  const trigger = triggerElement || document.activeElement;
+  modalStack.push({ id: id, trigger: trigger });
+
+  const modal = document.getElementById(id);
+  modal.classList.add('open');
+
+  requestAnimationFrame(() => {
+    modal.focus();
+  });
+
+  document.querySelectorAll('.page.active, .top-bar, #bottomNav').forEach(el => {
+    el.setAttribute('inert', '');
+  });
+  document.body.classList.add('modal-open-scroll-lock');
+
+  history.pushState({ modalOpen: true, modalId: id }, '');
+}
+
+function closeModal(id) {
+  const modalIndex = modalStack.findIndex(m => m.id === id);
+  if (modalIndex !== -1) {
+    history.back();
+  }
+}
+
+function closeMultipleModals(count) {
+  const actualCount = Math.min(count, modalStack.length);
+  if (actualCount > 0) {
+    history.go(-actualCount);
+  }
+}
+
+function showCustomConfirm(msg, onConfirm) {
+  document.getElementById('confirmMessage').textContent = msg;
+  pendingConfirmAction = onConfirm;
+  
+  const okBtn = document.getElementById('confirmOkBtn');
+  okBtn.onclick = () => {
+    closeModal('confirmModal');
+    if (pendingConfirmAction) pendingConfirmAction();
+  };
+
+  openModal('confirmModal');
+}
+
+function showPage(p, triggerHistory = true) {
+  const isSamePage = (p === currentPage);
+
+  document.querySelectorAll('.page').forEach(x => x.classList.remove('active'));
+  document.getElementById(p).classList.add('active');
+  
+  document.querySelectorAll('.nav-item').forEach(x => x.classList.remove('active'));
+  const btn = document.getElementById('n_' + p);
+  if(btn) btn.classList.add('active');
+
+  if (!isSamePage) {
+    window.scrollTo(0, 0);
+    currentPage = p;
+  }
+
+  if (triggerHistory && !isSamePage) {
+    history.pushState({ page: p }, '', `#${p}`);
+  }
+}
+
+function switchProfileSubTab(tabName, el) {
+  document.querySelectorAll('.profile-tab').forEach(t => t.classList.remove('active'));
+  if (el) el.classList.add('active');
+
+  const editTab = document.getElementById('accSubTabEdit');
+  const otherTab = document.getElementById('accSubTabOther');
+  const otherTitle = document.getElementById('accSubTabOtherTitle');
+
+  if (tabName === 'edit') {
+    editTab.style.display = 'block';
+    otherTab.style.display = 'none';
+  } else {
+    editTab.style.display = 'none';
+    otherTab.style.display = 'block';
+    const names = {
+      summary: 'قسم الملخص',
+      ratings: 'قسم التقييمات',
+      store: 'إعدادات متجري',
+      profile: 'معاينة الملف الشخصي'
+    };
+    otherTitle.textContent = names[tabName] || 'قسم إضافي';
+  }
+}
+
+function handleProfileAvatarUpload(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  if (file.size > 5 * 1024 * 1024) {
+    showToast('خطأ: حجم صورة الملف الشخصي يجب أن لا يتجاوز 5MB');
+    e.target.value = '';
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = function(evt) {
+    const img = new Image();
+    
+    img.onerror = function() {
+      showToast('خطأ: فشل تحميل ملف الصورة الشخصية');
+    };
+
+    img.onload = async function() {
+      const canvas = document.createElement('canvas');
+      canvas.width = 300;
+      canvas.height = 300;
+      const ctx = canvas.getContext('2d');
+      
+      const minDim = Math.min(img.width, img.height);
+      const sx = (img.width - minDim) / 2;
+      const sy = (img.height - minDim) / 2;
+
+      ctx.drawImage(img, sx, sy, minDim, minDim, 0, 0, 300, 300);
+      
+      profileAvatarBase64 = canvas.toDataURL('image/jpeg', 0.7);
+      await ImageStore.set('user_avatar', profileAvatarBase64);
+      renderAvatarImage(profileAvatarBase64);
+      showToast('تم تحديث الصورة الشخصية بنجاح');
+    };
+    img.src = evt.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function renderAvatarImage(src) {
+  const placeholder = document.getElementById('avatarPlaceholder');
+  const imgEl = document.getElementById('avatarImage');
+  if (src) {
+    imgEl.src = src;
+    imgEl.style.display = 'block';
+    placeholder.style.display = 'none';
+  } else {
+    imgEl.style.display = 'none';
+    placeholder.style.display = 'block';
+  }
+}
+
+// --- نظام التوثيق المحاكي بإدخال رمز OTP إجبارياً ---
+
+function updateVerificationUI() {
+  const emailVerified = getStorage('user_email_verified') === '1';
+  const phoneVerified = getStorage('user_phone_verified') === '1';
+
+  document.getElementById('btnVerifyEmail').style.display = emailVerified ? 'none' : '';
+  document.getElementById('badgeEmailVerified').style.display = emailVerified ? 'flex' : 'none';
+
+  document.getElementById('btnVerifyPhone').style.display = phoneVerified ? 'none' : '';
+  document.getElementById('badgePhoneVerified').style.display = phoneVerified ? 'flex' : 'none';
+}
+
+function onEmailChanged() {
+  setStorage('user_email_verified', '0');
+  updateVerificationUI();
+}
+
+function onPhoneChanged() {
+  setStorage('user_phone_verified', '0');
+  updateVerificationUI();
+}
+
+function requestOTP(type) {
+  if (type === 'email') {
+    const email = document.getElementById('f_email').value.trim();
+    if (!email || !email.includes('@')) {
+      showToast('يرجى كتابة بريد إلكتروني صحيح أولاً');
+      return;
     }
-
-    function confirmOTP(enteredCode) {
-      if (enteredCode === generatedOTPCode) {
-        setStorage(`user_${pendingOTPType}_verified`, currentContact(pendingOTPType));
-        generatedOTPCode = null;
-        updateVerificationUI();
-        closeModal('otpModal');
-        showToast('تم توثيق البيانات بنجاح');
-      } else {
-        showToast('رمز التوثيق غير صحيح');
-      }
+    pendingOTPType = 'email';
+    document.getElementById('otpDescription').textContent = `أدخل رمز التوثيق المرسل إلى البريد (${email}):`;
+  } else {
+    const phone = document.getElementById('f_phone').value;
+    const parsed = formatIraqiPhone(phone);
+    if (!parsed) {
+      showToast('أدخل رقم هاتف عراقي محلي صحيح يتكون من 11 رقماً ويبدأ بـ 07');
+      return;
     }
+    pendingOTPType = 'phone';
+    document.getElementById('otpDescription').textContent = `أدخل رمز التوثيق المرسل في رسالة نصية إلى (${parsed.raw}):`;
+  }
 
-    // --- 5. Toast ---
-    let toastTimer = null;
-    function showToast(msg) {
-      const t = document.getElementById('toast');
-      if (!t) return;
-      t.innerText = msg;
-      t.classList.add('show');
-      clearTimeout(toastTimer);
-      toastTimer = setTimeout(() => t.classList.remove('show'), 2500);
+  const array = new Uint32Array(1);
+  crypto.getRandomValues(array);
+  generatedOTPCode = (1000 + (array[0] % 9000)).toString();
+
+  document.getElementById('otpInput').value = '';
+  openModal('otpModal');
+
+  // تنبيه بالرمز المحاكي لغرض التجربة
+  setTimeout(() => {
+    showToast(`رمز OTP المحاكي للتجربة هو: ${generatedOTPCode}`);
+  }, 500);
+}
+
+function confirmOTP() {
+  const inputCode = parseArabicNumbers(document.getElementById('otpInput').value.trim());
+  if (inputCode === generatedOTPCode) {
+    if (pendingOTPType === 'email') {
+      setStorage('user_email_verified', '1');
+      showToast('تم توثيق البريد الإلكتروني بنجاح!');
+    } else if (pendingOTPType === 'phone') {
+      setStorage('user_phone_verified', '1');
+      showToast('تم توثيق رقم الموبايل بنجاح!');
     }
+    updateVerificationUI();
+    closeModal('otpModal');
+  } else {
+    showToast('رمز التوثيق غير صحيح، حاول مرة أخرى');
+  }
+}
 
-    // --- 6. فلترة الأقسام ---
-    document.addEventListener('click', e => {
-      const span = e.target.closest('#categories span');
-      if (!span) return;
-      document.querySelectorAll('#categories span').forEach(s => s.classList.remove('active'));
-      span.classList.add('active');
-      currentFilter = span.dataset.cat || 'all';
-      renderAds();
-    });
+function generateMemberId() {
+  let id = getStorage('user_member_id');
+  if (!id) {
+    const array = new Uint32Array(1);
+    crypto.getRandomValues(array);
+    id = 'member-' + (100000 + (array[0] % 900000));
+    setStorage('user_member_id', id);
+  }
+  return id;
+}
 
-    // --- 7. التهيئة ---
-    document.addEventListener('DOMContentLoaded', async () => {
-      try {
-        await ImageStore.init();
-      } catch (e) {
-        console.warn('IndexedDB unavailable', e);
-      }
-      loadAds();
-    });
-  </script>
+function saveAcc(e) {
+  e.preventDefault();
+  const name = document.getElementById('f_name').value.trim();
+  const email = document.getElementById('f_email').value.trim();
+  const phone = document.getElementById('f_phone').value.trim();
+  const hidePhone = document.getElementById('f_hidePhone').checked;
+  const gender = document.getElementById('f_gender').value;
+  const dob = document.getElementById('f_dob').value;
+
+  if (phone) {
+    const parsed = formatIraqiPhone(phone);
+    if (!parsed) {
+      showToast('خطأ: رقم الموبايل غير صحيح (يجب أن يبدأ بـ 07 ويتكون من 11 رقماً)');
+      return;
+    }
+  }
+
+  setStorage('user_name', name);
+  setStorage('user_email', email);
+  setStorage('user_phone', phone);
+  setStorage('user_hide_phone', hidePhone ? '1' : '0');
+  setStorage('user_gender', gender);
+  setStorage('user_dob', dob);
+
+  renderAds();
+  showToast('تم حفظ تغييرات الحساب بنجاح!');
+}
+
+async function loadAccount() {
+  document.getElementById('f_name').value = getStorage('user_name') || '';
+  document.getElementById('f_email').value = getStorage('user_email') || '';
+  document.getElementById('f_phone').value = getStorage('user_phone') || '';
+  document.getElementById('f_hidePhone').checked = getStorage('user_hide_phone') === '1';
+  document.getElementById('f_gender').value = getStorage('user_gender') || '';
+  document.getElementById('f_dob').value = getStorage('user_dob') || '';
+  
+  document.getElementById('f_profileLink').value = generateMemberId();
+
+  profileAvatarBase64 = await ImageStore.get('user_avatar');
+  renderAvatarImage(profileAvatarBase64);
+  
+  updateVerificationUI();
+}
+</script>
 </body>
-  </html>
+</html>
