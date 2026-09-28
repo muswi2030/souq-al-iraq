@@ -1,105 +1,82 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>سوق العراق</title>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>سوق العراق - اعلاناتي</title>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Tajawal',Tahoma}
-body{background:#f6f3eb;padding-bottom:85px}
-.header{background:#0a0a0a;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid #d9b76d;position:sticky;top:0;z-index:10}
-.logo{color:#d9b76d;font-weight:900;font-size:18px}
+body{background:#f2f4f7;padding-bottom:90px}
+.top-bar{background:#fff;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #eee;position:sticky;top:0;z-index:10}
+.top-bar b{font-size:20px;font-weight:900}
 .page{display:none}.page.active{display:block}
-.section{padding:20px 14px}.section h2{text-align:center;color:#5a4220;font-weight:900}
-.form-card{background:#111;border:1.5px solid #d9b76d;border-radius:16px;padding:18px}
-.form-card label{display:block;color:#d9b76d;font-size:13px;margin:12px 0 5px}
-.form-card input,.form-card select{width:100%;padding:12px;border-radius:10px;border:1px solid #333;background:#000;color:#fff}
-.btn-save{width:100%;background:#d9b76d;color:#000;padding:14px;border:none;border-radius:12px;font-weight:900;margin-top:18px}
-.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#0a0a0a;border-top:1.5px solid #d9b76d;display:flex;justify-content:space-around;padding:8px 0 12px;z-index:100}
-.nav-item{flex:1;text-align:center;color:#888;text-decoration:none;font-size:11px;display:flex;flex-direction:column;align-items:center}.nav-item.active{color:#d9b76d}.nav-item span{font-size:22px}
-.chat-float{position:fixed;bottom:92px;left:16px;background:#d9b76d;width:58px;height:58px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;z-index:200;border:none}
-.chat-window{position:fixed;inset:0;background:#f9f4f0;z-index:500;display:none;flex-direction:column;overflow-y:auto}
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:12px}
+.card{background:#fff;border-radius:14px;padding:16px;box-shadow:0 2px 6px rgba(0,0,0,.06)}
+.card .num{color:#007bff;font-weight:900;font-size:28px}
+.card .top{display:flex;justify-content:space-between;align-items:center}
+.list-box{background:#fff;border-radius:14px;margin:12px;overflow:hidden;box-shadow:0 2px 6px rgba(0,0,0,.06)}
+.list-item{padding:16px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #f0f0f0;cursor:pointer}
+.list-item:last-child{border:none}
+.blue{color:#007bff;font-weight:900;font-size:20px}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #ddd;display:flex;justify-content:space-around;align-items:center;padding:6px 0 10px;z-index:100}
+.nav-item{text-align:center;font-size:11px;color:#000;text-decoration:none;flex:1;display:flex;flex-direction:column;align-items:center;gap:2px}
+.nav-item.active{color:#007bff}
+.nav-item span{font-size:22px}
+.add-btn{width:56px;height:56px;background:#f5a623;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:32px;color:#fff;margin-top:-25px;box-shadow:0 4px 10px rgba(0,0,0,.2);border:3px solid #fff}
+.badge{background:#e11;color:#fff;border-radius:50%;padding:2px 6px;font-size:10px;position:absolute;top:-5px;right:15px}
+.chat-float{position:fixed;bottom:95px;left:16px;background:#0a0a0a;color:#d9b76d;width:50px;height:50px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;z-index:200;border:1px solid #d9b76d}
+.chat-window{position:fixed;inset:0;background:#fff;z-index:500;display:none;flex-direction:column}
 .chat-window.open{display:flex}
-.row{padding:16px 0;display:flex;justify-content:space-between;border-bottom:1px solid #eee;cursor:pointer}
 </style>
 </head>
 <body>
-<div class="header"><div style="color:#d9b76d">☰</div><div class="logo">سوق العراق</div></div>
 
-<div id="home" class="page active"><div class="section"><h2>مرحبا بك في سوق العراق</h2></div></div>
-<div id="cats" class="page"><div class="section"><h2>التصنيفات</h2><div style="background:#0a0a0a;color:#d9b76d;border:1.5px solid #d9b76d;border-radius:14px;padding:16px;text-align:center">سيارات - عقارات - موبايلات</div></div></div>
-<div id="cart" class="page"><div class="section"><h2>السلة</h2><p style="text-align:center;padding:40px">فارغة</p></div></div>
-<div id="account" class="page"><div class="section"><h2>حسابي</h2><div id="formWrap" class="form-card"><label>الاسم الكامل</label><input id="f_name"><label>العنوان</label><input id="f_address"><label>البريد</label><input id="f_email" type="email"><label>تاريخ الميلاد</label><input id="f_dob" type="date"><label>الجنس</label><select id="f_gender"><option value="">اختر</option><option>ذكر</option><option>انثى</option></select><button class="btn-save" onclick="saveAcc()">حفظ الحساب</button></div><div id="accView" style="display:none"></div></div></div>
+<div id="myads" class="page active">
+<div class="top-bar"><div style="display:flex;gap:20px;font-size:22px">🔔 📞</div><b>إعلاناتي</b></div>
+
+<div class="cards">
+<div class="card"><div class="top"><span class="blue">0</span><span>📄</span></div><div style="margin-top:20px;text-align:right;font-weight:700">الإعلانات</div></div>
+<div class="card"><div class="top"><span class="blue">0</span><span>👁️</span></div><div style="margin-top:20px;text-align:right;font-weight:700">المشاهدات</div></div>
+<div class="card" onclick="alert('اضف اعلانك الآن')"><div class="top"><span></span><span style="color:#f5a623;font-size:24px">📸+</span></div><div style="margin-top:20px;text-align:right;font-weight:700">أضف إعلانك الآن</div></div>
+<div class="card"><div class="top"><span class="blue">0</span><span style="color:#f5a623">⭐</span></div><div style="margin-top:20px;text-align:right;font-weight:700">التقييم</div></div>
+</div>
+
+<div class="list-box">
+<div class="list-item"><span>المسودات</span><span><span class="blue">0</span> <span style="margin-right:8px"><</span></span></div>
+<div class="list-item"><span>الاعلانات المفضلة</span><span><span class="blue">0</span> <span style="margin-right:8px"><</span></span></div>
+<div class="list-item"><span>البحوث المفضلة</span><span><span class="blue">0</span> <span style="margin-right:8px"><</span></span></div>
+<div class="list-item"><span>آخر الإعلانات المشاهدة</span><span><</span></div>
+<div class="list-item"><span>آخر البحوث</span><span><</span></div>
+<div class="list-item"><span>إعلانات المتابعون</span><span><</span></div>
+<div class="list-item"><span>طلبات التوظيف</span><span><</span></div>
+</div>
+</div>
+
+<div id="home" class="page"><div class="top-bar"><b>الرئيسية</b></div><div style="padding:20px;text-align:center">مرحبا بك في سوق العراق 👑<br>الوجهة الاولى للتسوق الفاخر</div></div>
+<div id="chats" class="page"><div class="top-bar"><b>دردشاتي</b></div><div style="padding:40px;text-align:center;color:#888">عندك 12 دردشة جديدة</div></div>
+<div id="add" class="page"><div class="top-bar"><b>أضف إعلان</b></div><div style="padding:20px;text-align:center"><button style="background:#f5a623;color:#fff;padding:14px 20px;border:none;border-radius:12px;font-weight:900">📸 أضف صور إعلانك</button></div></div>
+<div id="account" class="page"><div class="top-bar"><b>حسابي</b></div><div style="padding:16px"><div style="background:#111;color:#fff;border-radius:12px;padding:14px"><label style="color:#d9b76d;display:block;margin:8px 0">الاسم</label><input id="f_name" style="width:100%;padding:10px;border-radius:8px"><label style="color:#d9b76d;display:block;margin:8px 0">البريد</label><input id="f_email" style="width:100%;padding:10px;border-radius:8px"><button onclick="saveAcc()" style="width:100%;background:#d9b76d;padding:12px;border:none;border-radius:10px;margin-top:12px;font-weight:900">حفظ</button><div id="accView" style="margin-top:10px"></div></div></div></div>
 
 <button class="chat-float" onclick="openChat()">💬</button>
-
 <div id="chatWindow" class="chat-window">
-<div style="background:#fff;padding:12px 16px;display:flex;justify-content:space-between;border-bottom:1px solid #eee"><span onclick="closeChat()" style="font-size:26px;cursor:pointer">X</span><b>سوق العراق</b></div>
-
-<div id="mainChat">
-<div style="background:linear-gradient(180deg,#ffd9c8,#f9f4f0);padding:30px 20px"><h1 id="welcomeName" style="font-size:24px">زائرنا العزيز مرحبا<br>كيف يمكننا مساعدتك؟</h1></div>
-<div style="background:#fff;border-radius:14px;margin:12px;padding:0 14px">
-<div class="row" onclick="showHelp()"><b>المساعدة</b><span>؟</span></div>
-<div class="row" onclick="showMsgs()" style="border:none"><b>الرسائل</b><span>..</span></div>
-</div>
-<div style="background:#fff;border-radius:14px;margin:12px;padding:12px">
-<div onclick="toggleQ('q1')" class="row">أكدر ألغي الطلب؟ <span>></span></div><div id="q1" style="display:none;background:#fafafa;padding:10px;font-size:12px">نعم خلال ساعتين.</div>
-<div onclick="toggleQ('q2')" class="row">شوكت يوصل طلبي؟ <span>></span></div><div id="q2" style="display:none;background:#fafafa;padding:10px;font-size:12px">بغداد 24 ساعة.</div>
-<div onclick="toggleQ('q3')" class="row" style="border:none">وين طلبي؟ <span>></span></div><div id="q3" style="display:none;background:#fafafa;padding:10px;font-size:12px">من حسابك.</div>
-</div>
-<div style="background:#fff;margin:12px;border-radius:14px;padding:14px">
-<div style="background:#f3f3f3;border-radius:14px;padding:12px"><b>روبوت سوق العراق</b><br><span id="robotText">مرحبا، شلون نكدر نساعدك اليوم؟</span></div>
-<div id="chatMsgs"></div>
-<div style="display:flex;gap:8px;margin-top:12px"><input id="chatInput" placeholder="اكتب رسالة..." style="flex:1;padding:12px;border-radius:20px;border:1px solid #ddd"><button onclick="sendMsg()" style="background:#0a0a0a;color:#d9b76d;border:none;padding:10px 16px;border-radius:20px">ارسال</button></div>
-</div>
-</div>
-
-<div id="msgsPage" style="display:none">
-<div style="padding:16px;background:#fff;display:flex;justify-content:space-between;border-bottom:1px solid #eee"><b>الرسائل</b><span onclick="backMain()" style="cursor:pointer">رجوع</span></div>
-<div style="text-align:center;padding:80px 20px"><h3>لا توجد رسائل</h3><p style="font-size:12px;color:#666">ستعرض الرسائل هنا</p><button onclick="backMain()" style="background:#e11d2d;color:#fff;border:none;padding:12px 22px;border-radius:10px;margin-top:14px;font-weight:800">اطرح سؤالا</button></div>
-</div>
-
-<div id="helpPage" style="display:none">
-<div style="padding:16px;background:#fff;display:flex;justify-content:space-between;border-bottom:1px solid #eee"><b>المساعدة</b><span onclick="backMain()" style="cursor:pointer">رجوع</span></div>
-<div style="background:#fff;padding:16px;border-bottom:1px solid #eee">الارجاع والضمان - 3 مقالات</div>
-<div style="background:#fff;padding:16px;border-bottom:1px solid #eee">التقييمات - 5 مقالات</div>
-<div style="background:#fff;padding:16px;border-bottom:1px solid #eee">النقاط والمكافآت - 6 مقالات</div>
-<div style="background:#fff;padding:16px;border-bottom:1px solid #eee">الدعم التقني - 9 مقالات</div>
-<div style="background:#fff;padding:16px">تواصل ويانه</div>
-<div style="text-align:center;padding:20px"><button onclick="backMain()" style="border:1px solid #ddd;background:#fff;padding:10px 18px;border-radius:10px">اطرح سؤالا</button></div>
-</div>
+<div style="padding:12px;border-bottom:1px solid #eee;display:flex;justify-content:space-between"><b>👑 روبوت سوق العراق</b><span onclick="closeChat()" style="cursor:pointer">X</span></div>
+<div style="padding:16px"><div id="welcomeName" style="font-size:20px;font-weight:900">زائرنا العزيز مرحبا</div><div style="background:#f3f3f3;padding:12px;border-radius:12px;margin-top:12px"><span id="robotText">مرحبا شلون نكدر نساعدك؟</span></div><div id="chatMsgs"></div><div style="display:flex;gap:8px;margin-top:12px"><input id="chatInput" placeholder="اكتب..." style="flex:1;padding:10px;border-radius:20px;border:1px solid #ddd"><button onclick="sendMsg()" style="background:#000;color:#fff;padding:8px 14px;border-radius:20px">ارسال</button></div></div>
 </div>
 
 <div class="bottom-nav">
-<a href="#" class="nav-item active" id="n_home" onclick="showPage('home')"><span>🏠</span>الرئيسية</a>
-<a href="#" class="nav-item" id="n_cats" onclick="showPage('cats')"><span>📁</span>الاقسام</a>
-<a href="#" class="nav-item" id="n_cart" onclick="showPage('cart')"><span>🛒</span>السلة</a>
-<a href="#" class="nav-item" id="n_account" onclick="showPage('account')"><span>👤</span>الحساب</a>
+<a href="#" class="nav-item" id="n_home" onclick="showPage('home')"><span>🏠</span>الرئيسية</a>
+<a href="#" class="nav-item" id="n_chats" onclick="showPage('chats')" style="position:relative"><div style="position:relative"><span>💬</span><span class="badge">12</span></div>دردشاتي</a>
+<a href="#" class="nav-item" id="n_add" onclick="showPage('add')"><div class="add-btn">📷</div>أضف إعلان</a>
+<a href="#" class="nav-item active" id="n_myads" onclick="showPage('myads')"><span>📄</span>إعلاناتي</a>
+<a href="#" class="nav-item" id="n_account" onclick="showPage('account')"><span>👤</span>حسابي</a>
 </div>
 
 <script>
-function showPage(p){document.querySelectorAll('.page').forEach(function(x){x.classList.remove('active')});document.getElementById(p).classList.add('active');document.querySelectorAll('.nav-item').forEach(function(x){x.classList.remove('active')});document.getElementById('n_'+p).classList.add('active');if(p==='account'){checkAcc()}}
-function openChat(){
- var d=null;try{d=JSON.parse(localStorage.getItem('userAcc'))}catch(e){}
- var el=document.getElementById('welcomeName');var rt=document.getElementById('robotText');
- if(d && d.name){el.innerHTML=d.name+' مرحبا<br>كيف يمكننا مساعدتك؟';rt.innerHTML='مرحبا '+d.name+'، شلون نكدر نساعدك اليوم؟';}
- else{el.innerHTML='زائرنا العزيز مرحبا<br>كيف يمكننا مساعدتك؟';rt.innerHTML='مرحبا، شلون نكدر نساعدك اليوم؟';}
- document.getElementById('chatWindow').classList.add('open');backMain();
-}
+function showPage(p){document.querySelectorAll('.page').forEach(function(x){x.classList.remove('active')});document.getElementById(p).classList.add('active');document.querySelectorAll('.nav-item').forEach(function(x){x.classList.remove('active')});document.getElementById('n_'+p).classList.add('active');}
+function openChat(){var d=null;try{d=JSON.parse(localStorage.getItem('userAcc'))}catch(e){}var el=document.getElementById('welcomeName');var rt=document.getElementById('robotText');if(d&&d.name){el.innerHTML=d.name+' مرحبا';rt.innerHTML='مرحبا '+d.name+' شلون نكدر نساعدك؟'}document.getElementById('chatWindow').classList.add('open');}
 function closeChat(){document.getElementById('chatWindow').classList.remove('open')}
-function showHelp(){document.getElementById('mainChat').style.display='none';document.getElementById('msgsPage').style.display='none';document.getElementById('helpPage').style.display='block';}
-function showMsgs(){document.getElementById('mainChat').style.display='none';document.getElementById('helpPage').style.display='none';document.getElementById('msgsPage').style.display='block';}
-function backMain(){document.getElementById('helpPage').style.display='none';document.getElementById('msgsPage').style.display='none';document.getElementById('mainChat').style.display='block';}
-function toggleQ(id){var e=document.getElementById(id);if(e.style.display==='none'){e.style.display='block'}else{e.style.display='none'}}
-function sendMsg(){
- var inp=document.getElementById('chatInput');var t=inp.value.trim();if(!t){return}
- var box=document.getElementById('chatMsgs');box.innerHTML+='<div style="background:#0a0a0a;color:#fff;border-radius:18px 18px 4px 18px;margin:8px 0 0 auto;max-width:70%;padding:10px 14px;font-size:13px">'+t+'</div>';inp.value='';
- setTimeout(function(){var r='فريق سوق العراق سيرد قريبا.';if(t.indexOf('مشكلة')>-1){r='فهمت، وضح رقم الطلب؟'}if(t.indexOf('وين')>-1 || t.indexOf('يوصل')>-1){r='التوصيل بغداد 24 ساعة والمحافظات 2-3 ايام';}box.innerHTML+='<div style="background:#f3f3f3;border-radius:14px;padding:10px;margin-top:8px"><b>روبوت سوق العراق</b><br>'+r+'</div>';},600);
-}
-function saveAcc(){var d={name:document.getElementById('f_name').value,address:document.getElementById('f_address').value,email:document.getElementById('f_email').value,dob:document.getElementById('f_dob').value,gender:document.getElementById('f_gender').value};if(!d.name||!d.email){alert('اكتب الاسم والبريد');return}localStorage.setItem('userAcc',JSON.stringify(d));checkAcc();}
-function checkAcc(){var d=null;try{d=JSON.parse(localStorage.getItem('userAcc'))}catch(e){}var fw=document.getElementById('formWrap');var av=document.getElementById('accView');if(d){fw.style.display='none';av.style.display='block';av.innerHTML='<div style="background:#0a0a0a;color:#fff;padding:14px;border-radius:12px;border:1.5px solid #d9b76d"><p>الاسم: '+d.name+'</p><p>البريد: '+d.email+'</p><button onclick="localStorage.removeItem(\'userAcc\');location.reload()" style="width:100%;margin-top:10px;padding:10px;border-radius:8px">خروج</button></div>'}else{fw.style.display='block';av.style.display='none'}}
-checkAcc();
+function sendMsg(){var inp=document.getElementById('chatInput');var t=inp.value.trim();if(!t)return;var box=document.getElementById('chatMsgs');box.innerHTML+='<div style="background:#000;color:#fff;padding:8px 12px;border-radius:12px;margin:8px 0 0 auto;max-width:70%">'+t+'</div>';inp.value='';setTimeout(function(){box.innerHTML+='<div style="background:#eee;padding:8px 12px;border-radius:12px;margin-top:8px">روبوت سوق العراق: تم استلام رسالتك</div>'},500)}
+function saveAcc(){var d={name:f_name.value,email:f_email.value};localStorage.setItem('userAcc',JSON.stringify(d));document.getElementById('accView').innerHTML='تم حفظ: '+d.name}
 </script>
 </body>
- </html>
+                                                                                                                                                                                                                                      </html>
