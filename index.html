@@ -11,36 +11,35 @@ body{background:#f2f4f7;padding-bottom:90px}
 .top-bar b{font-size:20px;font-weight:900}
 .page{display:none}.page.active{display:block}
 .cards{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:12px}
-.card{background:#fff;border-radius:14px;padding:16px;box-shadow:0 2px 6px rgba(0,0,0,.06)}
-.card .num{color:#007bff;font-weight:900;font-size:28px}
+.card{background:#fff;border-radius:14px;padding:16px;box-shadow:0 2px 6px rgba(0,0,0,.06);cursor:pointer}
 .card .top{display:flex;justify-content:space-between;align-items:center}
+.blue{color:#007bff;font-weight:900;font-size:22px}
 .list-box{background:#fff;border-radius:14px;margin:12px;overflow:hidden;box-shadow:0 2px 6px rgba(0,0,0,.06)}
 .list-item{padding:16px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #f0f0f0;cursor:pointer}
 .list-item:last-child{border:none}
-.blue{color:#007bff;font-weight:900;font-size:20px}
 .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #ddd;display:flex;justify-content:space-around;align-items:center;padding:6px 0 10px;z-index:100}
 .nav-item{text-align:center;font-size:11px;color:#000;text-decoration:none;flex:1;display:flex;flex-direction:column;align-items:center;gap:2px}
 .nav-item.active{color:#007bff}
 .nav-item span{font-size:22px}
-.add-btn{width:56px;height:56px;background:#f5a623;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:32px;color:#fff;margin-top:-25px;box-shadow:0 4px 10px rgba(0,0,0,.2);border:3px solid #fff}
-.badge{background:#e11;color:#fff;border-radius:50%;padding:2px 6px;font-size:10px;position:absolute;top:-5px;right:15px}
-.chat-float{position:fixed;bottom:95px;left:16px;background:#0a0a0a;color:#d9b76d;width:50px;height:50px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;z-index:200;border:1px solid #d9b76d}
+.add-btn{width:56px;height:56px;background:#f5a623;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;color:#fff;margin-top:-25px;box-shadow:0 4px 10px rgba(0,0,0,.2);border:3px solid #fff}
+.badge{background:#e11d2d;color:#fff;border-radius:50%;padding:2px 6px;font-size:10px;position:absolute;top:-6px;right:10px;font-weight:900}
+.chat-float{position:fixed;bottom:95px;left:16px;background:#0a0a0a;color:#d9b76d;width:50px;height:50px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;z-index:200;border:1px solid #d9b76d}
 .chat-window{position:fixed;inset:0;background:#fff;z-index:500;display:none;flex-direction:column}
 .chat-window.open{display:flex}
+.form-card{background:#111;border:1.5px solid #d9b76d;border-radius:12px;padding:14px;margin-top:10px}
+.form-card input,.form-card select{width:100%;padding:10px;border-radius:8px;background:#000;color:#fff;border:1px solid #333;margin-top:4px}
 </style>
 </head>
 <body>
 
 <div id="myads" class="page active">
-<div class="top-bar"><div style="display:flex;gap:20px;font-size:22px">🔔 📞</div><b>إعلاناتي</b></div>
-
+<div class="top-bar"><div style="display:flex;gap:18px;font-size:20px">🔔 📞</div><b>إعلاناتي</b></div>
 <div class="cards">
-<div class="card"><div class="top"><span class="blue">0</span><span>📄</span></div><div style="margin-top:20px;text-align:right;font-weight:700">الإعلانات</div></div>
-<div class="card"><div class="top"><span class="blue">0</span><span>👁️</span></div><div style="margin-top:20px;text-align:right;font-weight:700">المشاهدات</div></div>
-<div class="card" onclick="alert('اضف اعلانك الآن')"><div class="top"><span></span><span style="color:#f5a623;font-size:24px">📸+</span></div><div style="margin-top:20px;text-align:right;font-weight:700">أضف إعلانك الآن</div></div>
-<div class="card"><div class="top"><span class="blue">0</span><span style="color:#f5a623">⭐</span></div><div style="margin-top:20px;text-align:right;font-weight:700">التقييم</div></div>
+<div class="card"><div class="top"><span class="blue">0</span><span>📄</span></div><div style="margin-top:18px;font-weight:700">الإعلانات</div></div>
+<div class="card"><div class="top"><span class="blue">0</span><span>👁</span></div><div style="margin-top:18px;font-weight:700">المشاهدات</div></div>
+<div class="card" onclick="showPage('add')"><div class="top"><span></span><span style="color:#f5a623;font-size:22px">📷+</span></div><div style="margin-top:18px;font-weight:700">أضف إعلانك الآن</div></div>
+<div class="card"><div class="top"><span class="blue">0</span><span style="color:#f5a623">★</span></div><div style="margin-top:18px;font-weight:700">التقييم</div></div>
 </div>
-
 <div class="list-box">
 <div class="list-item"><span>المسودات</span><span><span class="blue">0</span> <span style="margin-right:8px"><</span></span></div>
 <div class="list-item"><span>الاعلانات المفضلة</span><span><span class="blue">0</span> <span style="margin-right:8px"><</span></span></div>
@@ -52,31 +51,44 @@ body{background:#f2f4f7;padding-bottom:90px}
 </div>
 </div>
 
-<div id="home" class="page"><div class="top-bar"><b>الرئيسية</b></div><div style="padding:20px;text-align:center">مرحبا بك في سوق العراق 👑<br>الوجهة الاولى للتسوق الفاخر</div></div>
-<div id="chats" class="page"><div class="top-bar"><b>دردشاتي</b></div><div style="padding:40px;text-align:center;color:#888">عندك 12 دردشة جديدة</div></div>
-<div id="add" class="page"><div class="top-bar"><b>أضف إعلان</b></div><div style="padding:20px;text-align:center"><button style="background:#f5a623;color:#fff;padding:14px 20px;border:none;border-radius:12px;font-weight:900">📸 أضف صور إعلانك</button></div></div>
-<div id="account" class="page"><div class="top-bar"><b>حسابي</b></div><div style="padding:16px"><div style="background:#111;color:#fff;border-radius:12px;padding:14px"><label style="color:#d9b76d;display:block;margin:8px 0">الاسم</label><input id="f_name" style="width:100%;padding:10px;border-radius:8px"><label style="color:#d9b76d;display:block;margin:8px 0">البريد</label><input id="f_email" style="width:100%;padding:10px;border-radius:8px"><button onclick="saveAcc()" style="width:100%;background:#d9b76d;padding:12px;border:none;border-radius:10px;margin-top:12px;font-weight:900">حفظ</button><div id="accView" style="margin-top:10px"></div></div></div></div>
+<div id="home" class="page"><div class="top-bar"><b>الرئيسية</b></div><div style="padding:20px;text-align:center">مرحبا بك في سوق العراق<br>الوجهة الاولى للتسوق الفاخر</div></div>
+<div id="chats" class="page"><div class="top-bar"><b>دردشاتي - 12</b></div><div style="padding:40px;text-align:center;color:#888">عندك 12 دردشة جديدة</div></div>
+<div id="add" class="page"><div class="top-bar"><b>أضف إعلان</b></div><div style="padding:20px;text-align:center"><button style="background:#f5a623;color:#fff;padding:14px 20px;border:none;border-radius:12px;font-weight:900">📷 أضف صور إعلانك الآن</button></div></div>
+<div id="account" class="page"><div class="top-bar"><b>حسابي</b></div><div style="padding:16px"><div class="form-card">
+<label style="color:#d9b76d">الاسم الكامل</label><input id="f_name" placeholder="اسمك">
+<label style="color:#d9b76d;margin-top:10px;display:block">العنوان</label><input id="f_address" placeholder="بغداد">
+<label style="color:#d9b76d;margin-top:10px;display:block">البريد</label><input id="f_email" type="email">
+<label style="color:#d9b76d;margin-top:10px;display:block">تاريخ الميلاد</label><input id="f_dob" type="date">
+<label style="color:#d9b76d;margin-top:10px;display:block">الجنس</label><select id="f_gender"><option value="">اختر</option><option>ذكر</option><option>انثى</option></select>
+<button onclick="saveAcc()" style="width:100%;background:#d9b76d;padding:12px;border:none;border-radius:10px;margin-top:14px;font-weight:900">حفظ الحساب</button>
+<div id="accView" style="margin-top:12px;color:#fff"></div>
+</div></div></div>
 
 <button class="chat-float" onclick="openChat()">💬</button>
 <div id="chatWindow" class="chat-window">
-<div style="padding:12px;border-bottom:1px solid #eee;display:flex;justify-content:space-between"><b>👑 روبوت سوق العراق</b><span onclick="closeChat()" style="cursor:pointer">X</span></div>
-<div style="padding:16px"><div id="welcomeName" style="font-size:20px;font-weight:900">زائرنا العزيز مرحبا</div><div style="background:#f3f3f3;padding:12px;border-radius:12px;margin-top:12px"><span id="robotText">مرحبا شلون نكدر نساعدك؟</span></div><div id="chatMsgs"></div><div style="display:flex;gap:8px;margin-top:12px"><input id="chatInput" placeholder="اكتب..." style="flex:1;padding:10px;border-radius:20px;border:1px solid #ddd"><button onclick="sendMsg()" style="background:#000;color:#fff;padding:8px 14px;border-radius:20px">ارسال</button></div></div>
+<div style="padding:12px;border-bottom:1px solid #eee;display:flex;justify-content:space-between;background:#0a0a0a;color:#d9b76d"><b>👑 روبوت سوق العراق</b><span onclick="closeChat()" style="cursor:pointer">X</span></div>
+<div style="padding:16px;flex:1;overflow:auto">
+<div id="welcomeName" style="font-size:20px;font-weight:900">زائرنا العزيز مرحبا</div>
+<div style="background:#f3f3f3;padding:12px;border-radius:12px;margin-top:12px"><span id="robotText">مرحبا شلون نكدر نساعدك اليوم؟</span></div>
+<div id="chatMsgs"></div>
+</div>
+<div style="padding:10px;border-top:1px solid #eee;display:flex;gap:8px"><input id="chatInput" placeholder="اكتب رسالة..." style="flex:1;padding:12px;border-radius:20px;border:1px solid #ddd" onkeypress="if(event.key==='Enter')sendMsg()"><button onclick="sendMsg()" style="background:#0a0a0a;color:#d9b76d;padding:10px 16px;border-radius:20px;border:none">ارسال</button></div>
 </div>
 
 <div class="bottom-nav">
 <a href="#" class="nav-item" id="n_home" onclick="showPage('home')"><span>🏠</span>الرئيسية</a>
-<a href="#" class="nav-item" id="n_chats" onclick="showPage('chats')" style="position:relative"><div style="position:relative"><span>💬</span><span class="badge">12</span></div>دردشاتي</a>
-<a href="#" class="nav-item" id="n_add" onclick="showPage('add')"><div class="add-btn">📷</div>أضف إعلان</a>
+<a href="#" class="nav-item" id="n_chats" onclick="showPage('chats')"><div style="position:relative"><span>💬</span><span class="badge">12</span></div>دردشاتي</a>
+<a href="#" class="nav-item" id="n_add" onclick="showPage('add')"><div class="add-btn">+</div>أضف إعلان</a>
 <a href="#" class="nav-item active" id="n_myads" onclick="showPage('myads')"><span>📄</span>إعلاناتي</a>
 <a href="#" class="nav-item" id="n_account" onclick="showPage('account')"><span>👤</span>حسابي</a>
 </div>
 
 <script>
 function showPage(p){document.querySelectorAll('.page').forEach(function(x){x.classList.remove('active')});document.getElementById(p).classList.add('active');document.querySelectorAll('.nav-item').forEach(function(x){x.classList.remove('active')});document.getElementById('n_'+p).classList.add('active');}
-function openChat(){var d=null;try{d=JSON.parse(localStorage.getItem('userAcc'))}catch(e){}var el=document.getElementById('welcomeName');var rt=document.getElementById('robotText');if(d&&d.name){el.innerHTML=d.name+' مرحبا';rt.innerHTML='مرحبا '+d.name+' شلون نكدر نساعدك؟'}document.getElementById('chatWindow').classList.add('open');}
+function openChat(){var d=null;try{d=JSON.parse(localStorage.getItem('userAcc'))}catch(e){}var el=document.getElementById('welcomeName');var rt=document.getElementById('robotText');if(d&&d.name){el.innerHTML=d.name+' مرحبا';rt.innerHTML='مرحبا '+d.name+' شلون نكدر نساعدك اليوم؟'}document.getElementById('chatWindow').classList.add('open');}
 function closeChat(){document.getElementById('chatWindow').classList.remove('open')}
-function sendMsg(){var inp=document.getElementById('chatInput');var t=inp.value.trim();if(!t)return;var box=document.getElementById('chatMsgs');box.innerHTML+='<div style="background:#000;color:#fff;padding:8px 12px;border-radius:12px;margin:8px 0 0 auto;max-width:70%">'+t+'</div>';inp.value='';setTimeout(function(){box.innerHTML+='<div style="background:#eee;padding:8px 12px;border-radius:12px;margin-top:8px">روبوت سوق العراق: تم استلام رسالتك</div>'},500)}
-function saveAcc(){var d={name:f_name.value,email:f_email.value};localStorage.setItem('userAcc',JSON.stringify(d));document.getElementById('accView').innerHTML='تم حفظ: '+d.name}
+function sendMsg(){var inp=document.getElementById('chatInput');var t=inp.value.trim();if(!t)return;var box=document.getElementById('chatMsgs');box.innerHTML+='<div style="background:#0a0a0a;color:#fff;padding:10px 14px;border-radius:18px 18px 4px 18px;margin:8px 0 0 auto;max-width:75%;font-size:13px">'+t+'</div>';inp.value='';setTimeout(function(){box.innerHTML+='<div style="background:#f3f3f3;padding:10px 14px;border-radius:12px;margin-top:8px;font-size:13px"><b>سوق العراق:</b> تم استلام رسالتك، فريقنا سيرد قريبا.</div>';box.scrollTop=box.scrollHeight},600)}
+function saveAcc(){var d={name:document.getElementById('f_name').value,address:document.getElementById('f_address').value,email:document.getElementById('f_email').value,dob:document.getElementById('f_dob').value,gender:document.getElementById('f_gender').value};if(!d.name){alert('اكتب اسمك');return}localStorage.setItem('userAcc',JSON.stringify(d));document.getElementById('accView').innerHTML='<div style="padding:10px;background:#222;border-radius:8px;border:1px solid #d9b76d">تم حفظ: '+d.name+' - '+d.email+'</div>';}
 </script>
 </body>
-                                                                                                                                                                                                                                      </html>
+  </html>
