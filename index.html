@@ -58,9 +58,10 @@ body.modal-open-scroll-lock { overflow: hidden !important; }
   display: flex;
   gap: 8px;
   padding: 10px 16px 0;
+  flex-wrap: wrap;
 }
 .search-box{
-  flex: 1;
+  flex: 1 1 100%;
   display:flex;
   gap:8px;
   padding:8px 16px;
@@ -71,6 +72,7 @@ body.modal-open-scroll-lock { overflow: hidden !important; }
 }
 .search-box input{border:none;background:transparent;outline:none;width:100%;font-size:14px}
 .city-filter {
+  flex: 1;
   padding: 8px;
   border-radius: 12px;
   border: 1px solid var(--border-color);
@@ -112,7 +114,7 @@ body.modal-open-scroll-lock { overflow: hidden !important; }
 .empty-state{text-align:center;padding:40px 20px;color:var(--text-muted)}
 .empty-state span{font-size:40px;display:block;margin-bottom:8px}
 
-/* الشريط السفلي */
+/* الشريط السفلي - تم تصحيح justify-content هنا */
 .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--card-bg);border-top:1px solid var(--border-color);display:flex;justify-content:space-around;align-items:center;padding:8px 0 calc(8px + var(--safe-bottom));z-index:100}
 .nav-item{background:none;border:none;font-size:11px;color:var(--text-muted);flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;font-weight:500}
 .nav-item.active{color:var(--primary);font-weight:700}
@@ -184,10 +186,6 @@ body.modal-open-scroll-lock { overflow: hidden !important; }
   visibility: visible;
 }
 
-.msg{padding:10px 14px;border-radius:12px;max-width:80%;font-size:14px;word-break:break-word}
-.msg-user{background:var(--primary);color:#fff;align-self:flex-start;border-bottom-right-radius:2px}
-.msg-bot{background:var(--card-bg);color:var(--text-main);align-self:flex-end;border-bottom-left-radius:2px;box-shadow:0 1px 3px rgba(0,0,0,.05)}
-
 .cards-summary{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:16px}
 .card-sum{background:var(--card-bg);padding:16px;border-radius:12px;border:1px solid var(--border-color)}
 </style>
@@ -207,16 +205,23 @@ body.modal-open-scroll-lock { overflow: hidden !important; }
   <div class="filter-container">
     <div class="search-box">
       <span>🔍</span>
-      <input type="text" id="searchInput" placeholder="ابحث عن سيارة، موبايل، قسم..." oninput="renderAds()">
+      <input type="text" id="searchInput" aria-label="بحث" placeholder="ابحث عن سيارة، موبايل، قسم..." oninput="debouncedRender()">
     </div>
-    <select id="homeCityFilter" class="city-filter" onchange="renderAds()">
+    <select id="homeCityFilter" aria-label="المحافظة" class="city-filter" onchange="renderAds()">
       <option value="">كل المحافظات</option>
     </select>
+    <select id="sortSelect" aria-label="الترتيب" class="city-filter" onchange="renderAds()">
+      <option value="new">الأحدث</option>
+      <option value="cheap">الأرخص</option>
+      <option value="expensive">الأغلى</option>
+      <option value="views">الأكثر مشاهدة</option>
+    </select>
+    <button type="button" id="favFilterBtn" class="city-filter" onclick="toggleFavFilter()" style="cursor:pointer">🤍 المفضلة</button>
   </div>
 
   <div class="home-grid" id="categoriesGrid"></div>
   
-  <div style="padding:0 16px;font-weight:900;margin-top:10px">أحدث الإعلانات</div>
+  <div id="listTitle" style="padding:0 16px;font-weight:900;margin-top:10px">أحدث الإعلانات</div>
   <div class="ads-list" id="adsContainer"></div>
 </div>
 
@@ -231,16 +236,7 @@ body.modal-open-scroll-lock { overflow: hidden !important; }
   <div class="ads-list" id="myAdsContainer"></div>
 </div>
 
-<!-- 3. الدردشات -->
-<div id="chats" class="page">
-  <div class="top-bar"><b>الرسائل والمحادثات</b></div>
-  <div class="empty-state">
-    <span>💬</span>
-    لا توجد محادثات خاصة حالياً.
-  </div>
-</div>
-
-<!-- 4. إضافة إعلان -->
+<!-- 3. إضافة إعلان -->
 <div id="add" class="page">
   <div class="top-bar"><b>أضف إعلان جديد</b></div>
   <form class="form-group" id="addAdForm" onsubmit="handleCreateAd(event)">
@@ -251,28 +247,33 @@ body.modal-open-scroll-lock { overflow: hidden !important; }
     </div>
 
     <div>
-      <input type="text" id="adTitle" class="form-control" placeholder="عنوان الإعلان (مثال: أيفون 13 برو)" maxlength="80" oninput="updateCharCount(this, 'titleCount', 80)" required>
+      <input type="text" id="adTitle" aria-label="عنوان الإعلان" class="form-control" placeholder="عنوان الإعلان (مثال: أيفون 13 برو)" maxlength="80" oninput="updateCharCount(this, 'titleCount', 80)" required>
       <div id="titleCount" class="char-count">0 / 80</div>
     </div>
 
-    <select id="adCat" class="form-control" required></select>
+    <select id="adCat" aria-label="القسم" class="form-control" required></select>
     
     <div style="display:flex;gap:8px">
-      <input type="text" id="adPrice" class="form-control" placeholder="السعر" inputmode="numeric" oninput="cleanPriceInput(this)" required>
-      <select id="adCurrency" class="form-control" style="width:110px">
+      <input type="text" id="adPrice" aria-label="السعر" class="form-control" placeholder="السعر" inputmode="numeric" oninput="cleanPriceInput(this)" required>
+      <select id="adCurrency" aria-label="العملة" class="form-control" style="width:110px">
         <option value="د.ع">د.ع</option>
         <option value="$">$ USD</option>
       </select>
     </div>
 
-    <select id="adCity" class="form-control" required>
+    <select id="adCity" aria-label="المحافظة" class="form-control" required>
       <option value="">اختر المحافظة</option>
     </select>
 
-    <input type="tel" id="adPhone" class="form-control" placeholder="رقم الهاتف (07XXXXXXXXX)" inputmode="numeric" oninput="this.value = parseArabicNumbers(this.value)" required>
+    <select id="adCondition" aria-label="حالة السلعة" class="form-control">
+      <option value="مستعمل">مستعمل</option>
+      <option value="جديد">جديد</option>
+    </select>
+
+    <input type="tel" id="adPhone" aria-label="رقم الهاتف" class="form-control" placeholder="رقم الهاتف (07XXXXXXXXX)" inputmode="numeric" oninput="this.value = parseArabicNumbers(this.value)" required>
 
     <div>
-      <textarea id="adDesc" class="form-control" rows="3" placeholder="تفاصيل وصف السلعة..." maxlength="1000" oninput="updateCharCount(this, 'descCount', 1000)" required></textarea>
+      <textarea id="adDesc" aria-label="وصف الإعلان" class="form-control" rows="3" placeholder="تفاصيل وصف السلعة..." maxlength="1000" oninput="updateCharCount(this, 'descCount', 1000)" required></textarea>
       <div id="descCount" class="char-count">0 / 1000</div>
     </div>
     
@@ -280,14 +281,14 @@ body.modal-open-scroll-lock { overflow: hidden !important; }
   </form>
 </div>
 
-<!-- 5. حسابي -->
+<!-- 4. حسابي -->
 <div id="account" class="page">
   <div class="top-bar"><b>حسابي الشخصي</b></div>
   <form class="form-group" onsubmit="saveAcc(event)">
     <label style="font-weight:700">الاسم:</label>
-    <input id="f_name" type="text" class="form-control" placeholder="أدخل اسمك" maxlength="50" required>
+    <input id="f_name" aria-label="الاسم" type="text" class="form-control" placeholder="أدخل اسمك" maxlength="50" required>
     <label style="font-weight:700">البريد الإلكتروني:</label>
-    <input id="f_email" type="email" class="form-control" placeholder="example@domain.com" required>
+    <input id="f_email" aria-label="البريد الإلكتروني" type="email" class="form-control" placeholder="example@domain.com" required>
     <button type="submit" class="btn-primary">حفظ التغييرات</button>
   </form>
 </div>
@@ -295,13 +296,12 @@ body.modal-open-scroll-lock { overflow: hidden !important; }
 <!-- الشريط السفلي -->
 <nav class="bottom-nav" id="bottomNav">
   <button class="nav-item active" id="n_home" onclick="showPage('home')"><span>🏠</span>الرئيسية</button>
-  <button class="nav-item" id="n_chats" onclick="showPage('chats')"><span>💬</span>الدردشات</button>
   <button class="nav-item" id="n_add" onclick="showPage('add')"><span class="add-btn">+</span>إعلان</button>
   <button class="nav-item" id="n_myads" onclick="showPage('myads')"><span>📄</span>إعلاناتي</button>
   <button class="nav-item" id="n_account" onclick="showPage('account')"><span>👤</span>حسابي</button>
 </nav>
 
-<!-- النوافذ المنبثقة -->
+<!-- النافذة المنبثقة للتفاصيل -->
 <div id="detailsModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="mTitle" tabindex="-1">
   <div class="modal-header">
     <b id="mTitle">تفاصيل الإعلان</b>
@@ -310,24 +310,15 @@ body.modal-open-scroll-lock { overflow: hidden !important; }
   <div class="modal-body" id="mBody"></div>
 </div>
 
-<button id="aiBotBtn" onclick="openChat(this)" aria-label="فتح المساعد الذكي" style="position:fixed;bottom:calc(85px + var(--safe-bottom));left:16px;background:#111;color:#fff;width:48px;height:48px;border-radius:50%;border:none;cursor:pointer;box-shadow:0 4px 10px rgba(0,0,0,0.3);z-index:90">💬</button>
-
-<div id="chatModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="chatTitle" tabindex="-1">
-  <div class="modal-header">
-    <b id="chatTitle">🤖 المساعد الذكي</b>
-    <button onclick="closeModal('chatModal')" aria-label="إغلاق النافذة" style="color:#fff;background:none;border:none;font-size:18px;cursor:pointer">✕</button>
-  </div>
-  <div class="modal-body" id="chatMessages"></div>
-  <div style="padding:12px;padding-bottom:calc(12px + var(--safe-bottom));background:#fff;display:flex;gap:8px;border-top:1px solid var(--border-color)">
-    <input type="text" id="chatInput" class="form-control" placeholder="اكتب سؤالك..." onkeydown="if(event.key==='Enter')sendMsg()">
-    <button onclick="sendMsg()" class="btn-primary" style="width:auto;padding:0 20px">إرسال</button>
-  </div>
-</div>
-
 <script>
 const FALLBACK_IMAGE = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'><rect width='100%' height='100%' fill='%23e9ecef'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='12' fill='%236c757d'>لا توجد صورة</text></svg>";
 
 const MAX_ALLOWED_PRICE = 999999999999;
+const ADS_KEY = 'souq_ads_v1';
+const FAV_KEY = 'souq_favs';
+
+const USD_RATE = 1450;
+const toIQD = a => a.currency === '$' ? a.price * USD_RATE : a.price;
 
 const IRAQ_CITIES = [
   "بغداد", "نينوى", "البصرة", "أربيل", "السليمانية", "دهوك", 
@@ -358,11 +349,86 @@ let adsState = [];
 let selectedCategory = 'all';
 let currentImgBase64 = null;
 let toastTimer = null;
+let searchTimer = null;
 let currentPage = 'home';
-let chatInitialized = false;
+let showFavsOnly = false;
 
 // إدارة النوافذ المفتوحة
 let modalStack = [];
+
+// --- دوال التخزين مع الحماية الآمنة ---
+function getStorage(key) { 
+  try { 
+    return localStorage.getItem(key); 
+  } catch(e) { 
+    return null; 
+  } 
+}
+
+function setStorage(key, val) { 
+  try { 
+    localStorage.setItem(key, val); 
+    return true; 
+  } catch(e) { 
+    return false; 
+  } 
+}
+
+function getFavs() {
+  try { return JSON.parse(getStorage(FAV_KEY) || '[]'); } catch(e) { return []; }
+}
+
+function toggleFav(id) {
+  let favs = getFavs();
+  favs = favs.includes(id) ? favs.filter(f => f !== id) : [...favs, id];
+  setStorage(FAV_KEY, JSON.stringify(favs));
+  return favs.includes(id);
+}
+
+function toggleFavFilter() {
+  showFavsOnly = !showFavsOnly;
+  document.getElementById('favFilterBtn').textContent = showFavsOnly ? '❤️ المفضلة' : '🤍 المفضلة';
+  renderAds();
+}
+
+function timeAgo(ts) {
+  const s = Math.floor((Date.now() - ts) / 1000);
+  if (s < 60) return 'الآن';
+  if (s < 3600) return `قبل ${Math.floor(s / 60)} دقيقة`;
+  if (s < 86400) return `قبل ${Math.floor(s / 3600)} ساعة`;
+  return `قبل ${Math.floor(s / 86400)} يوم`;
+}
+
+function saveAds() {
+  const ok = setStorage(ADS_KEY, JSON.stringify(adsState));
+  if (!ok) showToast('تعذر الحفظ: المساحة ممتلئة، جرّب صورة أصغر');
+  return ok;
+}
+
+function loadAds() {
+  try {
+    const arr = JSON.parse(getStorage(ADS_KEY) || '[]');
+    const MONTH = 30 * 24 * 60 * 60 * 1000;
+    const valid = Array.isArray(arr)
+      ? arr.filter(a => a && typeof a.title === 'string' && Number.isFinite(a.price) && Number.isFinite(a.id))
+      : [];
+    valid.forEach(a => { a.views = Number(a.views) || 0; });
+    adsState = valid.filter(a => Date.now() - a.id < MONTH);
+    
+    // تنظيف المفضلة من الإعلانات منتهية الصلاحية
+    const ids = new Set(adsState.map(a => a.id));
+    const favs = getFavs();
+    const cleanFavs = favs.filter(f => ids.has(f));
+    if (cleanFavs.length !== favs.length) setStorage(FAV_KEY, JSON.stringify(cleanFavs));
+
+    if (Array.isArray(arr) && adsState.length !== arr.length) saveAds();
+  } catch (e) { adsState = []; }
+}
+
+function debouncedRender() {
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(renderAds, 250);
+}
 
 function parseArabicNumbers(str) {
   if (!str) return '';
@@ -378,7 +444,6 @@ function cleanPriceInput(input) {
   input.value = val;
 }
 
-// دالة التحقق الدقيقة وتنسيق أرقام الهواتف العراقية
 function formatIraqiPhone(phoneStr) {
   if (!phoneStr) return null;
   let cleaned = parseArabicNumbers(phoneStr).replace(/[^0-9]/g, '');
@@ -389,7 +454,6 @@ function formatIraqiPhone(phoneStr) {
 
   const rawPhone = '0' + cleaned;
   
-  // شرط صارم: يجب أن يبدأ بـ 07 ويتكون من 11 رقماً بالضبط
   if (!/^07\d{9}$/.test(rawPhone)) {
     return null;
   }
@@ -403,16 +467,6 @@ function formatIraqiPhone(phoneStr) {
 function updateCharCount(inputEl, targetId, maxLen) {
   const count = inputEl.value.length;
   document.getElementById(targetId).textContent = `${count} / ${maxLen}`;
-}
-
-function getStorage(key) { try { return localStorage.getItem(key); } catch(e) { return null; } }
-function setStorage(key, val) { 
-  try { 
-    localStorage.setItem(key, val); 
-    return true; 
-  } catch(e) { 
-    return false; 
-  } 
 }
 
 function normalizeArabic(str) {
@@ -442,6 +496,21 @@ window.addEventListener('DOMContentLoaded', () => {
   initCategories();
   initCities();
   loadAccount();
+  loadAds();
+
+  // فحص التخزين السليم
+  try { 
+    localStorage.setItem('_t','1'); 
+    localStorage.removeItem('_t'); 
+  } catch(e) { 
+    showToast('التخزين معطّل أو ممتلئ، وقد لا تُحفظ إعلاناتك'); 
+  }
+
+  // مزامنة التبويبات المتعددة
+  window.addEventListener('storage', e => {
+    if (e.key === ADS_KEY) { loadAds(); renderAds(); }
+  });
+
   renderAds();
 
   const previewBox = document.getElementById('previewBox');
@@ -449,13 +518,12 @@ window.addEventListener('DOMContentLoaded', () => {
   previewBox.setAttribute('aria-label', 'رفع صورة');
 
   const initialHash = window.location.hash.replace('#', '');
-  const validPages = ['home', 'chats', 'add', 'myads', 'account'];
+  const validPages = ['home', 'add', 'myads', 'account'];
   const startPage = validPages.includes(initialHash) ? initialHash : 'home';
   
   showPage(startPage, false);
   history.replaceState({ page: startPage }, '', `#${startPage}`);
 
-  // التعامل السليم مع Esc
   window.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && modalStack.length > 0) {
       const topModal = modalStack[modalStack.length - 1];
@@ -463,7 +531,6 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // معالجة popstate وتنقّل المتصفح دون حالة ميتة
   window.addEventListener('popstate', (e) => {
     if (modalStack.length > 0) {
       const topModal = modalStack[modalStack.length - 1];
@@ -543,6 +610,11 @@ function filterCategory(catId, el) {
   renderAds();
 }
 
+function adTitleText(ad) {
+  const t = ad.condition ? `${ad.title} (${ad.condition})` : ad.title;
+  return getFavs().includes(ad.id) ? '❤️ ' + t : t;
+}
+
 function buildAdCard(ad) {
   const card = document.createElement('div');
   card.className = 'ad-card';
@@ -563,6 +635,8 @@ function buildAdCard(ad) {
   img.className = 'ad-img';
   img.src = ad.img || FALLBACK_IMAGE;
   img.alt = ad.title;
+  img.loading = 'lazy';
+  img.decoding = 'async';
   img.onerror = function() { 
     this.onerror = null; 
     this.src = FALLBACK_IMAGE; 
@@ -573,7 +647,7 @@ function buildAdCard(ad) {
 
   const title = document.createElement('div');
   title.className = 'ad-title';
-  title.textContent = ad.title;
+  title.textContent = adTitleText(ad);
 
   const price = document.createElement('div');
   price.className = 'ad-price';
@@ -583,7 +657,7 @@ function buildAdCard(ad) {
   meta.className = 'ad-meta';
   
   const city = document.createElement('span');
-  city.textContent = `📍 ${ad.city}`;
+  city.textContent = `📍 ${ad.city} • ${timeAgo(ad.id)}`;
   
   const views = document.createElement('span');
   views.className = 'ad-views-tag';
@@ -612,6 +686,9 @@ function renderAds() {
   
   document.getElementById('topBarCityTag').textContent = selectedCity ? `📍 ${selectedCity}` : '🇮🇶 جميع المحافظات';
 
+  const isFiltering = searchTokens.length > 0 || selectedCity || selectedCategory !== 'all' || showFavsOnly;
+  document.getElementById('listTitle').textContent = isFiltering ? 'نتائج البحث' : 'أحدث الإعلانات';
+
   container.innerHTML = '';
   myContainer.innerHTML = '';
 
@@ -619,23 +696,34 @@ function renderAds() {
   let myCount = 0;
   let matchCount = 0;
 
-  adsState.forEach(ad => {
+  const sortMode = document.getElementById('sortSelect').value;
+  const sorted = [...adsState].sort((a, b) => {
+    if (sortMode === 'cheap') return toIQD(a) - toIQD(b);
+    if (sortMode === 'expensive') return toIQD(b) - toIQD(a);
+    if (sortMode === 'views') return b.views - a.views;
+    return b.id - a.id;
+  });
+
+  const favs = getFavs();
+
+  sorted.forEach(ad => {
     const catObj = CATEGORIES.find(c => c.id === ad.category);
     const catName = catObj ? catObj.name : '';
 
     const matchCat = selectedCategory === 'all' || ad.category === selectedCategory;
     const matchCity = !selectedCity || ad.city === selectedCity;
+    const matchFav = !showFavsOnly || favs.includes(ad.id);
     
-    const searchTarget = normalizeArabic(`${ad.title} ${ad.desc} ${ad.city} ${catName}`);
+    const searchTarget = normalizeArabic(`${ad.title} ${ad.desc} ${ad.city} ${catName} ${ad.condition || ''}`);
     const matchSearch = searchTokens.every(token => searchTarget.includes(token));
 
     if (ad.isMine) {
       myCount++;
-      totalViews += ad.views;
+      totalViews += Number(ad.views) || 0;
       myContainer.appendChild(buildAdCard(ad));
     }
 
-    if (matchCat && matchCity && matchSearch) {
+    if (matchCat && matchCity && matchSearch && matchFav) {
       matchCount++;
       container.appendChild(buildAdCard(ad));
     }
@@ -678,8 +766,8 @@ function handleImageCompress(e) {
 
     img.onload = function() {
       const canvas = document.createElement('canvas');
-      const MAX_WIDTH = 800;
-      const MAX_HEIGHT = 800;
+      const MAX_WIDTH = 600;
+      const MAX_HEIGHT = 600;
       let width = img.width;
       let height = img.height;
 
@@ -703,7 +791,7 @@ function handleImageCompress(e) {
       ctx.fillRect(0, 0, width, height);
       ctx.drawImage(img, 0, 0, width, height);
 
-      currentImgBase64 = canvas.toDataURL('image/jpeg', 0.7);
+      currentImgBase64 = canvas.toDataURL('image/jpeg', 0.6);
       
       const box = document.getElementById('previewBox');
       box.innerHTML = '';
@@ -735,11 +823,12 @@ function handleCreateAd(e) {
 
   const currency = document.getElementById('adCurrency').value;
   const city = document.getElementById('adCity').value;
+  const condition = document.getElementById('adCondition').value;
   const rawPhone = document.getElementById('adPhone').value;
   
   const parsedPhone = formatIraqiPhone(rawPhone);
   if (!parsedPhone) {
-    showToast('خطأ: أدخل رقم هاتف عراقي محلي صحيح ينتهي بـ 11 رقماً ويبدأ بـ 07');
+    showToast('خطأ: أدخل رقم هاتف عراقي محلي صحيح يتكون من 11 رقماً ويبدأ بـ 07');
     return;
   }
 
@@ -752,6 +841,7 @@ function handleCreateAd(e) {
     price,
     currency,
     city,
+    condition,
     phone: parsedPhone.raw,
     whatsapp: parsedPhone.whatsapp,
     desc,
@@ -762,10 +852,16 @@ function handleCreateAd(e) {
 
   adsState.unshift(newAd);
 
+  if (!saveAds()) {
+    adsState.shift();
+    return;
+  }
+
   selectedCategory = 'all';
   document.querySelectorAll('.cat-box').forEach(b => b.classList.remove('active'));
   document.getElementById('searchInput').value = '';
   document.getElementById('homeCityFilter').value = '';
+  document.getElementById('sortSelect').value = 'new';
 
   renderAds();
   
@@ -780,14 +876,21 @@ function handleCreateAd(e) {
 }
 
 function openAdDetails(id, triggerElement = null) {
-  const ad = adsState.find(a => a.id === id);
+  const ad = adsState.find(a => String(a.id) === String(id));
   if (!ad) return;
 
-  if (!ad.isMine) {
+  const vKey = 'v' + ad.id;
+  let seen = false;
+  try { seen = !!sessionStorage.getItem(vKey); } catch(e) {}
+  if (!seen) {
     ad.views++;
+    try { sessionStorage.setItem(vKey, '1'); } catch(e) {}
+    saveAds();
     document.querySelectorAll(`.ad-card[data-id="${ad.id}"] .ad-views-tag`).forEach(tag => {
       tag.textContent = `👁 ${ad.views}`;
     });
+    document.getElementById('myViewsCount').textContent =
+      adsState.filter(a => a.isMine).reduce((s, a) => s + a.views, 0);
   }
 
   document.getElementById('mTitle').textContent = ad.title;
@@ -807,7 +910,7 @@ function openAdDetails(id, triggerElement = null) {
   price.textContent = `${ad.price.toLocaleString('en-US')} ${ad.currency}`;
 
   const location = document.createElement('div');
-  location.textContent = `📍 المحافظة: ${ad.city}`;
+  location.textContent = `📍 المحافظة: ${ad.city} ${ad.condition ? '• الحالة: ' + ad.condition : ''}`;
 
   const desc = document.createElement('p');
   desc.style.cssText = 'background:#fff;padding:12px;border-radius:8px;line-height:1.5;white-space:pre-wrap;word-break:break-word;';
@@ -839,19 +942,72 @@ function openAdDetails(id, triggerElement = null) {
   body.appendChild(desc);
   body.appendChild(phoneBox);
 
+  // زر المفضلة
+  const btnFav = document.createElement('button');
+  btnFav.className = 'btn-primary';
+  btnFav.style.cssText = 'background:#fff;color:var(--danger);border:1px solid var(--danger);margin-top:8px;';
+  btnFav.textContent = getFavs().includes(ad.id) ? '❤️ في المفضلة' : '🤍 أضف للمفضلة';
+  btnFav.onclick = () => {
+    btnFav.textContent = toggleFav(ad.id) ? '❤️ في المفضلة' : '🤍 أضف للمفضلة';
+    document.querySelectorAll(`.ad-card[data-id="${ad.id}"] .ad-title`)
+      .forEach(t => t.textContent = adTitleText(ad));
+  };
+  body.appendChild(btnFav);
+
+  // زر المشاركة
+  const btnShare = document.createElement('button');
+  btnShare.className = 'btn-primary';
+  btnShare.style.cssText = 'background:#fff;color:var(--primary);border:1px solid var(--primary);margin-top:8px;';
+  btnShare.textContent = '🔗 مشاركة';
+  btnShare.onclick = async () => {
+    const text = `${ad.title} - ${ad.price.toLocaleString('en-US')} ${ad.currency} (${ad.city})`;
+    try {
+      if (navigator.share) await navigator.share({ title: ad.title, text });
+      else { await navigator.clipboard.writeText(text); showToast('تم النسخ'); }
+    } catch(e) {}
+  };
+  body.appendChild(btnShare);
+
   if (ad.isMine) {
+    const btnEdit = document.createElement('button');
+    btnEdit.className = 'btn-primary';
+    btnEdit.style.marginTop = '12px';
+    btnEdit.textContent = '✏️ تعديل الإعلان';
+    btnEdit.onclick = () => {
+      const t = prompt('العنوان:', ad.title);
+      if (t === null) return;
+      const p = prompt('السعر:', ad.price);
+      if (p === null) return;
+      const d = prompt('الوصف:', ad.desc);
+      if (d === null) return;
+      const np = parseFloat(parseArabicNumbers(p));
+      if (!t.trim() || !Number.isFinite(np) || np <= 0) {
+        showToast('بيانات غير صحيحة');
+        return;
+      }
+      ad.title = t.trim().slice(0, 80);
+      ad.price = Math.min(np, MAX_ALLOWED_PRICE);
+      ad.desc = d.trim().slice(0, 1000);
+      saveAds();
+      renderAds();
+      closeModal('detailsModal');
+      showToast('تم تعديل الإعلان');
+    };
+    body.appendChild(btnEdit);
+
     const btnDel = document.createElement('button');
     btnDel.className = 'btn-primary btn-danger';
-    btnDel.style.marginTop = '12px';
+    btnDel.style.marginTop = '8px';
     btnDel.textContent = '🗑️ حذف الإعلان';
     btnDel.onclick = () => {
       if (confirm('هل أنت تأكد من إرادتك لحذف هذا الإعلان؟')) {
-        adsState = adsState.filter(a => a.id !== ad.id);
+        adsState = adsState.filter(a => String(a.id) !== String(ad.id));
+        saveAds();
+        setStorage(FAV_KEY, JSON.stringify(getFavs().filter(f => f !== ad.id)));
         renderAds();
         closeModal('detailsModal');
         showToast('تم حذف الإعلان بنجاح');
         
-        // توجيه التركيز لعنصر ثابت بدلاً من البطاقة المحذوفة
         setTimeout(() => {
           document.getElementById('searchInput').focus({ preventScroll: true });
         }, 50);
@@ -871,8 +1027,7 @@ function openModal(id, triggerElement = null) {
   modal.classList.add('open');
   modal.focus();
 
-  // تفعيل inert لمنع خروج التركيز للخلفية وتأمين Scroll Lock
-  document.querySelectorAll('.page.active, .top-bar, #bottomNav, #aiBotBtn').forEach(el => {
+  document.querySelectorAll('.page.active, .top-bar, #bottomNav').forEach(el => {
     el.setAttribute('inert', '');
   });
   document.body.classList.add('modal-open-scroll-lock');
@@ -888,7 +1043,6 @@ function closeModal(id, triggerHistory = true) {
     
     if (el) el.classList.remove('open');
 
-    // إزالة inert وتأمين إعادة التمرير إذا كانت جميع النوافذ مغلقة
     if (modalStack.length === 0) {
       document.querySelectorAll('[inert]').forEach(el => {
         el.removeAttribute('inert');
@@ -924,42 +1078,6 @@ function showPage(p, triggerHistory = true) {
   if (triggerHistory && !isSamePage) {
     history.pushState({ page: p }, '', `#${p}`);
   }
-}
-
-function openChat(btnEl) { 
-  const box = document.getElementById('chatMessages');
-  if (!chatInitialized && box.children.length === 0) {
-    const welcomeMsg = document.createElement('div');
-    welcomeMsg.className = 'msg msg-bot';
-    welcomeMsg.textContent = 'مرحباً بك! أنا المساعد الذكي، كيف يمكنني مساعدتك اليوم في سوق العراق؟';
-    box.appendChild(welcomeMsg);
-    chatInitialized = true;
-  }
-  openModal('chatModal', btnEl); 
-}
-
-function sendMsg() {
-  const input = document.getElementById('chatInput');
-  const text = input.value.trim();
-  if (!text) return;
-
-  const box = document.getElementById('chatMessages');
-
-  const userMsg = document.createElement('div');
-  userMsg.className = 'msg msg-user';
-  userMsg.textContent = text;
-  box.appendChild(userMsg);
-
-  input.value = '';
-  box.scrollTop = box.scrollHeight;
-
-  setTimeout(() => {
-    const botMsg = document.createElement('div');
-    botMsg.className = 'msg msg-bot';
-    botMsg.textContent = 'أهلاً بك! يمكنك تصفح الأقسام أو إضافة إعلانك بسهولة من الشريط السفلي.';
-    box.appendChild(botMsg);
-    box.scrollTop = box.scrollHeight;
-  }, 600);
 }
 
 function saveAcc(e) {
