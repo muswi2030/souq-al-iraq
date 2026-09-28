@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#007bff">
 <meta name="description" content="سوق العراق - منصة البيع والشراء الأولى">
 <title>سوق العراق</title>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
@@ -17,6 +18,7 @@
   --text-muted: #6c757d;
   --border-color: #e9ecef;
   --danger: #dc3545;
+  --success: #28a745;
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
 }
@@ -25,7 +27,6 @@
 body{background:var(--bg);padding-bottom:calc(80px + var(--safe-bottom));color:var(--text-main)}
 body.modal-open-scroll-lock { overflow: hidden !important; }
 
-/* مؤشرات التركيز الموحدة */
 :focus-visible {
   outline: 3px solid var(--primary);
   outline-offset: 2px;
@@ -38,7 +39,6 @@ body.modal-open-scroll-lock { overflow: hidden !important; }
   outline: none;
 }
 
-/* الشريط العلوي */
 .top-bar{
   background:var(--card-bg);
   padding:calc(14px + var(--safe-top)) 20px 14px;
@@ -51,9 +51,10 @@ body.modal-open-scroll-lock { overflow: hidden !important; }
   z-index:10;
   box-shadow:0 2px 4px rgba(0,0,0,.02)
 }
-.top-bar b{font-size:20px;font-weight:900;color:var(--primary)}
+.top-bar b{font-size:18px;font-weight:900;color:var(--text-main)}
+.top-bar-left{display:flex;align-items:center;gap:10px}
+.back-btn{background:none;border:none;font-size:20px;cursor:pointer;color:var(--text-main)}
 
-/* الفلترة والبحث */
 .filter-container {
   display: flex;
   gap: 8px;
@@ -81,10 +82,8 @@ body.modal-open-scroll-lock { overflow: hidden !important; }
   outline: none;
 }
 
-/* الصفحات */
 .page{display:none}.page.active{display:block}
 
-/* الأقسام والشبكة */
 .home-grid{display:grid;grid-template-columns:repeat(auto-fill, minmax(85px, 1fr));gap:12px;padding:16px}
 @media(max-width:480px){.home-grid{grid-template-columns:repeat(4, 1fr)}}
 
@@ -94,7 +93,6 @@ body.modal-open-scroll-lock { overflow: hidden !important; }
 .cat-box .icon{font-size:28px;margin-bottom:6px}
 .cat-box b{font-size:11px;font-weight:700}
 
-/* الإعلانات */
 .ads-list{padding:16px;display:flex;flex-direction:column;gap:12px}
 .ad-card{background:var(--card-bg);border-radius:16px;padding:12px;border:1px solid var(--border-color);display:flex;gap:12px;cursor:pointer}
 .ad-img{width:100px;height:100px;border-radius:12px;object-fit:cover;background:#eee;flex-shrink:0}
@@ -114,25 +112,22 @@ body.modal-open-scroll-lock { overflow: hidden !important; }
 .empty-state{text-align:center;padding:40px 20px;color:var(--text-muted)}
 .empty-state span{font-size:40px;display:block;margin-bottom:8px}
 
-/* الشريط السفلي - تم تصحيح justify-content هنا */
 .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--card-bg);border-top:1px solid var(--border-color);display:flex;justify-content:space-around;align-items:center;padding:8px 0 calc(8px + var(--safe-bottom));z-index:100}
 .nav-item{background:none;border:none;font-size:11px;color:var(--text-muted);flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;font-weight:500}
 .nav-item.active{color:var(--primary);font-weight:700}
-.nav-item span{font-size:20px}
+.nav-item > span:not(.add-btn){font-size:20px}
 
 .add-btn{width:48px;height:48px;background:var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;color:#fff;margin-top:-20px;border:3px solid var(--card-bg);box-shadow:0 4px 10px rgba(245,166,35,.4)}
 
-/* النماذج */
 .form-group{padding:16px;display:flex;flex-direction:column;gap:12px}
 .form-control{width:100%;padding:12px;border-radius:10px;border:1px solid var(--border-color);outline:none;background:var(--card-bg);font-size:14px}
-.char-count{font-size:11px;color:var(--text-muted);text-align:left;margin-top:-8px;margin-bottom:4px}
+.char-count{font-size:11px;color:var(--text-muted);text-align:end;margin-top:-8px;margin-bottom:4px}
 .btn-primary{width:100%;background:var(--primary);color:#fff;padding:14px;border:none;border-radius:10px;font-weight:700;cursor:pointer;font-size:15px}
 .btn-primary:disabled{background:#ccc;cursor:not-allowed}
 .btn-accent{background:var(--accent);color:#fff}
 .btn-danger{background:var(--danger);color:#fff}
 .img-preview{width:100%;height:150px;border-radius:10px;border:2px dashed var(--border-color);display:flex;align-items:center;justify-content:center;background:#fafafa;cursor:pointer;overflow:hidden}
 
-/* النوافذ المنبثقة */
 .modal{
   position:fixed;
   inset:0;
@@ -163,7 +158,6 @@ body.modal-open-scroll-lock { overflow: hidden !important; }
   background:var(--bg)
 }
 
-/* Toast */
 .toast{
   position:fixed;
   top:calc(20px + var(--safe-top));
@@ -188,6 +182,140 @@ body.modal-open-scroll-lock { overflow: hidden !important; }
 
 .cards-summary{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:16px}
 .card-sum{background:var(--card-bg);padding:16px;border-radius:12px;border:1px solid var(--border-color)}
+
+.profile-tabs-scroll {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 12px 16px;
+  background: var(--card-bg);
+  border-bottom: 1px solid var(--border-color);
+  scrollbar-width: none;
+}
+.profile-tabs-scroll::-webkit-scrollbar { display: none; }
+.profile-tab {
+  white-space: nowrap;
+  padding: 8px 16px;
+  border-radius: 20px;
+  background: var(--bg);
+  border: 1px solid var(--border-color);
+  font-size: 13px;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-weight: 500;
+}
+.profile-tab.active {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+  font-weight: 700;
+}
+
+.profile-avatar-container {
+  display: flex;
+  justify-content: center;
+  margin: 16px 0;
+}
+.profile-avatar-box {
+  width: 100px;
+  height: 100px;
+  border: 2px dashed var(--border-color);
+  border-radius: 16px;
+  background: var(--card-bg);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  overflow: hidden;
+}
+.profile-avatar-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.avatar-edit-badge {
+  position: absolute;
+  bottom: 6px;
+  left: 6px;
+  background: var(--primary);
+  color: #fff;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+.input-with-action {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.input-with-action .form-control {
+  flex: 1;
+}
+.btn-inline-action {
+  padding: 12px 16px;
+  border-radius: 10px;
+  border: none;
+  background: var(--primary);
+  color: #fff;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.badge-verified {
+  padding: 12px 14px;
+  background: #e6f4ea;
+  color: var(--success);
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.checkbox-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--text-main);
+  cursor: pointer;
+  margin-top: -4px;
+}
+.checkbox-group input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--primary);
+  cursor: pointer;
+}
+
+.account-type-box {
+  background: #f0f7ff;
+  border: 1px solid #b3d7ff;
+  border-radius: 12px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.account-type-box b {
+  color: var(--primary);
+  font-size: 14px;
+}
+.account-type-box p {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
 </style>
 </head>
 
@@ -198,7 +326,7 @@ body.modal-open-scroll-lock { overflow: hidden !important; }
 <!-- 1. الرئيسية -->
 <div id="home" class="page active">
   <div class="top-bar">
-    <b>سوق العراق</b>
+    <b style="color:var(--primary)">سوق العراق</b>
     <span id="topBarCityTag" style="font-size:12px;color:var(--text-muted)">🇮🇶 جميع المحافظات</span>
   </div>
   
@@ -283,34 +411,223 @@ body.modal-open-scroll-lock { overflow: hidden !important; }
 
 <!-- 4. حسابي -->
 <div id="account" class="page">
-  <div class="top-bar"><b>حسابي الشخصي</b></div>
-  <form class="form-group" onsubmit="saveAcc(event)">
-    <label style="font-weight:700">الاسم:</label>
-    <input id="f_name" aria-label="الاسم" type="text" class="form-control" placeholder="أدخل اسمك" maxlength="50" required>
-    <label style="font-weight:700">البريد الإلكتروني:</label>
-    <input id="f_email" aria-label="البريد الإلكتروني" type="email" class="form-control" placeholder="example@domain.com" required>
-    <button type="submit" class="btn-primary">حفظ التغييرات</button>
-  </form>
+  <div class="top-bar">
+    <div class="top-bar-left">
+      <button type="button" class="back-btn" onclick="showPage('home')" aria-label="الرجوع للرئيسية">➔</button>
+      <b>إدارة الحساب</b>
+    </div>
+  </div>
+
+  <div class="profile-tabs-scroll">
+    <button type="button" class="profile-tab" onclick="switchProfileSubTab('summary', this)">الملخص</button>
+    <button type="button" class="profile-tab" onclick="switchProfileSubTab('ratings', this)">التقييم</button>
+    <button type="button" class="profile-tab active" onclick="switchProfileSubTab('edit', this)">تعديل حسابي</button>
+    <button type="button" class="profile-tab" onclick="switchProfileSubTab('store', this)">تعديل متجري</button>
+    <button type="button" class="profile-tab" onclick="switchProfileSubTab('profile', this)">الملف</button>
+  </div>
+
+  <div id="accSubTabEdit">
+    <form class="form-group" onsubmit="saveAcc(event)">
+      <label style="font-weight:700">الصورة الشخصية:</label>
+      <div class="profile-avatar-container">
+        <input type="file" id="profileImgInput" accept="image/*" style="display:none" onchange="handleProfileAvatarUpload(event)">
+        <div class="profile-avatar-box" id="avatarBox" tabindex="0" onclick="document.getElementById('profileImgInput').click()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault(); document.getElementById('profileImgInput').click();}" aria-label="تغيير الصورة الشخصية">
+          <div id="avatarPlaceholder" style="font-size:32px;color:var(--text-muted)">👤</div>
+          <img id="avatarImage" src="" alt="الصورة الشخصية" style="display:none">
+          <div class="avatar-edit-badge">✏️</div>
+        </div>
+      </div>
+
+      <label style="font-weight:700">الاسم الكامل:</label>
+      <input id="f_name" aria-label="الاسم الكامل" type="text" class="form-control" placeholder="أدخل اسمك الكامل" maxlength="50" required>
+
+      <label style="font-weight:700">البريد الإلكتروني:</label>
+      <div class="input-with-action">
+        <input id="f_email" aria-label="البريد الإلكتروني" type="email" class="form-control" placeholder="example@domain.com" oninput="onEmailChanged()" required>
+        <button type="button" id="btnVerifyEmail" class="btn-inline-action" onclick="requestOTP('email')">توثيق</button>
+        <div id="badgeEmailVerified" class="badge-verified" style="display:none">✔️ مُوثّق</div>
+      </div>
+
+      <label style="font-weight:700">رقم الموبايل:</label>
+      <div class="input-with-action">
+        <input id="f_phone" aria-label="رقم الموبايل" type="tel" class="form-control" placeholder="07XXXXXXXXX" inputmode="numeric" oninput="this.value = parseArabicNumbers(this.value); onPhoneChanged();">
+        <button type="button" id="btnVerifyPhone" class="btn-inline-action" onclick="requestOTP('phone')">توثيق</button>
+        <div id="badgePhoneVerified" class="badge-verified" style="display:none">✔️ مُوثّق</div>
+      </div>
+
+      <label class="checkbox-group">
+        <input type="checkbox" id="f_hidePhone">
+        <span>إخفاء رقم الموبايل على ملفي الشخصي وإعلاناتي</span>
+      </label>
+
+      <label style="font-weight:700">رابط الصفحة الشخصية:</label>
+      <input id="f_profileLink" aria-label="رابط الصفحة الشخصية" type="text" class="form-control" readonly style="background:#e9ecef;color:var(--text-muted);cursor:not-allowed">
+
+      <label style="font-weight:700">الجنس:</label>
+      <select id="f_gender" aria-label="الجنس" class="form-control">
+        <option value="">اختر الجنس</option>
+        <option value="male">رجل</option>
+        <option value="female">امرأة</option>
+      </select>
+
+      <label style="font-weight:700">تاريخ الميلاد:</label>
+      <input id="f_dob" aria-label="تاريخ الميلاد" type="date" class="form-control">
+
+      <div class="account-type-box">
+        <b>🏷️ نوع الحساب: [استعمال تجاري / احترافي]</b>
+        <p>يتيح لك هذا الحساب الوصول إلى أدوات إدارة المتجر، إحصائيات المبيعات، ونشر المنسوجات والمنتجات بلا حدود للمشتريين.</p>
+      </div>
+
+      <button type="submit" class="btn-primary" style="margin-top:8px">حفظ التغييرات</button>
+    </form>
+  </div>
+
+  <div id="accSubTabOther" style="display:none;padding:30px 16px;text-align:center;color:var(--text-muted)">
+    <span style="font-size:36px;display:block;margin-bottom:8px">📂</span>
+    <div id="accSubTabOtherTitle">قسم إضافي</div>
+  </div>
 </div>
 
 <!-- الشريط السفلي -->
 <nav class="bottom-nav" id="bottomNav">
-  <button class="nav-item active" id="n_home" onclick="showPage('home')"><span>🏠</span>الرئيسية</button>
-  <button class="nav-item" id="n_add" onclick="showPage('add')"><span class="add-btn">+</span>إعلان</button>
-  <button class="nav-item" id="n_myads" onclick="showPage('myads')"><span>📄</span>إعلاناتي</button>
-  <button class="nav-item" id="n_account" onclick="showPage('account')"><span>👤</span>حسابي</button>
+  <button type="button" class="nav-item active" id="n_home" onclick="showPage('home')"><span>🏠</span>الرئيسية</button>
+  <button type="button" class="nav-item" id="n_add" onclick="showPage('add')"><span class="add-btn">+</span>إعلان</button>
+  <button type="button" class="nav-item" id="n_myads" onclick="showPage('myads')"><span>📄</span>إعلاناتي</button>
+  <button type="button" class="nav-item" id="n_account" onclick="showPage('account')"><span>👤</span>حسابي</button>
 </nav>
 
-<!-- النافذة المنبثقة للتفاصيل -->
+<!-- 1. النافذة المنبثقة للتفاصيل -->
 <div id="detailsModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="mTitle" tabindex="-1">
   <div class="modal-header">
     <b id="mTitle">تفاصيل الإعلان</b>
-    <button onclick="closeModal('detailsModal')" aria-label="إغلاق النافذة" style="color:#fff;background:none;border:none;font-size:18px;cursor:pointer">✕</button>
+    <button type="button" onclick="closeModal('detailsModal')" aria-label="إغلاق النافذة" style="color:#fff;background:none;border:none;font-size:18px;cursor:pointer">✕</button>
   </div>
   <div class="modal-body" id="mBody"></div>
 </div>
 
+<!-- 2. النافذة المنبثقة لتعديل الإعلان -->
+<div id="editAdModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="editModalTitle" tabindex="-1">
+  <div class="modal-header">
+    <b id="editModalTitle">تعديل الإعلان</b>
+    <button type="button" onclick="closeModal('editAdModal')" aria-label="إغلاق النافذة" style="color:#fff;background:none;border:none;font-size:18px;cursor:pointer">✕</button>
+  </div>
+  <div class="modal-body">
+    <form id="editAdForm" onsubmit="handleSaveEditAd(event)" class="form-group" style="padding:0">
+      <input type="hidden" id="editAdId">
+      
+      <label style="font-weight:700">العنوان:</label>
+      <div>
+        <input type="text" id="editAdTitle" class="form-control" maxlength="80" oninput="updateCharCount(this, 'editTitleCount', 80)" required>
+        <div id="editTitleCount" class="char-count">0 / 80</div>
+      </div>
+
+      <label style="font-weight:700">السعر والعملة:</label>
+      <div style="display:flex;gap:8px">
+        <input type="text" id="editAdPrice" class="form-control" inputmode="numeric" oninput="cleanPriceInput(this)" required>
+        <select id="editAdCurrency" class="form-control" style="width:110px">
+          <option value="د.ع">د.ع</option>
+          <option value="$">$ USD</option>
+        </select>
+      </div>
+
+      <label style="font-weight:700">القسم:</label>
+      <select id="editAdCat" class="form-control" required></select>
+
+      <label style="font-weight:700">المحافظة:</label>
+      <select id="editAdCity" class="form-control" required></select>
+
+      <label style="font-weight:700">الحالة:</label>
+      <select id="editAdCondition" class="form-control">
+        <option value="مستعمل">مستعمل</option>
+        <option value="جديد">جديد</option>
+      </select>
+
+      <label style="font-weight:700">الوصف:</label>
+      <div>
+        <textarea id="editAdDesc" class="form-control" rows="4" maxlength="1000" oninput="updateCharCount(this, 'editDescCount', 1000)" required></textarea>
+        <div id="editDescCount" class="char-count">0 / 1000</div>
+      </div>
+
+      <button type="submit" class="btn-primary" style="margin-top:10px">حفظ التعديلات</button>
+    </form>
+  </div>
+</div>
+
+<!-- 3. نافذة التوثيق بـ OTP -->
+<div id="otpModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="otpTitle" tabindex="-1">
+  <div class="modal-header">
+    <b id="otpTitle">إدخال رمز التوثيق</b>
+    <button type="button" onclick="closeModal('otpModal')" aria-label="إغلاق النافذة" style="color:#fff;background:none;border:none;font-size:18px;cursor:pointer">✕</button>
+  </div>
+  <div class="modal-body" style="justify-content:center;align-items:center;text-align:center">
+    <p id="otpDescription" style="font-size:14px;color:var(--text-main);margin-bottom:12px"></p>
+    <input type="text" id="otpInput" class="form-control" placeholder="1234" maxlength="4" inputmode="numeric" style="width:150px;text-align:center;font-size:24px;letter-spacing:6px">
+    <button type="button" class="btn-primary" style="margin-top:16px;width:150px" onclick="confirmOTP()">تأكيد</button>
+  </div>
+</div>
+
+<!-- 4. نافذة التأكيد المخصصة -->
+<div id="confirmModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="confirmTitle" tabindex="-1">
+  <div class="modal-header">
+    <b id="confirmTitle">تأكيد الإجراء</b>
+    <button type="button" onclick="closeModal('confirmModal')" aria-label="إغلاق النافذة" style="color:#fff;background:none;border:none;font-size:18px;cursor:pointer">✕</button>
+  </div>
+  <div class="modal-body" style="justify-content:center;align-items:center;text-align:center">
+    <p id="confirmMessage" style="font-size:15px;font-weight:700;margin-bottom:20px"></p>
+    <div style="display:flex;gap:12px;width:100%">
+      <button type="button" id="confirmOkBtn" class="btn-primary btn-danger">تأكيد</button>
+      <button type="button" class="btn-primary" style="background:#ccc" onclick="closeModal('confirmModal')">إلغاء</button>
+    </div>
+  </div>
+</div>
+
 <script>
+// --- IndexedDB لرفع الصور بأمان لتجاوز حد 5MB ---
+const ImageStore = {
+  dbName: 'SouqImageDB',
+  storeName: 'images',
+  db: null,
+  async init() {
+    return new Promise((resolve, reject) => {
+      const req = indexedDB.open(this.dbName, 1);
+      req.onupgradeneeded = e => {
+        const db = e.target.result;
+        if (!db.objectStoreNames.contains(this.storeName)) {
+          db.createObjectStore(this.storeName);
+        }
+      };
+      req.onsuccess = e => { this.db = e.target.result; resolve(); };
+      req.onerror = e => reject(e);
+    });
+  },
+  async set(key, val) {
+    if (!this.db) await this.init();
+    return new Promise((resolve, reject) => {
+      const tx = this.db.transaction(this.storeName, 'readwrite');
+      tx.objectStore(this.storeName).put(val, key);
+      tx.oncomplete = () => resolve();
+      tx.onerror = e => reject(e);
+    });
+  },
+  async get(key) {
+    if (!this.db) await this.init();
+    return new Promise((resolve) => {
+      const tx = this.db.transaction(this.storeName, 'readonly');
+      const req = tx.objectStore(this.storeName).get(key);
+      req.onsuccess = () => resolve(req.result || null);
+      req.onerror = () => resolve(null);
+    });
+  },
+  async delete(key) {
+    if (!this.db) await this.init();
+    return new Promise((resolve) => {
+      const tx = this.db.transaction(this.storeName, 'readwrite');
+      tx.objectStore(this.storeName).delete(key);
+      tx.oncomplete = () => resolve();
+    });
+  }
+};
+
 const FALLBACK_IMAGE = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'><rect width='100%' height='100%' fill='%23e9ecef'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='12' fill='%236c757d'>لا توجد صورة</text></svg>";
 
 const MAX_ALLOWED_PRICE = 999999999999;
@@ -337,7 +654,7 @@ const CATEGORIES = [
   {id: 'stores', name: 'المتاجر', icon: '🏬'},
   {id: 'services', name: 'الخدمات', icon: '🔧'},
   {id: 'jobs', name: 'وظائف شاغرة', icon: '💼'},
-  {id: 'sports', name: 'معدات رياضية', icon: '🏃'},
+  {id: 'sports', name: 'م معدات رياضية', icon: '🏃'},
   {id: 'games', name: 'ألعاب فيديو', icon: '🎮'},
   {id: 'animals', name: 'حيوانات ومستلزمات', icon: '🐱'},
   {id: 'fashion', name: 'موضة وأزياء', icon: '👕'},
@@ -348,30 +665,24 @@ const CATEGORIES = [
 let adsState = [];
 let selectedCategory = 'all';
 let currentImgBase64 = null;
+let profileAvatarBase64 = null;
 let toastTimer = null;
 let searchTimer = null;
 let currentPage = 'home';
 let showFavsOnly = false;
 
-// إدارة النوافذ المفتوحة
+// إدارة مكدس النوافذ والحالة
 let modalStack = [];
+let pendingOTPType = null;
+let generatedOTPCode = null;
+let pendingConfirmAction = null;
 
-// --- دوال التخزين مع الحماية الآمنة ---
 function getStorage(key) { 
-  try { 
-    return localStorage.getItem(key); 
-  } catch(e) { 
-    return null; 
-  } 
+  try { return localStorage.getItem(key); } catch(e) { return null; } 
 }
 
 function setStorage(key, val) { 
-  try { 
-    localStorage.setItem(key, val); 
-    return true; 
-  } catch(e) { 
-    return false; 
-  } 
+  try { localStorage.setItem(key, val); return true; } catch(e) { return false; } 
 }
 
 function getFavs() {
@@ -401,7 +712,7 @@ function timeAgo(ts) {
 
 function saveAds() {
   const ok = setStorage(ADS_KEY, JSON.stringify(adsState));
-  if (!ok) showToast('تعذر الحفظ: المساحة ممتلئة، جرّب صورة أصغر');
+  if (!ok) showToast('تعذر الحفظ: المساحة ممتلئة');
   return ok;
 }
 
@@ -413,15 +724,17 @@ function loadAds() {
       ? arr.filter(a => a && typeof a.title === 'string' && Number.isFinite(a.price) && Number.isFinite(a.id))
       : [];
     valid.forEach(a => { a.views = Number(a.views) || 0; });
-    adsState = valid.filter(a => Date.now() - a.id < MONTH);
     
-    // تنظيف المفضلة من الإعلانات منتهية الصلاحية
+    // إزالة الإعلانات القديمة وحفظ النتيجة النظيفة في التخزين
+    adsState = valid.filter(a => Date.now() - a.id < MONTH);
+    if (adsState.length !== valid.length) {
+      saveAds();
+    }
+    
     const ids = new Set(adsState.map(a => a.id));
     const favs = getFavs();
     const cleanFavs = favs.filter(f => ids.has(f));
     if (cleanFavs.length !== favs.length) setStorage(FAV_KEY, JSON.stringify(cleanFavs));
-
-    if (Array.isArray(arr) && adsState.length !== arr.length) saveAds();
   } catch (e) { adsState = []; }
 }
 
@@ -492,21 +805,13 @@ function showToast(msg) {
   }, 3000);
 }
 
-window.addEventListener('DOMContentLoaded', () => {
+window.addEventListener('DOMContentLoaded', async () => {
+  await ImageStore.init();
   initCategories();
   initCities();
   loadAccount();
   loadAds();
 
-  // فحص التخزين السليم
-  try { 
-    localStorage.setItem('_t','1'); 
-    localStorage.removeItem('_t'); 
-  } catch(e) { 
-    showToast('التخزين معطّل أو ممتلئ، وقد لا تُحفظ إعلاناتك'); 
-  }
-
-  // مزامنة التبويبات المتعددة
   window.addEventListener('storage', e => {
     if (e.key === ADS_KEY) { loadAds(); renderAds(); }
   });
@@ -533,12 +838,18 @@ window.addEventListener('DOMContentLoaded', () => {
 
   window.addEventListener('popstate', (e) => {
     if (modalStack.length > 0) {
-      const topModal = modalStack[modalStack.length - 1];
-      closeModal(topModal.id, false);
-      return;
-    }
-    
-    if (e.state && e.state.modalOpen && modalStack.length === 0) {
+      const topModal = modalStack.pop();
+      const el = document.getElementById(topModal.id);
+      if (el) el.classList.remove('open');
+
+      if (modalStack.length === 0) {
+        document.querySelectorAll('[inert]').forEach(el => el.removeAttribute('inert'));
+        document.body.classList.remove('modal-open-scroll-lock');
+      }
+
+      if (topModal.trigger && typeof topModal.trigger.focus === 'function' && document.body.contains(topModal.trigger)) {
+        topModal.trigger.focus({ preventScroll: true });
+      }
       return;
     }
 
@@ -550,12 +861,15 @@ window.addEventListener('DOMContentLoaded', () => {
 
 function initCities() {
   const select = document.getElementById('adCity');
+  const editCitySelect = document.getElementById('editAdCity');
   const homeFilter = document.getElementById('homeCityFilter');
+  
   IRAQ_CITIES.forEach(c => {
     const opt = document.createElement('option');
     opt.value = c;
     opt.textContent = c;
     select.appendChild(opt);
+    editCitySelect.appendChild(opt.cloneNode(true));
     homeFilter.appendChild(opt.cloneNode(true));
   });
 }
@@ -563,8 +877,10 @@ function initCities() {
 function initCategories() {
   const grid = document.getElementById('categoriesGrid');
   const select = document.getElementById('adCat');
+  const editCatSelect = document.getElementById('editAdCat');
   grid.innerHTML = '';
   select.innerHTML = '<option value="">اختر القسم</option>';
+  editCatSelect.innerHTML = '<option value="">اختر القسم</option>';
 
   CATEGORIES.forEach(cat => {
     const box = document.createElement('div');
@@ -596,6 +912,7 @@ function initCategories() {
     opt.value = cat.id;
     opt.textContent = `${cat.icon} ${cat.name}`;
     select.appendChild(opt);
+    editCatSelect.appendChild(opt.cloneNode(true));
   });
 }
 
@@ -610,12 +927,12 @@ function filterCategory(catId, el) {
   renderAds();
 }
 
-function adTitleText(ad) {
+function adTitleText(ad, favsList) {
   const t = ad.condition ? `${ad.title} (${ad.condition})` : ad.title;
-  return getFavs().includes(ad.id) ? '❤️ ' + t : t;
+  return favsList.includes(ad.id) ? '❤️ ' + t : t;
 }
 
-function buildAdCard(ad) {
+function buildAdCard(ad, favsList) {
   const card = document.createElement('div');
   card.className = 'ad-card';
   card.dataset.id = ad.id;
@@ -633,10 +950,19 @@ function buildAdCard(ad) {
 
   const img = document.createElement('img');
   img.className = 'ad-img';
-  img.src = ad.img || FALLBACK_IMAGE;
   img.alt = ad.title;
   img.loading = 'lazy';
   img.decoding = 'async';
+  img.src = FALLBACK_IMAGE;
+
+  if (ad.imgKey) {
+    ImageStore.get(ad.imgKey).then(src => {
+      if (src) img.src = src;
+    });
+  } else if (ad.img) {
+    img.src = ad.img;
+  }
+
   img.onerror = function() { 
     this.onerror = null; 
     this.src = FALLBACK_IMAGE; 
@@ -647,7 +973,7 @@ function buildAdCard(ad) {
 
   const title = document.createElement('div');
   title.className = 'ad-title';
-  title.textContent = adTitleText(ad);
+  title.textContent = adTitleText(ad, favsList);
 
   const price = document.createElement('div');
   price.className = 'ad-price';
@@ -704,7 +1030,7 @@ function renderAds() {
     return b.id - a.id;
   });
 
-  const favs = getFavs();
+  const currentFavs = getFavs();
 
   sorted.forEach(ad => {
     const catObj = CATEGORIES.find(c => c.id === ad.category);
@@ -712,7 +1038,7 @@ function renderAds() {
 
     const matchCat = selectedCategory === 'all' || ad.category === selectedCategory;
     const matchCity = !selectedCity || ad.city === selectedCity;
-    const matchFav = !showFavsOnly || favs.includes(ad.id);
+    const matchFav = !showFavsOnly || currentFavs.includes(ad.id);
     
     const searchTarget = normalizeArabic(`${ad.title} ${ad.desc} ${ad.city} ${catName} ${ad.condition || ''}`);
     const matchSearch = searchTokens.every(token => searchTarget.includes(token));
@@ -720,12 +1046,12 @@ function renderAds() {
     if (ad.isMine) {
       myCount++;
       totalViews += Number(ad.views) || 0;
-      myContainer.appendChild(buildAdCard(ad));
+      myContainer.appendChild(buildAdCard(ad, currentFavs));
     }
 
     if (matchCat && matchCity && matchSearch && matchFav) {
       matchCount++;
-      container.appendChild(buildAdCard(ad));
+      container.appendChild(buildAdCard(ad, currentFavs));
     }
   });
 
@@ -746,6 +1072,12 @@ function renderAds() {
 function handleImageCompress(e) {
   const file = e.target.files[0];
   if (!file) return;
+
+  if (file.size > 5 * 1024 * 1024) {
+    showToast('خطأ: حجم ملف الصورة أكبر من 5 ميجابايت!');
+    e.target.value = '';
+    return;
+  }
 
   const submitBtn = document.getElementById('submitAdBtn');
   submitBtn.disabled = true;
@@ -808,13 +1140,13 @@ function handleImageCompress(e) {
   reader.readAsDataURL(file);
 }
 
-function handleCreateAd(e) {
+async function handleCreateAd(e) {
   e.preventDefault();
   
-  const title = document.getElementById('adTitle').value.trim();
+  const title = document.getElementById('adTitle').value.trim().slice(0, 80);
   const category = document.getElementById('adCat').value;
   const rawPrice = document.getElementById('adPrice').value;
-  const price = parseFloat(rawPrice);
+  const price = Math.min(parseFloat(rawPrice), MAX_ALLOWED_PRICE);
   
   if (!Number.isFinite(price) || price <= 0) {
     showToast('خطأ: يرجى إدخال سعر صحيح أكبر من صفر');
@@ -832,10 +1164,18 @@ function handleCreateAd(e) {
     return;
   }
 
-  const desc = document.getElementById('adDesc').value.trim();
+  const desc = document.getElementById('adDesc').value.trim().slice(0, 1000);
+
+  const adId = Date.now();
+  let imgKey = null;
+
+  if (currentImgBase64) {
+    imgKey = 'img_' + adId;
+    await ImageStore.set(imgKey, currentImgBase64);
+  }
 
   const newAd = {
-    id: Date.now(),
+    id: adId,
     title,
     category,
     price,
@@ -845,7 +1185,7 @@ function handleCreateAd(e) {
     phone: parsedPhone.raw,
     whatsapp: parsedPhone.whatsapp,
     desc,
-    img: currentImgBase64,
+    imgKey: imgKey,
     views: 0,
     isMine: true
   };
@@ -898,8 +1238,17 @@ function openAdDetails(id, triggerElement = null) {
   body.innerHTML = '';
 
   const img = document.createElement('img');
-  img.src = ad.img || FALLBACK_IMAGE;
+  img.src = FALLBACK_IMAGE;
   img.style.cssText = 'width:100%;height:220px;object-fit:cover;border-radius:12px;';
+
+  if (ad.imgKey) {
+    ImageStore.get(ad.imgKey).then(src => {
+      if (src) img.src = src;
+    });
+  } else if (ad.img) {
+    img.src = ad.img;
+  }
+
   img.onerror = function() { 
     this.onerror = null; 
     this.src = FALLBACK_IMAGE; 
@@ -919,22 +1268,34 @@ function openAdDetails(id, triggerElement = null) {
   const phoneBox = document.createElement('div');
   phoneBox.style.cssText = 'display:flex;flex-direction:column;gap:8px;margin-top:8px;';
 
-  const btnCall = document.createElement('a');
-  btnCall.href = `tel:${ad.phone}`;
-  btnCall.className = 'btn-primary';
-  btnCall.style.cssText = 'text-decoration:none;text-align:center;display:block;';
-  btnCall.textContent = `📞 اتصال بالبائع (${ad.phone})`;
+  // تطبيق منطق إخفاء رقم الهاتف
+  const hidePhoneSetting = getStorage('user_hide_phone') === '1';
 
-  const btnWa = document.createElement('a');
-  btnWa.href = `https://wa.me/${ad.whatsapp}`;
-  btnWa.target = '_blank';
-  btnWa.rel = 'noopener';
-  btnWa.className = 'btn-primary btn-accent';
-  btnWa.style.cssText = 'text-decoration:none;text-align:center;display:block;';
-  btnWa.textContent = '💬 مراسلة عبر واتساب';
+  if (ad.isMine && hidePhoneSetting) {
+    const btnPrivate = document.createElement('button');
+    btnPrivate.type = 'button';
+    btnPrivate.className = 'btn-primary';
+    btnPrivate.style.background = '#6c757d';
+    btnPrivate.textContent = '🔒 الرقم مخفي بناءً على إعدادات الخصوصية';
+    phoneBox.appendChild(btnPrivate);
+  } else {
+    const btnCall = document.createElement('a');
+    btnCall.href = `tel:${ad.phone}`;
+    btnCall.className = 'btn-primary';
+    btnCall.style.cssText = 'text-decoration:none;text-align:center;display:block;';
+    btnCall.textContent = `📞 اتصال بالبائع (${ad.phone})`;
 
-  phoneBox.appendChild(btnCall);
-  phoneBox.appendChild(btnWa);
+    const btnWa = document.createElement('a');
+    btnWa.href = `https://wa.me/${ad.whatsapp}`;
+    btnWa.target = '_blank';
+    btnWa.rel = 'noopener';
+    btnWa.className = 'btn-primary btn-accent';
+    btnWa.style.cssText = 'text-decoration:none;text-align:center;display:block;';
+    btnWa.textContent = '💬 مراسلة عبر واتساب';
+
+    phoneBox.appendChild(btnCall);
+    phoneBox.appendChild(btnWa);
+  }
 
   body.appendChild(img);
   body.appendChild(price);
@@ -942,20 +1303,22 @@ function openAdDetails(id, triggerElement = null) {
   body.appendChild(desc);
   body.appendChild(phoneBox);
 
-  // زر المفضلة
   const btnFav = document.createElement('button');
+  btnFav.type = 'button';
   btnFav.className = 'btn-primary';
   btnFav.style.cssText = 'background:#fff;color:var(--danger);border:1px solid var(--danger);margin-top:8px;';
   btnFav.textContent = getFavs().includes(ad.id) ? '❤️ في المفضلة' : '🤍 أضف للمفضلة';
   btnFav.onclick = () => {
-    btnFav.textContent = toggleFav(ad.id) ? '❤️ في المفضلة' : '🤍 أضف للمفضلة';
+    const isFav = toggleFav(ad.id);
+    btnFav.textContent = isFav ? '❤️ في المفضلة' : '🤍 أضف للمفضلة';
+    const favsList = getFavs();
     document.querySelectorAll(`.ad-card[data-id="${ad.id}"] .ad-title`)
-      .forEach(t => t.textContent = adTitleText(ad));
+      .forEach(t => t.textContent = adTitleText(ad, favsList));
   };
   body.appendChild(btnFav);
 
-  // زر المشاركة
   const btnShare = document.createElement('button');
+  btnShare.type = 'button';
   btnShare.className = 'btn-primary';
   btnShare.style.cssText = 'background:#fff;color:var(--primary);border:1px solid var(--primary);margin-top:8px;';
   btnShare.textContent = '🔗 مشاركة';
@@ -970,53 +1333,84 @@ function openAdDetails(id, triggerElement = null) {
 
   if (ad.isMine) {
     const btnEdit = document.createElement('button');
+    btnEdit.type = 'button';
     btnEdit.className = 'btn-primary';
     btnEdit.style.marginTop = '12px';
     btnEdit.textContent = '✏️ تعديل الإعلان';
-    btnEdit.onclick = () => {
-      const t = prompt('العنوان:', ad.title);
-      if (t === null) return;
-      const p = prompt('السعر:', ad.price);
-      if (p === null) return;
-      const d = prompt('الوصف:', ad.desc);
-      if (d === null) return;
-      const np = parseFloat(parseArabicNumbers(p));
-      if (!t.trim() || !Number.isFinite(np) || np <= 0) {
-        showToast('بيانات غير صحيحة');
-        return;
-      }
-      ad.title = t.trim().slice(0, 80);
-      ad.price = Math.min(np, MAX_ALLOWED_PRICE);
-      ad.desc = d.trim().slice(0, 1000);
-      saveAds();
-      renderAds();
-      closeModal('detailsModal');
-      showToast('تم تعديل الإعلان');
-    };
+    btnEdit.onclick = () => openEditModal(ad);
     body.appendChild(btnEdit);
 
     const btnDel = document.createElement('button');
+    btnDel.type = 'button';
     btnDel.className = 'btn-primary btn-danger';
     btnDel.style.marginTop = '8px';
     btnDel.textContent = '🗑️ حذف الإعلان';
     btnDel.onclick = () => {
-      if (confirm('هل أنت تأكد من إرادتك لحذف هذا الإعلان؟')) {
+      showCustomConfirm('هل أنت أمتأكد من إرادتك لحذف هذا الإعلان؟', async () => {
+        if (ad.imgKey) await ImageStore.delete(ad.imgKey);
         adsState = adsState.filter(a => String(a.id) !== String(ad.id));
         saveAds();
         setStorage(FAV_KEY, JSON.stringify(getFavs().filter(f => f !== ad.id)));
         renderAds();
         closeModal('detailsModal');
         showToast('تم حذف الإعلان بنجاح');
-        
-        setTimeout(() => {
-          document.getElementById('searchInput').focus({ preventScroll: true });
-        }, 50);
-      }
+      });
     };
     body.appendChild(btnDel);
   }
 
   openModal('detailsModal', triggerElement);
+}
+
+function openEditModal(ad) {
+  document.getElementById('editAdId').value = ad.id;
+  document.getElementById('editAdTitle').value = ad.title;
+  document.getElementById('editAdPrice').value = ad.price;
+  document.getElementById('editAdCurrency').value = ad.currency;
+  document.getElementById('editAdCat').value = ad.category;
+  document.getElementById('editAdCity').value = ad.city;
+  document.getElementById('editAdCondition').value = ad.condition || 'مستعمل';
+  document.getElementById('editAdDesc').value = ad.desc;
+
+  updateCharCount(document.getElementById('editAdTitle'), 'editTitleCount', 80);
+  updateCharCount(document.getElementById('editAdDesc'), 'editDescCount', 1000);
+
+  openModal('editAdModal');
+}
+
+function handleSaveEditAd(e) {
+  e.preventDefault();
+  const id = document.getElementById('editAdId').value;
+  const ad = adsState.find(a => String(a.id) === String(id));
+  if (!ad) return;
+
+  const t = document.getElementById('editAdTitle').value.trim().slice(0, 80);
+  const p = parseFloat(document.getElementById('editAdPrice').value);
+  const c = document.getElementById('editAdCurrency').value;
+  const cat = document.getElementById('editAdCat').value;
+  const city = document.getElementById('editAdCity').value;
+  const cond = document.getElementById('editAdCondition').value;
+  const d = document.getElementById('editAdDesc').value.trim().slice(0, 1000);
+
+  if (!t || !Number.isFinite(p) || p <= 0 || !cat || !city) {
+    showToast('خطأ: يرجى إدخال كافة البيانات بشكل صحيح');
+    return;
+  }
+
+  ad.title = t;
+  ad.price = Math.min(p, MAX_ALLOWED_PRICE);
+  ad.currency = c;
+  ad.category = cat;
+  ad.city = city;
+  ad.condition = cond;
+  ad.desc = d;
+
+  saveAds();
+  renderAds();
+  
+  // إغلاق نافذة التعديل مع التراجع السليم عن السجل المتداخل
+  closeMultipleModals(2);
+  showToast('تم تعديل الإعلان بنجاح!');
 }
 
 function openModal(id, triggerElement = null) {
@@ -1025,7 +1419,10 @@ function openModal(id, triggerElement = null) {
 
   const modal = document.getElementById(id);
   modal.classList.add('open');
-  modal.focus();
+
+  requestAnimationFrame(() => {
+    modal.focus();
+  });
 
   document.querySelectorAll('.page.active, .top-bar, #bottomNav').forEach(el => {
     el.setAttribute('inert', '');
@@ -1035,29 +1432,31 @@ function openModal(id, triggerElement = null) {
   history.pushState({ modalOpen: true, modalId: id }, '');
 }
 
-function closeModal(id, triggerHistory = true) {
+function closeModal(id) {
   const modalIndex = modalStack.findIndex(m => m.id === id);
   if (modalIndex !== -1) {
-    const modalObj = modalStack.splice(modalIndex, 1)[0];
-    const el = document.getElementById(modalObj.id);
-    
-    if (el) el.classList.remove('open');
-
-    if (modalStack.length === 0) {
-      document.querySelectorAll('[inert]').forEach(el => {
-        el.removeAttribute('inert');
-      });
-      document.body.classList.remove('modal-open-scroll-lock');
-    }
-
-    if (triggerHistory && history.state && history.state.modalOpen) {
-      history.back();
-    }
-
-    if (modalObj.trigger && typeof modalObj.trigger.focus === 'function' && document.body.contains(modalObj.trigger)) {
-      modalObj.trigger.focus({ preventScroll: true });
-    }
+    history.back();
   }
+}
+
+function closeMultipleModals(count) {
+  const actualCount = Math.min(count, modalStack.length);
+  if (actualCount > 0) {
+    history.go(-actualCount);
+  }
+}
+
+function showCustomConfirm(msg, onConfirm) {
+  document.getElementById('confirmMessage').textContent = msg;
+  pendingConfirmAction = onConfirm;
+  
+  const okBtn = document.getElementById('confirmOkBtn');
+  okBtn.onclick = () => {
+    closeModal('confirmModal');
+    if (pendingConfirmAction) pendingConfirmAction();
+  };
+
+  openModal('confirmModal');
 }
 
 function showPage(p, triggerHistory = true) {
@@ -1080,24 +1479,209 @@ function showPage(p, triggerHistory = true) {
   }
 }
 
+function switchProfileSubTab(tabName, el) {
+  document.querySelectorAll('.profile-tab').forEach(t => t.classList.remove('active'));
+  if (el) el.classList.add('active');
+
+  const editTab = document.getElementById('accSubTabEdit');
+  const otherTab = document.getElementById('accSubTabOther');
+  const otherTitle = document.getElementById('accSubTabOtherTitle');
+
+  if (tabName === 'edit') {
+    editTab.style.display = 'block';
+    otherTab.style.display = 'none';
+  } else {
+    editTab.style.display = 'none';
+    otherTab.style.display = 'block';
+    const names = {
+      summary: 'قسم الملخص',
+      ratings: 'قسم التقييمات',
+      store: 'إعدادات متجري',
+      profile: 'معاينة الملف الشخصي'
+    };
+    otherTitle.textContent = names[tabName] || 'قسم إضافي';
+  }
+}
+
+function handleProfileAvatarUpload(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  if (file.size > 5 * 1024 * 1024) {
+    showToast('خطأ: حجم صورة الملف الشخصي يجب أن لا يتجاوز 5MB');
+    e.target.value = '';
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = function(evt) {
+    const img = new Image();
+    
+    img.onerror = function() {
+      showToast('خطأ: فشل تحميل ملف الصورة الشخصية');
+    };
+
+    img.onload = async function() {
+      const canvas = document.createElement('canvas');
+      canvas.width = 300;
+      canvas.height = 300;
+      const ctx = canvas.getContext('2d');
+      
+      const minDim = Math.min(img.width, img.height);
+      const sx = (img.width - minDim) / 2;
+      const sy = (img.height - minDim) / 2;
+
+      ctx.drawImage(img, sx, sy, minDim, minDim, 0, 0, 300, 300);
+      
+      profileAvatarBase64 = canvas.toDataURL('image/jpeg', 0.7);
+      await ImageStore.set('user_avatar', profileAvatarBase64);
+      renderAvatarImage(profileAvatarBase64);
+      showToast('تم تحديث الصورة الشخصية بنجاح');
+    };
+    img.src = evt.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function renderAvatarImage(src) {
+  const placeholder = document.getElementById('avatarPlaceholder');
+  const imgEl = document.getElementById('avatarImage');
+  if (src) {
+    imgEl.src = src;
+    imgEl.style.display = 'block';
+    placeholder.style.display = 'none';
+  } else {
+    imgEl.style.display = 'none';
+    placeholder.style.display = 'block';
+  }
+}
+
+// --- نظام التوثيق المحاكي بإدخال رمز OTP إجبارياً ---
+
+function updateVerificationUI() {
+  const emailVerified = getStorage('user_email_verified') === '1';
+  const phoneVerified = getStorage('user_phone_verified') === '1';
+
+  document.getElementById('btnVerifyEmail').style.display = emailVerified ? 'none' : '';
+  document.getElementById('badgeEmailVerified').style.display = emailVerified ? 'flex' : 'none';
+
+  document.getElementById('btnVerifyPhone').style.display = phoneVerified ? 'none' : '';
+  document.getElementById('badgePhoneVerified').style.display = phoneVerified ? 'flex' : 'none';
+}
+
+function onEmailChanged() {
+  setStorage('user_email_verified', '0');
+  updateVerificationUI();
+}
+
+function onPhoneChanged() {
+  setStorage('user_phone_verified', '0');
+  updateVerificationUI();
+}
+
+function requestOTP(type) {
+  if (type === 'email') {
+    const email = document.getElementById('f_email').value.trim();
+    if (!email || !email.includes('@')) {
+      showToast('يرجى كتابة بريد إلكتروني صحيح أولاً');
+      return;
+    }
+    pendingOTPType = 'email';
+    document.getElementById('otpDescription').textContent = `أدخل رمز التوثيق المرسل إلى البريد (${email}):`;
+  } else {
+    const phone = document.getElementById('f_phone').value;
+    const parsed = formatIraqiPhone(phone);
+    if (!parsed) {
+      showToast('أدخل رقم هاتف عراقي محلي صحيح يتكون من 11 رقماً ويبدأ بـ 07');
+      return;
+    }
+    pendingOTPType = 'phone';
+    document.getElementById('otpDescription').textContent = `أدخل رمز التوثيق المرسل في رسالة نصية إلى (${parsed.raw}):`;
+  }
+
+  const array = new Uint32Array(1);
+  crypto.getRandomValues(array);
+  generatedOTPCode = (1000 + (array[0] % 9000)).toString();
+
+  document.getElementById('otpInput').value = '';
+  openModal('otpModal');
+
+  // تنبيه بالرمز المحاكي لغرض التجربة
+  setTimeout(() => {
+    showToast(`رمز OTP المحاكي للتجربة هو: ${generatedOTPCode}`);
+  }, 500);
+}
+
+function confirmOTP() {
+  const inputCode = parseArabicNumbers(document.getElementById('otpInput').value.trim());
+  if (inputCode === generatedOTPCode) {
+    if (pendingOTPType === 'email') {
+      setStorage('user_email_verified', '1');
+      showToast('تم توثيق البريد الإلكتروني بنجاح!');
+    } else if (pendingOTPType === 'phone') {
+      setStorage('user_phone_verified', '1');
+      showToast('تم توثيق رقم الموبايل بنجاح!');
+    }
+    updateVerificationUI();
+    closeModal('otpModal');
+  } else {
+    showToast('رمز التوثيق غير صحيح، حاول مرة أخرى');
+  }
+}
+
+function generateMemberId() {
+  let id = getStorage('user_member_id');
+  if (!id) {
+    const array = new Uint32Array(1);
+    crypto.getRandomValues(array);
+    id = 'member-' + (100000 + (array[0] % 900000));
+    setStorage('user_member_id', id);
+  }
+  return id;
+}
+
 function saveAcc(e) {
   e.preventDefault();
   const name = document.getElementById('f_name').value.trim();
   const email = document.getElementById('f_email').value.trim();
+  const phone = document.getElementById('f_phone').value.trim();
+  const hidePhone = document.getElementById('f_hidePhone').checked;
+  const gender = document.getElementById('f_gender').value;
+  const dob = document.getElementById('f_dob').value;
 
-  const isSavedName = setStorage('user_name', name);
-  const isSavedEmail = setStorage('user_email', email);
-
-  if (isSavedName && isSavedEmail) {
-    showToast('تم حفظ البيانات بنجاح!');
-  } else {
-    showToast('تعذر الحفظ: السعة التخزينية ممتلئة أو غير متاحة');
+  if (phone) {
+    const parsed = formatIraqiPhone(phone);
+    if (!parsed) {
+      showToast('خطأ: رقم الموبايل غير صحيح (يجب أن يبدأ بـ 07 ويتكون من 11 رقماً)');
+      return;
+    }
   }
+
+  setStorage('user_name', name);
+  setStorage('user_email', email);
+  setStorage('user_phone', phone);
+  setStorage('user_hide_phone', hidePhone ? '1' : '0');
+  setStorage('user_gender', gender);
+  setStorage('user_dob', dob);
+
+  renderAds();
+  showToast('تم حفظ تغييرات الحساب بنجاح!');
 }
 
-function loadAccount() {
+async function loadAccount() {
   document.getElementById('f_name').value = getStorage('user_name') || '';
   document.getElementById('f_email').value = getStorage('user_email') || '';
+  document.getElementById('f_phone').value = getStorage('user_phone') || '';
+  document.getElementById('f_hidePhone').checked = getStorage('user_hide_phone') === '1';
+  document.getElementById('f_gender').value = getStorage('user_gender') || '';
+  document.getElementById('f_dob').value = getStorage('user_dob') || '';
+  
+  document.getElementById('f_profileLink').value = generateMemberId();
+
+  profileAvatarBase64 = await ImageStore.get('user_avatar');
+  renderAvatarImage(profileAvatarBase64);
+  
+  updateVerificationUI();
 }
 </script>
 </body>
