@@ -9,6 +9,7 @@
 <style>
 :root {
   --primary: #007bff;
+  --primary-focus: #0056b3;
   --accent: #f5a623;
   --bg: #f4f6f9;
   --card-bg: #ffffff;
@@ -16,22 +17,72 @@
   --text-muted: #6c757d;
   --border-color: #e9ecef;
   --danger: #dc3545;
+  --safe-top: env(safe-area-inset-top, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
 }
 
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Tajawal',sans-serif}
 body{background:var(--bg);padding-bottom:calc(80px + var(--safe-bottom));color:var(--text-main)}
+body.modal-open-scroll-lock { overflow: hidden !important; }
+
+/* مؤشرات التركيز الموحدة */
+:focus-visible {
+  outline: 3px solid var(--primary);
+  outline-offset: 2px;
+}
+.form-control:focus-visible,
+.search-box:focus-within,
+.city-filter:focus-visible {
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+  outline: none;
+}
 
 /* الشريط العلوي */
-.top-bar{background:var(--card-bg);padding:14px 20px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border-color);position:sticky;top:0;z-index:10;box-shadow:0 2px 4px rgba(0,0,0,.02)}
+.top-bar{
+  background:var(--card-bg);
+  padding:calc(14px + var(--safe-top)) 20px 14px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  border-bottom:1px solid var(--border-color);
+  position:sticky;
+  top:0;
+  z-index:10;
+  box-shadow:0 2px 4px rgba(0,0,0,.02)
+}
 .top-bar b{font-size:20px;font-weight:900;color:var(--primary)}
-.search-box{display:flex;gap:8px;padding:8px 16px;background:var(--bg);border-radius:20px;margin:10px 16px 0;border:1px solid var(--border-color)}
-.search-box input{border:none;background:transparent;outline:none;width:100%;font-size:14px}
 
-/* إدارة الصفحات */
+/* الفلترة والبحث */
+.filter-container {
+  display: flex;
+  gap: 8px;
+  padding: 10px 16px 0;
+}
+.search-box{
+  flex: 1;
+  display:flex;
+  gap:8px;
+  padding:8px 16px;
+  background:var(--card-bg);
+  border-radius:12px;
+  border:1px solid var(--border-color);
+  align-items:center;
+}
+.search-box input{border:none;background:transparent;outline:none;width:100%;font-size:14px}
+.city-filter {
+  padding: 8px;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  background: var(--card-bg);
+  font-size: 13px;
+  outline: none;
+}
+
+/* الصفحات */
 .page{display:none}.page.active{display:block}
 
-/* الشبكات والأقسام */
+/* الأقسام والشبكة */
 .home-grid{display:grid;grid-template-columns:repeat(auto-fill, minmax(85px, 1fr));gap:12px;padding:16px}
 @media(max-width:480px){.home-grid{grid-template-columns:repeat(4, 1fr)}}
 
@@ -41,38 +92,98 @@ body{background:var(--bg);padding-bottom:calc(80px + var(--safe-bottom));color:v
 .cat-box .icon{font-size:28px;margin-bottom:6px}
 .cat-box b{font-size:11px;font-weight:700}
 
-/* الإعلانات (List Cards) */
+/* الإعلانات */
 .ads-list{padding:16px;display:flex;flex-direction:column;gap:12px}
 .ad-card{background:var(--card-bg);border-radius:16px;padding:12px;border:1px solid var(--border-color);display:flex;gap:12px;cursor:pointer}
 .ad-img{width:100px;height:100px;border-radius:12px;object-fit:cover;background:#eee;flex-shrink:0}
-.ad-info{display:flex;flex-direction:column;justify-content:space-between;flex:1}
+.ad-info{
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  flex:1;
+  min-width: 0;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
 .ad-title{font-size:15px;font-weight:700;line-height:1.3}
 .ad-price{color:var(--primary);font-weight:900;font-size:16px}
 .ad-meta{font-size:11px;color:var(--text-muted);display:flex;justify-content:space-between}
 
-/* شريط التنقل السفلي */
+.empty-state{text-align:center;padding:40px 20px;color:var(--text-muted)}
+.empty-state span{font-size:40px;display:block;margin-bottom:8px}
+
+/* الشريط السفلي */
 .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--card-bg);border-top:1px solid var(--border-color);display:flex;justify-content:space-around;align-items:center;padding:8px 0 calc(8px + var(--safe-bottom));z-index:100}
-.nav-item{background:none;border:none;outline:none;font-size:11px;color:var(--text-muted);flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;font-weight:500}
+.nav-item{background:none;border:none;font-size:11px;color:var(--text-muted);flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;font-weight:500}
 .nav-item.active{color:var(--primary);font-weight:700}
 .nav-item span{font-size:20px}
 
 .add-btn{width:48px;height:48px;background:var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;color:#fff;margin-top:-20px;border:3px solid var(--card-bg);box-shadow:0 4px 10px rgba(245,166,35,.4)}
-.badge{background:var(--danger);color:#fff;border-radius:10px;padding:1px 6px;font-size:10px;position:absolute;top:-2px;right:15px;font-weight:900}
 
-/* نموذج الإدخال */
+/* النماذج */
 .form-group{padding:16px;display:flex;flex-direction:column;gap:12px}
 .form-control{width:100%;padding:12px;border-radius:10px;border:1px solid var(--border-color);outline:none;background:var(--card-bg);font-size:14px}
+.char-count{font-size:11px;color:var(--text-muted);text-align:left;margin-top:-8px;margin-bottom:4px}
 .btn-primary{width:100%;background:var(--primary);color:#fff;padding:14px;border:none;border-radius:10px;font-weight:700;cursor:pointer;font-size:15px}
+.btn-primary:disabled{background:#ccc;cursor:not-allowed}
 .btn-accent{background:var(--accent);color:#fff}
-.img-preview{width:100%;height:150px;border-radius:10px;border:2px dashed var(--border-color);display:flex;align-items:center;justify-content:center;object-fit:cover;background:#fafafa;cursor:pointer}
+.btn-danger{background:var(--danger);color:#fff}
+.img-preview{width:100%;height:150px;border-radius:10px;border:2px dashed var(--border-color);display:flex;align-items:center;justify-content:center;background:#fafafa;cursor:pointer;overflow:hidden}
 
-/* النافذة المنبثقة للدردشة والتفاصيل */
-.modal{position:fixed;inset:0;background:var(--card-bg);z-index:500;display:none;flex-direction:column}
+/* النوافذ المنبثقة */
+.modal{
+  position:fixed;
+  inset:0;
+  height: 100dvh;
+  background:var(--card-bg);
+  z-index:500;
+  display:none;
+  flex-direction:column;
+}
 .modal.open{display:flex}
-.modal-header{padding:16px;background:#111;color:#fff;display:flex;justify-content:space-between;align-items:center}
-.modal-body{padding:16px;flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:12px;background:var(--bg)}
+.modal:focus{outline:none}
+.modal-header{
+  padding:calc(16px + var(--safe-top)) 16px 16px;
+  background:#111;
+  color:#fff;
+  display:flex;
+  justify-content:space-between;
+  align-items:center
+}
+.modal-body{
+  padding:16px;
+  flex:1;
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  background:var(--bg)
+}
 
-/* الدردشة RTL */
+/* Toast */
+.toast{
+  position:fixed;
+  top:calc(20px + var(--safe-top));
+  left:50%;
+  transform:translateX(-50%);
+  background:#111;
+  color:#fff;
+  padding:12px 24px;
+  border-radius:20px;
+  font-size:14px;
+  z-index:1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  box-shadow:0 4px 12px rgba(0,0,0,0.2);
+  pointer-events: none;
+}
+.toast.show {
+  opacity: 1;
+  visibility: visible;
+}
+
 .msg{padding:10px 14px;border-radius:12px;max-width:80%;font-size:14px;word-break:break-word}
 .msg-user{background:var(--primary);color:#fff;align-self:flex-start;border-bottom-right-radius:2px}
 .msg-bot{background:var(--card-bg);color:var(--text-main);align-self:flex-end;border-bottom-left-radius:2px;box-shadow:0 1px 3px rgba(0,0,0,.05)}
@@ -81,18 +192,26 @@ body{background:var(--bg);padding-bottom:calc(80px + var(--safe-bottom));color:v
 .card-sum{background:var(--card-bg);padding:16px;border-radius:12px;border:1px solid var(--border-color)}
 </style>
 </head>
+
 <body>
+
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
 
 <!-- 1. الرئيسية -->
 <div id="home" class="page active">
   <div class="top-bar">
     <b>سوق العراق</b>
-    <span style="font-size:12px;color:var(--text-muted)">🇮🇶 جميع المحافظات</span>
+    <span id="topBarCityTag" style="font-size:12px;color:var(--text-muted)">🇮🇶 جميع المحافظات</span>
   </div>
   
-  <div class="search-box">
-    <span>🔍</span>
-    <input type="text" id="searchInput" placeholder="ابحث عن سيارة، موبايل، عقار..." oninput="renderAds()">
+  <div class="filter-container">
+    <div class="search-box">
+      <span>🔍</span>
+      <input type="text" id="searchInput" placeholder="ابحث عن سيارة، موبايل، قسم..." oninput="renderAds()">
+    </div>
+    <select id="homeCityFilter" class="city-filter" onchange="renderAds()">
+      <option value="">كل المحافظات</option>
+    </select>
   </div>
 
   <div class="home-grid" id="categoriesGrid"></div>
@@ -115,7 +234,10 @@ body{background:var(--bg);padding-bottom:calc(80px + var(--safe-bottom));color:v
 <!-- 3. الدردشات -->
 <div id="chats" class="page">
   <div class="top-bar"><b>الرسائل والمحادثات</b></div>
-  <div style="padding:40px;text-align:center;color:var(--text-muted)">لا توجد محادثات خاصة حالياً. استخدم المساعد الذكي للاستفسار.</div>
+  <div class="empty-state">
+    <span>💬</span>
+    لا توجد محادثات خاصة حالياً.
+  </div>
 </div>
 
 <!-- 4. إضافة إعلان -->
@@ -123,17 +245,20 @@ body{background:var(--bg);padding-bottom:calc(80px + var(--safe-bottom));color:v
   <div class="top-bar"><b>أضف إعلان جديد</b></div>
   <form class="form-group" id="addAdForm" onsubmit="handleCreateAd(event)">
     <label style="font-weight:700">صورة الإعلان:</label>
-    <input type="file" id="adImgInput" accept="image/*" style="display:none" onchange="previewImage(event)">
-    <div class="img-preview" onclick="document.getElementById('adImgInput').click()" id="previewBox">
+    <input type="file" id="adImgInput" accept="image/*" style="display:none" onchange="handleImageCompress(event)">
+    <div class="img-preview" tabindex="0" onclick="document.getElementById('adImgInput').click()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault(); document.getElementById('adImgInput').click();}" id="previewBox">
       <span>📷 اضغط هنا لرفع صورة</span>
     </div>
 
-    <input type="text" id="adTitle" class="form-control" placeholder="عنوان الإعلان (مثال: أيفون 13 برو)" required>
-    
+    <div>
+      <input type="text" id="adTitle" class="form-control" placeholder="عنوان الإعلان (مثال: أيفون 13 برو)" maxlength="80" oninput="updateCharCount(this, 'titleCount', 80)" required>
+      <div id="titleCount" class="char-count">0 / 80</div>
+    </div>
+
     <select id="adCat" class="form-control" required></select>
     
     <div style="display:flex;gap:8px">
-      <input type="number" id="adPrice" class="form-control" placeholder="السعر" min="0" required>
+      <input type="text" id="adPrice" class="form-control" placeholder="السعر" inputmode="numeric" oninput="cleanPriceInput(this)" required>
       <select id="adCurrency" class="form-control" style="width:110px">
         <option value="د.ع">د.ع</option>
         <option value="$">$ USD</option>
@@ -142,74 +267,74 @@ body{background:var(--bg);padding-bottom:calc(80px + var(--safe-bottom));color:v
 
     <select id="adCity" class="form-control" required>
       <option value="">اختر المحافظة</option>
-      <option value="بغداد">بغداد</option>
-      <option value="البصرة">البصرة</option>
-      <option value="أربيل">أربيل</option>
-      <option value="النجف">النجف</option>
-      <option value="نينوى">نينوى</option>
-      <option value="كربلاء">كربلاء</option>
     </select>
 
-    <input type="tel" id="adPhone" class="form-control" placeholder="رقم الهاتف (07XXXXXXXXX)" pattern="07[0-9]{9}" required>
+    <input type="tel" id="adPhone" class="form-control" placeholder="رقم الهاتف (07XXXXXXXXX)" inputmode="numeric" oninput="this.value = parseArabicNumbers(this.value)" required>
+
+    <div>
+      <textarea id="adDesc" class="form-control" rows="3" placeholder="تفاصيل وصف السلعة..." maxlength="1000" oninput="updateCharCount(this, 'descCount', 1000)" required></textarea>
+      <div id="descCount" class="char-count">0 / 1000</div>
+    </div>
     
-    <textarea id="adDesc" class="form-control" rows="3" placeholder="تفاصيل وصف السلعة..." required></textarea>
-    
-    <button type="submit" class="btn-primary btn-accent">🚀 نشر الإعلان الآن</button>
+    <button type="submit" id="submitAdBtn" class="btn-primary btn-accent">🚀 نشر الإعلان الآن</button>
   </form>
 </div>
 
 <!-- 5. حسابي -->
 <div id="account" class="page">
   <div class="top-bar"><b>حسابي الشخصي</b></div>
-  <div class="form-group">
+  <form class="form-group" onsubmit="saveAcc(event)">
     <label style="font-weight:700">الاسم:</label>
-    <input id="f_name" type="text" class="form-control" placeholder="أدخل اسمك">
+    <input id="f_name" type="text" class="form-control" placeholder="أدخل اسمك" maxlength="50" required>
     <label style="font-weight:700">البريد الإلكتروني:</label>
-    <input id="f_email" type="email" class="form-control" placeholder="example@domain.com">
-    <button type="button" onclick="saveAcc()" class="btn-primary">حفظ التغييرات</button>
-    <div id="accAlert" style="color:green;text-align:center;font-weight:700"></div>
-  </div>
+    <input id="f_email" type="email" class="form-control" placeholder="example@domain.com" required>
+    <button type="submit" class="btn-primary">حفظ التغييرات</button>
+  </form>
 </div>
 
-<!-- شريط التنقل السفلي -->
-<nav class="bottom-nav">
+<!-- الشريط السفلي -->
+<nav class="bottom-nav" id="bottomNav">
   <button class="nav-item active" id="n_home" onclick="showPage('home')"><span>🏠</span>الرئيسية</button>
-  <button class="nav-item" id="n_chats" onclick="showPage('chats')">
-    <div style="position:relative"><span>💬</span></div>الدردشات
-  </button>
-  <button class="nav-item" id="n_add" onclick="showPage('add')">
-    <div class="add-btn">+</div>إعلان
-  </button>
+  <button class="nav-item" id="n_chats" onclick="showPage('chats')"><span>💬</span>الدردشات</button>
+  <button class="nav-item" id="n_add" onclick="showPage('add')"><span class="add-btn">+</span>إعلان</button>
   <button class="nav-item" id="n_myads" onclick="showPage('myads')"><span>📄</span>إعلاناتي</button>
   <button class="nav-item" id="n_account" onclick="showPage('account')"><span>👤</span>حسابي</button>
 </nav>
 
-<!-- نافذة التفاصيل (Modal) -->
-<div id="detailsModal" class="modal">
+<!-- النوافذ المنبثقة -->
+<div id="detailsModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="mTitle" tabindex="-1">
   <div class="modal-header">
     <b id="mTitle">تفاصيل الإعلان</b>
-    <button onclick="closeModal('detailsModal')" style="color:#fff;background:none;border:none;font-size:18px;cursor:pointer">✕</button>
+    <button onclick="closeModal('detailsModal')" aria-label="إغلاق النافذة" style="color:#fff;background:none;border:none;font-size:18px;cursor:pointer">✕</button>
   </div>
   <div class="modal-body" id="mBody"></div>
 </div>
 
-<!-- المساعد الذكي العائم -->
-<button onclick="openChat()" style="position:fixed;bottom:85px;left:16px;background:#111;color:#fff;width:48px;height:48px;border-radius:50%;border:none;cursor:pointer;box-shadow:0 4px 10px rgba(0,0,0,0.3);z-index:90">💬</button>
+<button id="aiBotBtn" onclick="openChat(this)" aria-label="فتح المساعد الذكي" style="position:fixed;bottom:calc(85px + var(--safe-bottom));left:16px;background:#111;color:#fff;width:48px;height:48px;border-radius:50%;border:none;cursor:pointer;box-shadow:0 4px 10px rgba(0,0,0,0.3);z-index:90">💬</button>
 
-<div id="chatModal" class="modal">
+<div id="chatModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="chatTitle" tabindex="-1">
   <div class="modal-header">
-    <b>🤖 المساعد الذكي</b>
-    <button onclick="closeModal('chatModal')" style="color:#fff;background:none;border:none;font-size:18px;cursor:pointer">✕</button>
+    <b id="chatTitle">🤖 المساعد الذكي</b>
+    <button onclick="closeModal('chatModal')" aria-label="إغلاق النافذة" style="color:#fff;background:none;border:none;font-size:18px;cursor:pointer">✕</button>
   </div>
   <div class="modal-body" id="chatMessages"></div>
-  <div style="padding:12px;background:#fff;display:flex;gap:8px;border-top:1px solid var(--border-color)">
+  <div style="padding:12px;padding-bottom:calc(12px + var(--safe-bottom));background:#fff;display:flex;gap:8px;border-top:1px solid var(--border-color)">
     <input type="text" id="chatInput" class="form-control" placeholder="اكتب سؤالك..." onkeydown="if(event.key==='Enter')sendMsg()">
     <button onclick="sendMsg()" class="btn-primary" style="width:auto;padding:0 20px">إرسال</button>
   </div>
 </div>
 
 <script>
-// الأقسام الـ 16 الموحدة
+const FALLBACK_IMAGE = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'><rect width='100%' height='100%' fill='%23e9ecef'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='12' fill='%236c757d'>لا توجد صورة</text></svg>";
+
+const MAX_ALLOWED_PRICE = 999999999999;
+
+const IRAQ_CITIES = [
+  "بغداد", "نينوى", "البصرة", "أربيل", "السليمانية", "دهوك", 
+  "كركوك", "الأنبار", "صلاح الدين", "ديالى", "بابل", "كربلاء", 
+  "النجف", "القادسية", "واسط", "ميسان", "ذي قار", "المثنى"
+];
+
 const CATEGORIES = [
   {id: 'real_sale', name: 'عقارات للبيع', icon: '🏢'},
   {id: 'real_rent', name: 'عقارات للإيجار', icon: '🏠'},
@@ -229,40 +354,144 @@ const CATEGORIES = [
   {id: 'appliances', name: 'أجهزة منزلية', icon: '🧊'}
 ];
 
-// حالة التطبيق المحلية (State)
-let adsState = [
-  {
-    id: 1,
-    title: 'تويوتا كامري 2022 كفالة شركة',
-    category: 'cars',
-    price: 22500,
-    currency: '$',
-    city: 'بغداد',
-    phone: '07700000000',
-    desc: 'سيارة نظيفة جدا بدون حوادث، ماشية 30 ألف كيلو فقط.',
-    img: 'https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?w=400',
-    views: 142,
-    isMine: false
-  }
-];
-
+let adsState = [];
 let selectedCategory = 'all';
-let currentImgBase64 = '';
+let currentImgBase64 = null;
+let toastTimer = null;
+let currentPage = 'home';
+let chatInitialized = false;
 
-// Safe Storage Helper
-function getStorage(key) {
-  try { return localStorage.getItem(key); } catch(e) { return null; }
-}
-function setStorage(key, val) {
-  try { localStorage.setItem(key, val); } catch(e) {}
+// إدارة النوافذ المفتوحة
+let modalStack = [];
+
+function parseArabicNumbers(str) {
+  if (!str) return '';
+  return str.replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d));
 }
 
-// البدء عند تحميل الصفحة
+function cleanPriceInput(input) {
+  let val = parseArabicNumbers(input.value);
+  val = val.replace(/[^0-9]/g, '');
+  if (val && parseFloat(val) > MAX_ALLOWED_PRICE) {
+    val = MAX_ALLOWED_PRICE.toString();
+  }
+  input.value = val;
+}
+
+// دالة التحقق الدقيقة وتنسيق أرقام الهواتف العراقية
+function formatIraqiPhone(phoneStr) {
+  if (!phoneStr) return null;
+  let cleaned = parseArabicNumbers(phoneStr).replace(/[^0-9]/g, '');
+
+  if (cleaned.startsWith('00964')) cleaned = cleaned.substring(5);
+  else if (cleaned.startsWith('964')) cleaned = cleaned.substring(3);
+  else if (cleaned.startsWith('07')) cleaned = cleaned.substring(1);
+
+  const rawPhone = '0' + cleaned;
+  
+  // شرط صارم: يجب أن يبدأ بـ 07 ويتكون من 11 رقماً بالضبط
+  if (!/^07\d{9}$/.test(rawPhone)) {
+    return null;
+  }
+
+  return {
+    raw: rawPhone,
+    whatsapp: '964' + cleaned
+  };
+}
+
+function updateCharCount(inputEl, targetId, maxLen) {
+  const count = inputEl.value.length;
+  document.getElementById(targetId).textContent = `${count} / ${maxLen}`;
+}
+
+function getStorage(key) { try { return localStorage.getItem(key); } catch(e) { return null; } }
+function setStorage(key, val) { 
+  try { 
+    localStorage.setItem(key, val); 
+    return true; 
+  } catch(e) { 
+    return false; 
+  } 
+}
+
+function normalizeArabic(str) {
+  if (!str) return '';
+  return str
+    .replace(/[أإآ]/g, 'ا')
+    .replace(/ة/g, 'ه')
+    .replace(/ى/g, 'ي')
+    .toLowerCase()
+    .trim();
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  if (toastTimer) clearTimeout(toastTimer);
+  
+  t.textContent = msg;
+  t.classList.add('show');
+  
+  toastTimer = setTimeout(() => {
+    t.classList.remove('show');
+    toastTimer = null;
+  }, 3000);
+}
+
 window.addEventListener('DOMContentLoaded', () => {
   initCategories();
+  initCities();
   loadAccount();
   renderAds();
+
+  const previewBox = document.getElementById('previewBox');
+  previewBox.setAttribute('role', 'button');
+  previewBox.setAttribute('aria-label', 'رفع صورة');
+
+  const initialHash = window.location.hash.replace('#', '');
+  const validPages = ['home', 'chats', 'add', 'myads', 'account'];
+  const startPage = validPages.includes(initialHash) ? initialHash : 'home';
+  
+  showPage(startPage, false);
+  history.replaceState({ page: startPage }, '', `#${startPage}`);
+
+  // التعامل السليم مع Esc
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modalStack.length > 0) {
+      const topModal = modalStack[modalStack.length - 1];
+      closeModal(topModal.id);
+    }
+  });
+
+  // معالجة popstate وتنقّل المتصفح دون حالة ميتة
+  window.addEventListener('popstate', (e) => {
+    if (modalStack.length > 0) {
+      const topModal = modalStack[modalStack.length - 1];
+      closeModal(topModal.id, false);
+      return;
+    }
+    
+    if (e.state && e.state.modalOpen && modalStack.length === 0) {
+      return;
+    }
+
+    if (e.state && e.state.page) {
+      showPage(e.state.page, false);
+    }
+  });
 });
+
+function initCities() {
+  const select = document.getElementById('adCity');
+  const homeFilter = document.getElementById('homeCityFilter');
+  IRAQ_CITIES.forEach(c => {
+    const opt = document.createElement('option');
+    opt.value = c;
+    opt.textContent = c;
+    select.appendChild(opt);
+    homeFilter.appendChild(opt.cloneNode(true));
+  });
+}
 
 function initCategories() {
   const grid = document.getElementById('categoriesGrid');
@@ -271,10 +500,19 @@ function initCategories() {
   select.innerHTML = '<option value="">اختر القسم</option>';
 
   CATEGORIES.forEach(cat => {
-    // شبكة الرئيسية
     const box = document.createElement('div');
     box.className = 'cat-box';
+    box.tabIndex = 0;
+    box.setAttribute('role', 'button');
+    box.setAttribute('aria-label', cat.name);
+    
     box.onclick = () => filterCategory(cat.id, box);
+    box.onkeydown = (e) => { 
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        filterCategory(cat.id, box); 
+      }
+    };
     
     const icon = document.createElement('div');
     icon.className = 'icon';
@@ -287,7 +525,6 @@ function initCategories() {
     box.appendChild(label);
     grid.appendChild(box);
 
-    // قائمة خيارات خيارات نشر الإعلان
     const opt = document.createElement('option');
     opt.value = cat.id;
     opt.textContent = `${cat.icon} ${cat.name}`;
@@ -306,109 +543,206 @@ function filterCategory(catId, el) {
   renderAds();
 }
 
-// عرض الإعلانات الآمن (Safe DOM Builder - No innerHTML XSS)
+function buildAdCard(ad) {
+  const card = document.createElement('div');
+  card.className = 'ad-card';
+  card.dataset.id = ad.id;
+  card.tabIndex = 0;
+  card.setAttribute('role', 'button');
+  card.setAttribute('aria-label', `إعلان: ${ad.title}`);
+  
+  card.onclick = (e) => openAdDetails(ad.id, e.currentTarget);
+  card.onkeydown = (e) => { 
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      openAdDetails(ad.id, e.currentTarget); 
+    }
+  };
+
+  const img = document.createElement('img');
+  img.className = 'ad-img';
+  img.src = ad.img || FALLBACK_IMAGE;
+  img.alt = ad.title;
+  img.onerror = function() { 
+    this.onerror = null; 
+    this.src = FALLBACK_IMAGE; 
+  };
+
+  const info = document.createElement('div');
+  info.className = 'ad-info';
+
+  const title = document.createElement('div');
+  title.className = 'ad-title';
+  title.textContent = ad.title;
+
+  const price = document.createElement('div');
+  price.className = 'ad-price';
+  price.textContent = `${ad.price.toLocaleString('en-US')} ${ad.currency}`;
+
+  const meta = document.createElement('div');
+  meta.className = 'ad-meta';
+  
+  const city = document.createElement('span');
+  city.textContent = `📍 ${ad.city}`;
+  
+  const views = document.createElement('span');
+  views.className = 'ad-views-tag';
+  views.textContent = `👁 ${ad.views}`;
+
+  meta.appendChild(city);
+  meta.appendChild(views);
+
+  info.appendChild(title);
+  info.appendChild(price);
+  info.appendChild(meta);
+
+  card.appendChild(img);
+  card.appendChild(info);
+
+  return card;
+}
+
 function renderAds() {
   const container = document.getElementById('adsContainer');
   const myContainer = document.getElementById('myAdsContainer');
-  const search = document.getElementById('searchInput').value.toLowerCase().trim();
+  const rawQuery = normalizeArabic(document.getElementById('searchInput').value);
+  const searchTokens = rawQuery ? rawQuery.split(/\s+/).filter(Boolean) : [];
   
+  const selectedCity = document.getElementById('homeCityFilter').value;
+  
+  document.getElementById('topBarCityTag').textContent = selectedCity ? `📍 ${selectedCity}` : '🇮🇶 جميع المحافظات';
+
   container.innerHTML = '';
   myContainer.innerHTML = '';
 
   let totalViews = 0;
   let myCount = 0;
+  let matchCount = 0;
 
   adsState.forEach(ad => {
-    // الفلترة
+    const catObj = CATEGORIES.find(c => c.id === ad.category);
+    const catName = catObj ? catObj.name : '';
+
     const matchCat = selectedCategory === 'all' || ad.category === selectedCategory;
-    const matchSearch = ad.title.toLowerCase().includes(search) || ad.city.includes(search);
+    const matchCity = !selectedCity || ad.city === selectedCity;
+    
+    const searchTarget = normalizeArabic(`${ad.title} ${ad.desc} ${ad.city} ${catName}`);
+    const matchSearch = searchTokens.every(token => searchTarget.includes(token));
 
     if (ad.isMine) {
       myCount++;
       totalViews += ad.views;
+      myContainer.appendChild(buildAdCard(ad));
     }
 
-    if (!matchCat || !matchSearch) return;
-
-    const card = document.createElement('div');
-    card.className = 'ad-card';
-    card.onclick = () => openAdDetails(ad.id);
-
-    const img = document.createElement('img');
-    img.className = 'ad-img';
-    img.src = ad.img || 'https://via.placeholder.com/150';
-    img.alt = ad.title;
-
-    const info = document.createElement('div');
-    info.className = 'ad-info';
-
-    const title = document.createElement('div');
-    title.className = 'ad-title';
-    title.textContent = ad.title;
-
-    const price = document.createElement('div');
-    price.className = 'ad-price';
-    price.textContent = `${ad.price.toLocaleString()} ${ad.currency}`;
-
-    const meta = document.createElement('div');
-    meta.className = 'ad-meta';
-    
-    const city = document.createElement('span');
-    city.textContent = `📍 ${ad.city}`;
-    
-    const views = document.createElement('span');
-    views.textContent = `👁 ${ad.views}`;
-
-    meta.appendChild(city);
-    meta.appendChild(views);
-
-    info.appendChild(title);
-    info.appendChild(price);
-    info.appendChild(meta);
-
-    card.appendChild(img);
-    card.appendChild(info);
-
-    container.appendChild(card);
-
-    if (ad.isMine) {
-      myContainer.appendChild(card.cloneNode(true));
+    if (matchCat && matchCity && matchSearch) {
+      matchCount++;
+      container.appendChild(buildAdCard(ad));
     }
   });
+
+  if (adsState.length === 0) {
+    container.innerHTML = `<div class="empty-state"><span>📦</span>لا توجد إعلانات منشورة حتى الآن. كن أول من يضيف إعلاناً!</div>`;
+  } else if (matchCount === 0) {
+    container.innerHTML = `<div class="empty-state"><span>🔍</span>لا توجد إعلانات مطابقة لعملية البحث أو الفلتر الحالي</div>`;
+  }
+
+  if (myCount === 0) {
+    myContainer.innerHTML = `<div class="empty-state"><span>📄</span>لم تقم بنشر أي إعلان بعد</div>`;
+  }
 
   document.getElementById('myAdsCount').textContent = myCount;
   document.getElementById('myViewsCount').textContent = totalViews;
 }
 
-// معالجة الصور محلياً
-function previewImage(e) {
+function handleImageCompress(e) {
   const file = e.target.files[0];
   if (!file) return;
+
+  const submitBtn = document.getElementById('submitAdBtn');
+  submitBtn.disabled = true;
+  submitBtn.textContent = '⏳ جاري ضغط الصورة...';
+
   const reader = new FileReader();
   reader.onload = function(evt) {
-    currentImgBase64 = evt.target.result;
-    const box = document.getElementById('previewBox');
-    box.innerHTML = '';
-    const img = document.createElement('img');
-    img.src = currentImgBase64;
-    img.style.width = '100%';
-    img.style.height = '100%';
-    img.style.objectFit = 'cover';
-    img.style.borderRadius = '10px';
-    box.appendChild(img);
+    const img = new Image();
+    
+    img.onerror = function() {
+      showToast('خطأ: الملف المختار ليس صورة سليمة!');
+      document.getElementById('adImgInput').value = '';
+      document.getElementById('previewBox').innerHTML = '<span>📷 اضغط هنا لرفع صورة</span>';
+      currentImgBase64 = null;
+      submitBtn.disabled = false;
+      submitBtn.textContent = '🚀 نشر الإعلان الآن';
+    };
+
+    img.onload = function() {
+      const canvas = document.createElement('canvas');
+      const MAX_WIDTH = 800;
+      const MAX_HEIGHT = 800;
+      let width = img.width;
+      let height = img.height;
+
+      if (width > height) {
+        if (width > MAX_WIDTH) {
+          height = Math.round(height * (MAX_WIDTH / width));
+          width = MAX_WIDTH;
+        }
+      } else {
+        if (height > MAX_HEIGHT) {
+          width = Math.round(width * (MAX_HEIGHT / height));
+          height = MAX_HEIGHT;
+        }
+      }
+
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d');
+
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, width, height);
+      ctx.drawImage(img, 0, 0, width, height);
+
+      currentImgBase64 = canvas.toDataURL('image/jpeg', 0.7);
+      
+      const box = document.getElementById('previewBox');
+      box.innerHTML = '';
+      const prevImg = document.createElement('img');
+      prevImg.src = currentImgBase64;
+      prevImg.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:10px;';
+      box.appendChild(prevImg);
+
+      submitBtn.disabled = false;
+      submitBtn.textContent = '🚀 نشر الإعلان الآن';
+    };
+    img.src = evt.target.result;
   };
   reader.readAsDataURL(file);
 }
 
-// نشر إعلان جديد
 function handleCreateAd(e) {
   e.preventDefault();
+  
   const title = document.getElementById('adTitle').value.trim();
   const category = document.getElementById('adCat').value;
-  const price = parseFloat(document.getElementById('adPrice').value);
+  const rawPrice = document.getElementById('adPrice').value;
+  const price = parseFloat(rawPrice);
+  
+  if (!Number.isFinite(price) || price <= 0) {
+    showToast('خطأ: يرجى إدخال سعر صحيح أكبر من صفر');
+    return;
+  }
+
   const currency = document.getElementById('adCurrency').value;
   const city = document.getElementById('adCity').value;
-  const phone = document.getElementById('adPhone').value;
+  const rawPhone = document.getElementById('adPhone').value;
+  
+  const parsedPhone = formatIraqiPhone(rawPhone);
+  if (!parsedPhone) {
+    showToast('خطأ: أدخل رقم هاتف عراقي محلي صحيح ينتهي بـ 11 رقماً ويبدأ بـ 07');
+    return;
+  }
+
   const desc = document.getElementById('adDesc').value.trim();
 
   const newAd = {
@@ -418,50 +752,69 @@ function handleCreateAd(e) {
     price,
     currency,
     city,
-    phone,
+    phone: parsedPhone.raw,
+    whatsapp: parsedPhone.whatsapp,
     desc,
-    img: currentImgBase64 || 'https://via.placeholder.com/150',
+    img: currentImgBase64,
     views: 0,
     isMine: true
   };
 
   adsState.unshift(newAd);
+
+  selectedCategory = 'all';
+  document.querySelectorAll('.cat-box').forEach(b => b.classList.remove('active'));
+  document.getElementById('searchInput').value = '';
+  document.getElementById('homeCityFilter').value = '';
+
   renderAds();
   
-  // إعادة ضبط النموذج
   document.getElementById('addAdForm').reset();
-  document.getElementById('previewBox').textContent = '📷 اضغط هنا لرفع صورة';
-  currentImgBase64 = '';
+  document.getElementById('previewBox').innerHTML = '<span>📷 اضغط هنا لرفع صورة</span>';
+  document.getElementById('titleCount').textContent = '0 / 80';
+  document.getElementById('descCount').textContent = '0 / 1000';
+  currentImgBase64 = null;
   
-  alert('تم نشر إعلانك بنجاح!');
-  showPage('myads');
+  showToast('تم نشر إعلانك بنجاح!');
+  showPage('home');
 }
 
-// عرض تفاصيل الإعلان
-function openAdDetails(id) {
+function openAdDetails(id, triggerElement = null) {
   const ad = adsState.find(a => a.id === id);
   if (!ad) return;
-  ad.views++;
-  renderAds();
+
+  if (!ad.isMine) {
+    ad.views++;
+    document.querySelectorAll(`.ad-card[data-id="${ad.id}"] .ad-views-tag`).forEach(tag => {
+      tag.textContent = `👁 ${ad.views}`;
+    });
+  }
 
   document.getElementById('mTitle').textContent = ad.title;
   const body = document.getElementById('mBody');
   body.innerHTML = '';
 
   const img = document.createElement('img');
-  img.src = ad.img;
+  img.src = ad.img || FALLBACK_IMAGE;
   img.style.cssText = 'width:100%;height:220px;object-fit:cover;border-radius:12px;';
+  img.onerror = function() { 
+    this.onerror = null; 
+    this.src = FALLBACK_IMAGE; 
+  };
 
   const price = document.createElement('h2');
   price.style.color = 'var(--primary)';
-  price.textContent = `${ad.price.toLocaleString()} ${ad.currency}`;
+  price.textContent = `${ad.price.toLocaleString('en-US')} ${ad.currency}`;
 
   const location = document.createElement('div');
-  location.textContent = `الموقع: ${ad.city}`;
+  location.textContent = `📍 المحافظة: ${ad.city}`;
 
   const desc = document.createElement('p');
-  desc.style.cssText = 'background:#fff;padding:12px;border-radius:8px;line-height:1.5;';
+  desc.style.cssText = 'background:#fff;padding:12px;border-radius:8px;line-height:1.5;white-space:pre-wrap;word-break:break-word;';
   desc.textContent = ad.desc;
+
+  const phoneBox = document.createElement('div');
+  phoneBox.style.cssText = 'display:flex;flex-direction:column;gap:8px;margin-top:8px;';
 
   const btnCall = document.createElement('a');
   btnCall.href = `tel:${ad.phone}`;
@@ -470,39 +823,119 @@ function openAdDetails(id) {
   btnCall.textContent = `📞 اتصال بالبائع (${ad.phone})`;
 
   const btnWa = document.createElement('a');
-  const waPhone = ad.phone.replace(/^0/, '964');
-  btnWa.href = `https://wa.me/${waPhone}`;
+  btnWa.href = `https://wa.me/${ad.whatsapp}`;
   btnWa.target = '_blank';
+  btnWa.rel = 'noopener';
   btnWa.className = 'btn-primary btn-accent';
-  btnWa.style.cssText = 'text-decoration:none;text-align:center;display:block;margin-top:8px;';
+  btnWa.style.cssText = 'text-decoration:none;text-align:center;display:block;';
   btnWa.textContent = '💬 مراسلة عبر واتساب';
+
+  phoneBox.appendChild(btnCall);
+  phoneBox.appendChild(btnWa);
 
   body.appendChild(img);
   body.appendChild(price);
   body.appendChild(location);
   body.appendChild(desc);
-  body.appendChild(btnCall);
-  body.appendChild(btnWa);
+  body.appendChild(phoneBox);
 
-  document.getElementById('detailsModal').classList.add('open');
+  if (ad.isMine) {
+    const btnDel = document.createElement('button');
+    btnDel.className = 'btn-primary btn-danger';
+    btnDel.style.marginTop = '12px';
+    btnDel.textContent = '🗑️ حذف الإعلان';
+    btnDel.onclick = () => {
+      if (confirm('هل أنت تأكد من إرادتك لحذف هذا الإعلان؟')) {
+        adsState = adsState.filter(a => a.id !== ad.id);
+        renderAds();
+        closeModal('detailsModal');
+        showToast('تم حذف الإعلان بنجاح');
+        
+        // توجيه التركيز لعنصر ثابت بدلاً من البطاقة المحذوفة
+        setTimeout(() => {
+          document.getElementById('searchInput').focus({ preventScroll: true });
+        }, 50);
+      }
+    };
+    body.appendChild(btnDel);
+  }
+
+  openModal('detailsModal', triggerElement);
 }
 
-function closeModal(id) {
-  document.getElementById(id).classList.remove('open');
+function openModal(id, triggerElement = null) {
+  const trigger = triggerElement || document.activeElement;
+  modalStack.push({ id: id, trigger: trigger });
+
+  const modal = document.getElementById(id);
+  modal.classList.add('open');
+  modal.focus();
+
+  // تفعيل inert لمنع خروج التركيز للخلفية وتأمين Scroll Lock
+  document.querySelectorAll('.page.active, .top-bar, #bottomNav, #aiBotBtn').forEach(el => {
+    el.setAttribute('inert', '');
+  });
+  document.body.classList.add('modal-open-scroll-lock');
+
+  history.pushState({ modalOpen: true, modalId: id }, '');
 }
 
-// إدارة التنقل
-function showPage(p) {
+function closeModal(id, triggerHistory = true) {
+  const modalIndex = modalStack.findIndex(m => m.id === id);
+  if (modalIndex !== -1) {
+    const modalObj = modalStack.splice(modalIndex, 1)[0];
+    const el = document.getElementById(modalObj.id);
+    
+    if (el) el.classList.remove('open');
+
+    // إزالة inert وتأمين إعادة التمرير إذا كانت جميع النوافذ مغلقة
+    if (modalStack.length === 0) {
+      document.querySelectorAll('[inert]').forEach(el => {
+        el.removeAttribute('inert');
+      });
+      document.body.classList.remove('modal-open-scroll-lock');
+    }
+
+    if (triggerHistory && history.state && history.state.modalOpen) {
+      history.back();
+    }
+
+    if (modalObj.trigger && typeof modalObj.trigger.focus === 'function' && document.body.contains(modalObj.trigger)) {
+      modalObj.trigger.focus({ preventScroll: true });
+    }
+  }
+}
+
+function showPage(p, triggerHistory = true) {
+  const isSamePage = (p === currentPage);
+
   document.querySelectorAll('.page').forEach(x => x.classList.remove('active'));
   document.getElementById(p).classList.add('active');
+  
   document.querySelectorAll('.nav-item').forEach(x => x.classList.remove('active'));
   const btn = document.getElementById('n_' + p);
   if(btn) btn.classList.add('active');
+
+  if (!isSamePage) {
+    window.scrollTo(0, 0);
+    currentPage = p;
+  }
+
+  if (triggerHistory && !isSamePage) {
+    history.pushState({ page: p }, '', `#${p}`);
+  }
 }
 
-// الدردشة الآمنة
-function openChat() {
-  document.getElementById('chatModal').classList.add('open');
+function openChat(btnEl) { 
+  const box = document.getElementById('chatMessages');
+  if (!chatInitialized && box.children.length === 0) {
+    const welcomeMsg = document.createElement('div');
+    welcomeMsg.className = 'msg msg-bot';
+    welcomeMsg.textContent = 'مرحباً بك! أنا المساعد الذكي، كيف يمكنني مساعدتك اليوم في سوق العراق؟';
+    box.appendChild(welcomeMsg);
+    chatInitialized = true;
+  }
+  openModal('chatModal', btnEl); 
 }
 
 function sendMsg() {
@@ -512,7 +945,6 @@ function sendMsg() {
 
   const box = document.getElementById('chatMessages');
 
-  // رسالة المستخدم (يمين الشاشة)
   const userMsg = document.createElement('div');
   userMsg.className = 'msg msg-user';
   userMsg.textContent = text;
@@ -521,7 +953,6 @@ function sendMsg() {
   input.value = '';
   box.scrollTop = box.scrollHeight;
 
-  // رد المساعد (يسار الشاشة)
   setTimeout(() => {
     const botMsg = document.createElement('div');
     botMsg.className = 'msg msg-bot';
@@ -531,17 +962,19 @@ function sendMsg() {
   }, 600);
 }
 
-// إدارة معلومات الحساب
-function saveAcc() {
+function saveAcc(e) {
+  e.preventDefault();
   const name = document.getElementById('f_name').value.trim();
   const email = document.getElementById('f_email').value.trim();
 
-  setStorage('user_name', name);
-  setStorage('user_email', email);
+  const isSavedName = setStorage('user_name', name);
+  const isSavedEmail = setStorage('user_email', email);
 
-  const alertBox = document.getElementById('accAlert');
-  alertBox.textContent = 'تم حفظ البيانات بنجاح!';
-  setTimeout(() => alertBox.textContent = '', 3000);
+  if (isSavedName && isSavedEmail) {
+    showToast('تم حفظ البيانات بنجاح!');
+  } else {
+    showToast('تعذر الحفظ: السعة التخزينية ممتلئة أو غير متاحة');
+  }
 }
 
 function loadAccount() {
