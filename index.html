@@ -3,90 +3,115 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>سوق العراق - السوق الفاخر</title>
+<title>سوق العراق</title>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Tajawal',Tahoma,sans-serif}
-body{background:#0a0a0a;color:#fff}
-.header{background:#0a0a0a;border-bottom:1px solid #c9a46a22;padding:14px 16px;display:flex;justify-content:space-between;align-items:center}
-.wa-btn{background:#d9b76d;color:#000;padding:8px 14px;border-radius:20px;font-size:13px;font-weight:800;text-decoration:none;display:flex;align-items:center;gap:6px}
-.logo{display:flex;align-items:center;gap:8px;color:#d9b76d;font-weight:900;font-size:20px;line-height:1}
-.logo small{display:block;font-size:9px;font-weight:400;opacity:.8;color:#fff}
-.hero{background:#0a0a0a;text-align:center;padding:28px 16px 32px;border-bottom:1px solid #111}
-.hero h1{color:#e8c17a;font-size:28px;font-weight:900;margin-bottom:10px}
-.hero p{color:#fff;font-size:13px;line-height:1.7;opacity:.9}
-.hero .sub-gold{color:#d9b76d;font-weight:700;margin:12px 0 6px}
-.hero .desc{font-size:11px;opacity:.7}
-.btn-main{display:block;width:100%;background:linear-gradient(180deg,#e8c17a,#c9a46a);color:#000;padding:14px;border-radius:12px;text-decoration:none;font-weight:900;margin:18px 0 12px;font-size:16px}
-.btn-outline{display:block;width:100%;border:1px solid #c9a46a;color:#d9b76d;padding:13px;border-radius:12px;text-decoration:none;font-weight:700;font-size:15px}
-.menu-icon{color:#d9b76d;font-size:22px;margin-left:12px}
-.section-white{background:#f6f3eb;padding:22px 14px}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Tajawal',Tahoma}
+body{background:#f6f3eb;color:#000;padding-bottom:80px}
+.header{background:#0a0a0a;border-bottom:1px solid #c9a46a22;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:10}
+.logo{color:#d9b76d;font-weight:900;font-size:20px;line-height:1;text-align:right}
+.logo small{display:block;font-size:9px;color:#fff;opacity:.7;font-weight:400}
+.page{display:none}.page.active{display:block}
+.hero{background:#0a0a0a;text-align:center;padding:28px 16px 32px}
+.hero h1{color:#e8c17a;font-size:28px;font-weight:900}
+.hero p{font-size:12px;color:#fff;opacity:.9;margin-top:8px}
+.btn-main{display:block;background:linear-gradient(180deg,#e8c17a,#c9a46a);color:#000;padding:14px;border-radius:12px;text-decoration:none;font-weight:900;margin:18px 0;text-align:center}
+.section-white{background:#f6f3eb;padding:22px 14px;min-height:60vh}
 .section-white h2{text-align:center;color:#5a4220;font-size:20px;font-weight:900;margin-bottom:16px}
-.cat-card{background:#0a0a0a;border:1.5px solid #d9b76d;border-radius:14px;padding:16px;text-align:center;margin-bottom:12px;box-shadow:0 4px 12px rgba(0,0,0,.3)}
-.cat-card h3{color:#d9b76d;font-size:16px;display:flex;justify-content:center;align-items:center;gap:8px}
-.cat-card p{font-size:11px;color:#fff;opacity:.8;margin-top:6px}
-.ad-card{background:#0a0a0a;border:1.5px solid #c9a46a;border-radius:14px;overflow:hidden;margin-bottom:14px;position:relative}
-.ad-card .img-wrap{position:relative;height:115px;background:#111}
-.ad-card .img-wrap img{width:100%;height:100%;object-fit:cover;opacity:.9}
-.badge{position:absolute;top:8px;left:8px;background:#d9b76d;color:#000;font-size:11px;font-weight:800;padding:4px 10px;border-radius:8px}
-.ad-info{padding:10px 12px;text-align:center}
-.ad-info b{color:#e8c17a;font-size:14px;display:block}
-.ad-info small{font-size:11px;opacity:.8;color:#fff}
-.ad-info .price{color:#e8c17a;font-weight:900;margin-top:4px;font-size:14px}
-.footer{background:#0a0a0a;padding:24px 14px;text-align:center;border-top:1px solid #111}
-.footer h3{color:#e8c17a;font-size:18px}
-.footer-links{font-size:10px;opacity:.6;margin-top:14px;line-height:1.8;color:#fff}
-@media(min-width:700px){.hero h1{font-size:42px}.section-white{max-width:900px;margin:auto}.ad-card .img-wrap{height:180px}}
+.cat-card{background:#0a0a0a;border:1.5px solid #d9b76d;border-radius:14px;padding:16px;text-align:center;margin-bottom:12px}
+.cat-card h3{color:#d9b76d}.cat-card p{font-size:11px;color:#fff;opacity:.8;margin-top:6px}
+.ad-card{background:#0a0a0a;border:1.5px solid #c9a46a;border-radius:14px;overflow:hidden;margin-bottom:14px}
+.ad-card .img-wrap{height:115px;background:#111;position:relative}.ad-card img{width:100%;height:100%;object-fit:cover}
+.ad-info{padding:10px;text-align:center}.ad-info b{color:#e8c17a}.ad-info small{color:#fff;opacity:.8;font-size:11px}.price{color:#e8c17a;font-weight:900}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#0f0f0f;border-top:1.5px solid #d9b76d;display:flex;justify-content:space-around;padding:8px 0 10px;z-index:100}
+.nav-item{flex:1;text-align:center;color:#888;text-decoration:none;font-size:11px;display:flex;flex-direction:column;align-items:center;gap:3px}.nav-item.active{color:#d9b76d}.nav-item span{font-size:22px}
+.chat-float{position:fixed;bottom:90px;left:16px;background:linear-gradient(180deg,#e8c17a,#c9a46a);color:#000;width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;box-shadow:0 6px 20px rgba(0,0,0,.4);z-index:200;cursor:pointer;border:none}
+.chat-window{position:fixed;inset:0;background:#f9f5f0;z-index:500;display:none;flex-direction:column;overflow-y:auto}
+.chat-window.open{display:flex}
+.chat-header{background:#0a0a0a;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;color:#d9b76d;border-bottom:2px solid #d9b76d}
+.chat-header .close{font-size:28px;cursor:pointer;color:#fff}
+.chat-welcome{background:linear-gradient(180deg,#fff5e0,#e8c17a22);padding:24px 16px;text-align:right}
+.chat-welcome h2{font-size:24px;font-weight:900;line-height:1.4;color:#000}
+.chat-card{background:#fff;border-radius:14px;margin:12px;padding:0 14px;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.chat-card .row{display:flex;justify-content:space-between;padding:14px 0;border-bottom:1px solid #eee;cursor:pointer}
+.search-box{background:#f0f0f0;border-radius:10px;padding:10px 12px;display:flex;justify-content:space-between;margin:8px 0}
+.faq-item{padding:14px 0;border-bottom:1px solid #eee;cursor:pointer;display:flex;justify-content:space-between;font-size:13px}
+.faq-answer{display:none;padding:10px;color:#555;font-size:12px;line-height:1.6;background:#fafafa;border-radius:8px;margin:6px 0}
+.faq-answer.open{display:block}
+.form-card{background:#111;border:1px solid #d9b76d44;border-radius:16px;padding:18px;margin-top:10px}
+.form-card label{display:block;color:#d9b76d;font-size:12px;margin:12px 0 5px;font-weight:700}
+.form-card input,.form-card select{width:100%;padding:12px;border-radius:10px;border:1px solid #333;background:#0a0a0a;color:#fff}
+.btn-save{width:100%;background:linear-gradient(180deg,#e8c17a,#c9a46a);color:#000;padding:14px;border:none;border-radius:12px;font-weight:900;margin-top:18px}
 </style>
 </head>
 <body>
-<div class="header">
-<a href="https://wa.me/9647822642223" class="wa-btn">◉ تواصل واتساب</a>
-<div class="logo"><div>👑 سوق العراق<br><small>سوق العراق الفاخر - للبيع والشراء</small></div></div>
-</div>
+<div class="header"><div class="logo">👑 سوق العراق<br><small>السوق الفاخر</small></div><div style="color:#d9b76d">☰</div></div>
 
-<div class="hero">
-<div style="text-align:right"><span class="menu-icon">☰</span></div>
-<h1>مرحباً بك في سوق العراق</h1>
-<p>الوجهة الأولى للتسوق الفاخر في العراق</p>
-<p class="sub-gold">سيارات • عقارات • موبايلات</p>
-<p class="desc">اكتشف أفضل العروض والمنتجات المميزة بأسلوب فاخر وآمن</p>
-<a href="#ads" class="btn-main">تصفح العروض الآن →</a>
-<a href="https://wa.me/9647822642223" class="btn-outline">انضم الآن كتاجر</a>
-</div>
-
-<div class="section-white">
-<h2>التصنيفات الرئيسية</h2>
-<div class="cat-card"><h3>🚗 سيارات</h3><p>جديد ومستعمل - سيارات فاخرة واقتصادية</p></div>
-<div class="cat-card"><h3>🏢 عقارات</h3><p>شقق، دور، أراضي - استثمار وعقاري</p></div>
-<div class="cat-card"><h3>📱 موبايلات</h3><p>هواتف ذكية ومكملات - أحدث الموديلات</p></div>
-
-<h2 style="margin-top:22px">إعلانات مميزة</h2>
-
-<div class="ad-card" id="ads">
-<div class="img-wrap"><span class="badge">مميز</span><img src="https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?w=800"></div>
-<div class="ad-info"><b>تويوتا لاندكروزر 2024</b><small>بحالة الوكالة</small><br><small>بغداد • 10,000 كم • 2024</small><div class="price">68,500,000 د.ع</div></div>
-</div>
-
-<div class="ad-card">
-<div class="img-wrap"><img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800"></div>
-<div class="ad-info"><b>شقة فاخرة 200م²</b><small>حي المنصور • بغداد • 3 غرف • 2 حمام</small><div class="price">180,000,000 د.ع</div></div>
-</div>
-
-<div class="ad-card">
-<div class="img-wrap"><span class="badge">الأكثر طلباً</span><img src="https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=800" style="object-fit:contain;background:#000"></div>
-<div class="ad-info"><b>iPhone 15 Pro Max 256GB تيتانيوم</b><small>جديد • ضمان سنة • لون طبيعي</small><div class="price">1,650,000 د.ع</div></div>
-</div>
-
-</div>
-
-<div class="footer">
-<h3>تواصل معنا</h3><br>
-<a href="https://wa.me/9647822642223" class="btn-main" style="max-width:320px;margin:0 auto">◉ تواصل عبر واتساب الآن</a>
-<div class="footer-links">
-روابط سريعة • عن سوق العراق • سياسة الخصوصية • الشروط والأحكام • الأسئلة الشائعة<br>
-سوق العراق - جميع الحقوق محفوظة • مصمم بأسلوب فاخر أسود وذهبي
+<div id="home" class="page active">
+<div class="hero"><h1>مرحباً بك في سوق العراق</h1><p>الوجهة الأولى للتسوق الفاخر في العراق</p><a href="#" onclick="showPage('cats')" class="btn-main">تصفح العروض الآن →</a></div>
+<div class="section-white"><h2>إعلانات مميزة</h2>
+<div class="ad-card"><div class="img-wrap"><img src="https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?w=800"></div><div class="ad-info"><b>تويوتا لاندكروزر 2024</b><br><small>بغداد • 10,000 كم</small><div class="price">68,500,000 د.ع</div></div></div>
+<div class="ad-card"><div class="img-wrap"><img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800"></div><div class="ad-info"><b>شقة فاخرة 200م²</b><div class="price">180,000,000 د.ع</div></div></div>
 </div>
 </div>
+
+<div id="cats" class="page"><div class="section-white"><h2>التصنيفات الرئيسية</h2><div class="cat-card"><h3>🚗 سيارات</h3><p>جديد ومستعمل</p></div><div class="cat-card"><h3>🏢 عقارات</h3><p>شقق ودور وأراضي</p></div><div class="cat-card"><h3>📱 موبايلات</h3><p>هواتف ذكية</p></div></div></div>
+<div id="cart" class="page"><div class="section-white"><h2>سلة التسوق</h2><p style="text-align:center;padding:40px;color:#888">🛒 السلة فارغة</p></div></div>
+
+<div id="account" class="page"><div class="section-white"><h2>حسابي</h2>
+<div id="accountFormWrap" class="form-card"><label>الاسم الكامل</label><input id="f_name" placeholder="اسمك الكامل"><label>العنوان</label><input id="f_address" placeholder="بغداد - المنصور"><label>البريد الإلكتروني</label><input id="f_email" type="email" placeholder="example@gmail.com"><label>تاريخ الميلاد</label><input id="f_dob" type="date"><label>الجنس</label><select id="f_gender"><option value="">اختر الجنس</option><option>ذكر</option><option>أنثى</option></select><button class="btn-save" onclick="saveAcc()">حفظ الحساب 👑</button></div>
+<div id="accView" style="display:none;margin-top:14px"></div>
+</div></div>
+
+<button class="chat-float" onclick="openChat()">💬</button>
+
+<div id="chatWindow" class="chat-window">
+<div class="chat-header"><b>👑 سوق العراق</b><span class="close" onclick="closeChat()">✕</span></div>
+<div class="chat-welcome"><h2 id="chatName">زائرنا العزيز 👋 مرحباً<br>كيف يمكننا مساعدتك؟</h2></div>
+<div style="padding:0 12px">
+<div class="chat-card">
+<div class="row"><b>المساعدة</b><span>❓</span></div>
+<div class="row"><b>الرسائل</b><span>💬</span></div>
+</div>
+<div class="chat-card">
+<div class="search-box"><span>البحث عن مساعدة</span><span style="color:#c00">🔍</span></div>
+<div class="faq-item" onclick="toggleFaq('q1')"><span>أكدر ألغي الطلب؟ أو أعدّل العنوان/المنتجات؟</span><span>›</span></div><div id="q1" class="faq-answer">نعم، تكدر تلغي الطلب خلال ساعتين من قسم طلباتي في حسابك.</div>
+<div class="faq-item" onclick="toggleFaq('q2')"><span>شوكت يوصل طلبي؟</span><span>›</span></div><div id="q2" class="faq-answer">داخل بغداد 24 ساعة، والمحافظات 2-3 أيام.</div>
+<div class="faq-item" onclick="toggleFaq('q3')"><span>شلون أتواصل وي فريق سوق العراق؟</span><span>›</span></div><div id="q3" class="faq-answer">تقدر تتواصل من هذه المراسلة مباشرة، فريقنا يرد خلال دقائق.</div>
+<div class="faq-item" onclick="toggleFaq('q4')"><span>وين طلبي؟</span><span>›</span></div><div id="q4" class="faq-answer">تابع طلبك من حسابك > طلباتي.</div>
+</div>
+</div>
+</div>
+
+<div class="bottom-nav">
+<a href="#" class="nav-item active" id="n_home" onclick="showPage('home')"><span>🏠</span>الرئيسية</a>
+<a href="#" class="nav-item" id="n_cats" onclick="showPage('cats')"><span>📂</span>الأقسام</a>
+<a href="#" class="nav-item" id="n_cart" onclick="showPage('cart')"><span>🛒</span>السلة</a>
+<a href="#" class="nav-item" id="n_account" onclick="showPage('account')"><span>👤</span>الحساب</a>
+</div>
+
+<script>
+function showPage(p){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById(p).classList.add('active');document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));document.getElementById('n_'+p).classList.add('active');}
+function openChat(){
+  let data = JSON.parse(localStorage.getItem('userAcc')||'null');
+  let nameEl = document.getElementById('chatName');
+  if(data && data.name && data.name.trim() !== ""){
+    nameEl.innerHTML = `${data.name} 👋 مرحباً<br>كيف يمكننا مساعدتك؟`;
+  }else{
+    nameEl.innerHTML = `زائرنا العزيز 👋 مرحباً<br>كيف يمكننا مساعدتك؟`;
+  }
+  document.getElementById('chatWindow').classList.add('open');
+}
+function closeChat(){document.getElementById('chatWindow').classList.remove('open')}
+function toggleFaq(id){document.getElementById(id).classList.toggle('open')}
+function saveAcc(){
+let d={name:document.getElementById('f_name').value,address:document.getElementById('f_address').value,email:document.getElementById('f_email').value,dob:document.getElementById('f_dob').value,gender:document.getElementById('f_gender').value};
+if(!d.name||!d.email){alert('اكتب الاسم والبريد');return}
+localStorage.setItem('userAcc',JSON.stringify(d));
+let view=document.getElementById('accView');view.style.display='block';document.getElementById('accountFormWrap').style.display='none';
+view.innerHTML=`<div style="background:#0a0a0a;border:1px solid #d9b76d;border-radius:12px;padding:12px;color:#fff"><p><b>الاسم:</b> ${d.name}</p><p><b>العنوان:</b> ${d.address}</p><p><b>البريد:</b> ${d.email}</p><p><b>الميلاد:</b> ${d.dob}</p><p><b>الجنس:</b> ${d.gender}</p><button class="btn-save" onclick="location.reload()" style="background:#222;color:#d9b76d;border:1px solid #d9b76d">تعديل الحساب</button></div>`;
+alert('تم حفظ حسابك 👑 جرب هسه دوس زر المراسلة');
+}
+</script>
 </body>
-</html>
+  </html>
