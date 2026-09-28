@@ -46,7 +46,7 @@ button{font-family:inherit}
 .empty svg{width:46px;height:46px;color:var(--p)}
 .empty h3{font-size:16px;color:var(--tx)}
 .empty p{font-size:13px}
-.nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--bd);border-radius:18px 18px 0 0;display:flex;justify-content:space-around;align-items:center;padding:6px 0 calc(6px + var(--sb));z-index:100;box-shadow:0 -6px 20px rgba(16,24,40,.08)}
+.nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--bd);border-radius:18px 18px 0 0;display:flex;justify-style:space-around;align-items:center;padding:6px 0 calc(6px + var(--sb));z-index:100;box-shadow:0 -6px 20px rgba(16,24,40,.08)}
 .ni{background:none;border:0;font-size:11px;color:var(--mut);flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;font-weight:500}
 .ni.on{color:var(--p);font-weight:700}
 .ni svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
@@ -291,9 +291,9 @@ const $=id=>document.getElementById(id);
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const KEY='souq_ads_v3',MAXP=999999999999,RATE=1450;
 const CITIES=["بغداد","نينوى","البصرة","أربيل","السليمانية","دهوك","كركوك","الأنبار","صلاح الدين","ديالى","بابل","كربلاء","النجف","القادسية","واسط","ميسان","ذي قار","المثنى"];
-const CATS=[["cars","سيارات ومركبات","markabat.png"],["real_sale","منازل للبيع","manazel-sale.png"],["real_rent","عقارات للايجار","aqarat-ijar.png"],["mobile","هواتف وتابلت","mobile-tablet.png"],["computers","كمبيوتر ولابتوب","laptop"],["electronics","إلكترونيات","tv"],["bikes","دراجات نارية","bike"],["home","أثاث ومنزل","armchair"],["appliances","أجهزة منزلية","refrigerator"],["fashion","موضة وأزياء","shirt"],["jobs","وظائف شاغرة","briefcase"],["services","خدمات","wrench"],["sports","معدات رياضية","dumbbell"],["games","ألعاب فيديو","gamepad-2"],["animals","حيوانات ومستلزمات","dog"],["stores","المتاجر والشركات","store"]];
+const CATS=[["cars","سيارات ومركبات","car"],["real_sale","منازل للبيع","home"],["real_rent","عقارات للايجار","building"],["mobiles","هواتف وتابلت","smartphone"],["computers","كمبيوتر ولابتوب","laptop"],["electronics","إلكترونيات","tv"],["bikes","دراجات نارية","bike"],["home","أثاث ومنزل","armchair"],["appliances","أجهزة منزلية","refrigerator"],["fashion","موضة وأزياء","shirt"],["jobs","وظائف شاغرة","briefcase"],["services","خدمات","wrench"],["sports","معدات رياضية","dumbbell"],["games","ألعاب فيديو","gamepad-2"],["animals","حيوانات ومستلزمات","dog"],["stores","المتاجر والشركات","store"]];
 const COL={cars:['#ff7a59','#e5383b'],real_sale:['#4facfe','#1d4ed8'],real_rent:['#43cea2','#0f766e'],mobiles:['#a18cd1','#6d28d9'],computers:['#4b6cb7','#182848'],electronics:['#f7971e','#c2410c'],bikes:['#fd746c','#be123c'],home:['#c79081','#78350f'],appliances:['#56ccf2','#0369a1'],fashion:['#f093fb','#c026d3'],jobs:['#5f7d95','#1e3a5f'],services:['#8e9eab','#334155'],sports:['#42e695','#15803d'],games:['#7f7fd5','#3730a3'],animals:['#f6d365','#d97706'],stores:['#ff9966','#ea580c']};
-const thumb=(id,ic)=>`<img class="th" src="${ic}" style="width:100%;height:100%;object-fit:contain;background:#fff;border-radius:14px;padding:4px">`,
+const thumb=(id,ic)=>`<div class="th" style="background:linear-gradient(135deg,${(COL[id]||['#007bff','#0056b3'])[0]},${(COL[id]||['#007bff','#0056b3'])[1]})"><i data-lucide="${ic}"></i></div>`;
 const NOIMG="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100'><rect width='100%' height='100%' fill='%23e9ecef'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-size='12' fill='%236c757d'>بدون صورة</text></svg>";
 let ads=[],selCat='all',imgs=[],favOnly=false,avatar=null,otpType=null,otpCode=null,tt,st;
 
@@ -305,7 +305,7 @@ const SHARE='<svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="
 const CAM='<svg viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13" r="3.5"/></svg>';
 const isFav=id=>favs.includes(id);
 const imgsOf=a=>a.imgs&&a.imgs.length?a.imgs:(a.img?[a.img]:[NOIMG]);
-const icons=()=>lucide.createIcons();
+const icons=()=>{if(typeof lucide!=='undefined'&&lucide.createIcons)lucide.createIcons()};
 const iqd=a=>a.currency==='$'?a.price*RATE:a.price;
 const debounce=()=>{clearTimeout(st);st=setTimeout(render,200)};
 const cnt=(el,id,m)=>$(id).textContent=el.value.length+' / '+m;
@@ -321,8 +321,7 @@ function save(){const ok=store.set(KEY,JSON.stringify(ads));if(!ok)toast('تعذ
 function load(){try{const a=JSON.parse(store.get(KEY)||'[]');ads=Array.isArray(a)?a:[]}catch(e){ads=[]}}
 
 function init(){
-  CITIES.forEach(c=>{['cityF','city'].forEach(id=>$(id).add(new Option(c,c)))});
-  $('cat').add(new Option('اختر القسم',''));
+  CITIES.forEach(c=>{['cityF','city'].forEach(id=>$(id).add(new Option(c,c)))});$('cat').add(new Option('اختر القسم',''));
   CATS.forEach(([id,name,ic])=>{
     const b=document.createElement('button');b.type='button';b.className='cat';b.dataset.id=id;
     b.innerHTML=`${thumb(id,ic)}<b>${name}</b>`;
@@ -330,9 +329,9 @@ function init(){
     $('cats').appendChild(b);$('cat').add(new Option(name,id));
     const r=document.createElement('button');r.type='button';r.className='catrow';r.dataset.id=id;r.innerHTML=`${thumb(id,ic)}${name}`;r.onclick=()=>pick(id,true);$('catList').appendChild(r);
   });
-  $('fName').value=store.get('u_name')||'';$('fEmail').value=store.get('u_email')||'';$('fPhone').value=store.get('u_phone')||'';
+  $('fName').value=store.get('u_name')||'';$('fEmail').value=store.get('u_email')\vert{}\vert{}'';$('fPhone').value=store.get('u_phone')||'';
   const av=store.get('u_avatar');if(av)setAvatar(av);
-  $('fCode').value=store.get('u_code')||'964';$('fDob').value=store.get('u_dob')||'';$('fDob').max=new Date().toISOString().slice(0,10);
+  $('fCode').value=store.get('u_code')||'964';$('fDob').value=store.get('u_dob')\vert{}\vert{}'';$('fDob').max=new Date().toISOString().slice(0,10);
   const g=store.get('u_gender');if(g){const r=document.querySelector(`input[name=gender][value=${g}]`);if(r)r.checked=true}
   ['Email','Phone'].forEach(t=>{if(store.get('u_ver_'+t)===$('f'+t).value&&$('f'+t).value)setVer(t,true)});
   load();renderPrev();render();icons();refreshProfile();
@@ -438,7 +437,7 @@ async function processFile(f){
   x.font='bold '+fs+'px Tajawal,sans-serif';x.direction='rtl';
   const tw=x.measureText(T).width,bw=tw+fs*1.4,bh=fs*1.6,m=Math.round(fs*.6),bx=w-bw-m,by=h-bh-m;
   x.fillStyle='rgba(0,0,0,.5)';x.beginPath();
-  if(x.roundRect)x.roundRect(bx,by,bw,bh,bh/2);else x.rect(bx,by,bw,bh);
+  if(typeof x.roundRect==='function')x.roundRect(bx,by,bw,bh,bh/2);else x.rect(bx,by,bw,bh);
   x.fill();x.fillStyle='#fff';x.textAlign='center';x.textBaseline='middle';x.fillText(T,bx+bw/2,by+bh/2+1);
   return c.toDataURL('image/jpeg',.62);
 }
@@ -504,7 +503,7 @@ function saveAcc(e){
 function refreshProfile(){
   const n=$('fName').value.trim();$('pName').textContent=n||'مستخدم جديد';
   const done=[!$('avImg').hidden,n,$('fEmail').value.trim(),$('fPhone').value.trim(),document.querySelector('input[name=gender]:checked'),$('fDob').value,$('vEmail').style.display==='flex',$('vPhone').style.display==='flex'].filter(Boolean).length;
-  const pc=Math.round(done/8*100);$('barFill').style.width=pc+'%';$('barTxt').textContent='اكتمال الملف '+pc+'%';
+  const pc=Math.round(done/8*100);$('barFill').style.width=pc+'\%';$('barTxt').textContent='اكتمال الملف '+pc+'%';
 }
 function validPhone(v){return $('fCode').value==='964'?!!fmtPhone(v):/^\d{6,12}$/.test(arNum(v).replace(/\D/g,''))}
 
@@ -515,7 +514,6 @@ function reqOTP(t){
   if(t==='Email'&&!/^\S+@\S+\.\S+$/.test(v))return toast('أدخل بريداً إلكترونياً صحيحاً');
   if(t==='Phone'&&!validPhone(v))return toast($('fCode').value==='964'?'أدخل رقماً عراقياً صحيحاً يبدأ بـ 07':'أدخل رقم موبايل صحيحاً');
   otpType=t;otpCode=String(Math.floor(1000+Math.random()*9000));
-  /* تجريبي: الرمز يظهر على الشاشة. اربطه بخدمة رسائل حقيقية قبل الاعتماد عليه */
   $('od').textContent='أدخل الرمز المرسل إلى '+(t==='Phone'?'+'+$('fCode').value+' ':'')+v+' (تجريبي: '+otpCode+')';$('oi').value='';openM('om');
 }
 function confirmOTP(){
@@ -523,8 +521,7 @@ function confirmOTP(){
   store.set('u_ver_'+otpType,$('f'+otpType).value);setVer(otpType,true);closeM('om');toast('تم التوثيق بنجاح');icons();
 }
 
-$('phone').addEventListener('input',e=>e.target.value=arNum(e.target.value));
-$('fPhone').addEventListener('input',e=>e.target.value=arNum(e.target.value));
+$('phone').addEventListener('input',e=>e.target.value=arNum(e.target.value));$('fPhone').addEventListener('input',e=>e.target.value=arNum(e.target.value));
 (function(){
   let ly=0,tick=false;
   addEventListener('scroll',()=>{
@@ -543,4 +540,4 @@ $('fPhone').addEventListener('input',e=>e.target.value=arNum(e.target.value));
 addEventListener('DOMContentLoaded',init);
 </script>
 </body>
-      </html>
+</html>
