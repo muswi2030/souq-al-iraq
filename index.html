@@ -105,6 +105,57 @@ button{font-family:inherit}
 .seg span{display:block;text-align:center;padding:12px;border:1px solid var(--bd);border-radius:10px;background:#fff;font-size:14px;cursor:pointer}
 .seg input:checked+span{background:#eef6ff;border-color:var(--p);color:var(--p);font-weight:700}
 .seg input:focus-visible+span{outline:3px solid var(--p);outline-offset:2px}
+.im{position:relative;flex-shrink:0;width:110px;height:110px}
+.im img{width:100%;height:100%}
+.hb{position:absolute;top:6px;left:6px;width:32px;height:32px;border-radius:50%;background:rgba(0,0,0,.38);border:0;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.hb svg{width:18px;height:18px;fill:none;stroke:#fff;stroke-width:2}
+.hb.on svg{fill:#ff3b5c;stroke:#ff3b5c}
+.pill svg{width:14px;height:14px;vertical-align:-2px;fill:none;stroke:currentColor;stroke-width:2;margin-inline-end:4px}
+.pill.on{color:#e11d48;border-color:#e11d48;background:#fff1f2}
+.pill.on svg{fill:#e11d48}
+.pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.pt{position:relative;aspect-ratio:1;border-radius:10px;overflow:hidden;background:#eee}
+.pt img{width:100%;height:100%;object-fit:cover}
+.px{position:absolute;top:4px;left:4px;width:26px;height:26px;border-radius:50%;background:rgba(0,0,0,.65);color:#fff;border:0;font-size:18px;line-height:1;cursor:pointer}
+.pa{aspect-ratio:1;border:2px dashed var(--bd);border-radius:10px;background:#fff;color:var(--mut);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:12px;cursor:pointer}
+.pa svg{width:28px;height:28px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.pgrid.none .pa{grid-column:1/-1;aspect-ratio:auto;height:130px}
+.hint{font-size:12px;color:var(--mut)}
+.gal{display:flex;gap:8px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;border-radius:12px}
+.gal::-webkit-scrollbar,.dots::-webkit-scrollbar{display:none}
+.gal img{flex:0 0 100%;height:250px;object-fit:cover;scroll-snap-align:center;border-radius:12px;cursor:zoom-in}
+.dots{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
+.dots img{width:56px;height:56px;object-fit:cover;border-radius:8px;flex-shrink:0;cursor:pointer}
+.acts{display:flex;gap:8px}
+.act{flex:1;padding:12px;border-radius:10px;border:1px solid var(--bd);background:#fff;font-weight:700;display:flex;gap:6px;align-items:center;justify-content:center;font-size:14px;cursor:pointer;color:var(--tx)}
+.act svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.act.on{color:#e11d48;border-color:#fecdd3;background:#fff1f2}
+.act.on svg{fill:#e11d48}
+.zoom{background:#000;z-index:600}
+.zbar{padding:calc(12px + var(--st)) 12px 12px;display:flex;justify-content:space-between;align-items:center;color:#fff;font-size:14px}
+.zbar>div{display:flex;gap:8px}
+.zbar button{background:rgba(255,255,255,.18);color:#fff;border:0;width:42px;height:42px;border-radius:50%;font-size:24px;cursor:pointer}
+.zstage{flex:1;overflow:hidden;display:flex;align-items:center;justify-content:center;touch-action:none}
+.zstage img{max-width:100%;max-height:100%;user-select:none;-webkit-user-drag:none;transition:transform .06s}
+.znav{position:absolute;top:50%;width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.22);color:#fff;border:0;font-size:26px;cursor:pointer}
+.zp{right:8px}.zn{left:8px}
+.hero{background:linear-gradient(135deg,#1a7bff 0%,#0056b3 55%,#003f8a 100%);border-bottom:0;border-radius:0 0 24px 24px;box-shadow:0 10px 26px rgba(0,86,179,.30);position:sticky;overflow:hidden}
+.hero::before{content:"";position:absolute;width:190px;height:190px;border-radius:50%;background:rgba(255,255,255,.07);top:-90px;left:-60px;pointer-events:none}
+.hero::after{content:"";position:absolute;width:120px;height:120px;border-radius:50%;background:rgba(245,166,35,.16);bottom:-50px;right:-30px;pointer-events:none}
+.hero .top{position:relative;z-index:1;padding-bottom:12px}
+.brand{display:flex;align-items:center;gap:10px}
+.logo{width:44px;height:44px;border-radius:14px;background:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,0,0,.18);position:relative}
+.logo svg{width:26px;height:26px;fill:none;stroke:var(--p);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.logo i{position:absolute;top:-3px;left:-3px;width:12px;height:12px;border-radius:50%;background:var(--acc);border:2px solid #fff}
+.brand b{display:block;color:#fff;font-size:23px;font-weight:900;line-height:1.1;letter-spacing:-.3px}
+.brand small{display:block;color:rgba(255,255,255,.85);font-size:11px;font-weight:500;margin-top:2px}
+.chip{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);color:#fff;padding:8px 12px;border-radius:999px;font-size:13px;font-weight:700;cursor:pointer;backdrop-filter:blur(6px)}
+.chip svg{width:16px;height:16px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.chip:active{background:rgba(255,255,255,.28)}
+.hero .sbox,.hero .filters{position:relative;z-index:1}
+.hero .filters{padding-bottom:16px}
+.hdr{transition:transform .3s ease}
+.hdr.gone{transform:translateY(calc(-100% - 40px))}
 .toast{position:fixed;top:calc(20px + var(--st));left:50%;transform:translateX(-50%);background:#111;color:#fff;padding:12px 22px;border-radius:20px;font-size:14px;z-index:1000;opacity:0;visibility:hidden;transition:opacity .3s;pointer-events:none;max-width:90%;text-align:center}
 .toast.on{opacity:1;visibility:visible}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
@@ -114,14 +165,21 @@ button{font-family:inherit}
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
 <div id="home" class="page on">
-  <div class="hdr">
-    <div class="top"><b>سوق العراق</b><small id="cityTag">جميع المحافظات</small></div>
+  <div class="hdr hero">
+    <div class="top">
+      <div class="brand">
+        <div class="logo" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 8h12l-1 12H7z"/><path d="M9 8a3 3 0 0 1 6 0"/></svg><i></i></div>
+        <div><b>سوق العراق</b><small>بيع واشترِ بسهولة في كل المحافظات</small></div>
+      </div>
+      <button type="button" class="chip" onclick="openCity()" aria-label="اختيار المحافظة"><svg viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg><span id="cityTag">جميع المحافظات</span><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>
+    </div>
     <div class="sbox"><i data-lucide="search"></i><input id="q" type="search" aria-label="بحث" placeholder="ابحث عن سيارة، عقار، موبايل..." oninput="debounce()"></div>
     <div class="filters">
       <select id="cityF" class="pill" aria-label="المحافظة" onchange="render()"><option value="">كل المحافظات</option></select>
       <select id="sortF" class="pill" aria-label="الترتيب" onchange="render()">
         <option value="new">الأحدث</option><option value="cheap">الأرخص</option><option value="exp">الأغلى</option><option value="views">الأكثر مشاهدة</option>
       </select>
+      <button type="button" id="favF" class="pill" onclick="toggleFavF()"><svg viewBox="0 0 24 24"><path d="M12 21s-7-4.6-9.3-9A5.3 5.3 0 0 1 12 6a5.3 5.3 0 0 1 9.3 6C19 16.4 12 21 12 21z"/></svg>المفضلة</button>
     </div>
   </div>
   <div class="grid" id="cats"></div>
@@ -146,9 +204,10 @@ button{font-family:inherit}
 <div id="add" class="page">
   <div class="hdr"><div class="top"><b>+ أضف إعلاناً</b></div></div>
   <form class="form" id="addForm" onsubmit="createAd(event)">
-    <label>صورة الإعلان</label>
-    <input type="file" id="imgIn" accept="image/*" hidden onchange="pickImage(event)">
-    <div class="prev" id="prev" tabindex="0" role="button" onclick="imgIn.click()"><i data-lucide="camera"></i><span>اضغط لرفع صورة</span></div>
+    <label>صور الإعلان (حتى 5 صور)</label>
+    <input type="file" id="imgIn" accept="image/*" multiple hidden onchange="pickImages(event)">
+    <div class="pgrid none" id="prev"></div>
+    <div class="hint">تُطبع علامة «سوق العراق» تلقائياً على كل صورة عند رفعها.</div>
     <div><input id="t" class="fc" aria-label="العنوان" placeholder="عنوان الإعلان (مثال: تويوتا كامري 2022)" maxlength="80" oninput="cnt(this,'tc',80)" required><div id="tc" class="cnt">0 / 80</div></div>
     <select id="cat" class="fc" aria-label="القسم" required></select>
     <div class="row"><input id="price" class="fc" aria-label="السعر" placeholder="السعر" inputmode="numeric" oninput="cleanPrice(this)" required>
@@ -212,6 +271,12 @@ button{font-family:inherit}
   <div class="mb" id="db"></div>
 </div>
 
+<div id="zm" class="modal zoom" role="dialog" aria-modal="true" aria-label="عرض الصورة">
+  <div class="zbar"><button aria-label="إغلاق" onclick="closeM('zm')">×</button><span id="zc"></span><div><button aria-label="تكبير" onclick="zoomBy(1.4)">+</button><button aria-label="تصغير" onclick="zoomBy(1/1.4)">−</button></div></div>
+  <div class="zstage" id="zs"><img id="zi" alt=""></div>
+  <button class="znav zp" aria-label="السابقة" onclick="zStep(-1)">›</button><button class="znav zn" aria-label="التالية" onclick="zStep(1)">‹</button>
+</div>
+
 <div id="om" class="modal" role="dialog" aria-modal="true" aria-labelledby="ot">
   <div class="mh"><b id="ot">رمز التوثيق</b><button aria-label="إغلاق" onclick="closeM('om')"><i data-lucide="x"></i></button></div>
   <div class="mb mid">
@@ -230,9 +295,16 @@ const CATS=[["cars","سيارات ومركبات","car"],["real_sale","عقار�
 const COL={cars:['#ff7a59','#e5383b'],real_sale:['#4facfe','#1d4ed8'],real_rent:['#43cea2','#0f766e'],mobiles:['#a18cd1','#6d28d9'],computers:['#4b6cb7','#182848'],electronics:['#f7971e','#c2410c'],bikes:['#fd746c','#be123c'],home:['#c79081','#78350f'],appliances:['#56ccf2','#0369a1'],fashion:['#f093fb','#c026d3'],jobs:['#5f7d95','#1e3a5f'],services:['#8e9eab','#334155'],sports:['#42e695','#15803d'],games:['#7f7fd5','#3730a3'],animals:['#f6d365','#d97706'],stores:['#ff9966','#ea580c']};
 const thumb=(id,ic)=>`<span class="th" style="background:linear-gradient(135deg,${COL[id][0]},${COL[id][1]})"><i data-lucide="${ic}"></i><img src="images/${id}.jpg" alt="" loading="lazy" onerror="this.remove()"></span>`;
 const NOIMG="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100'><rect width='100%' height='100%' fill='%23e9ecef'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-size='12' fill='%236c757d'>بدون صورة</text></svg>";
-let ads=[],selCat='all',imgData=null,avatar=null,otpType=null,otpCode=null,tt,st;
+let ads=[],selCat='all',imgs=[],favOnly=false,avatar=null,otpType=null,otpCode=null,tt,st;
 
 const store={get:k=>{try{return localStorage.getItem(k)}catch(e){return null}},set:(k,v)=>{try{localStorage.setItem(k,v);return true}catch(e){return false}}};
+const MAXI=5,FKEY='souq_favs';
+let favs=[];try{favs=JSON.parse(store.get(FKEY)||'[]')}catch(e){}
+const HEART='<svg viewBox="0 0 24 24"><path d="M12 21s-7-4.6-9.3-9A5.3 5.3 0 0 1 12 6a5.3 5.3 0 0 1 9.3 6C19 16.4 12 21 12 21z"/></svg>';
+const SHARE='<svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 10.5l6.8-4M8.6 13.5l6.8 4"/></svg>';
+const CAM='<svg viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13" r="3.5"/></svg>';
+const isFav=id=>favs.includes(id);
+const imgsOf=a=>a.imgs&&a.imgs.length?a.imgs:(a.img?[a.img]:[NOIMG]);
 const icons=()=>lucide.createIcons();
 const iqd=a=>a.currency==='$'?a.price*RATE:a.price;
 const debounce=()=>{clearTimeout(st);st=setTimeout(render,200)};
@@ -245,7 +317,7 @@ function ago(ts){const s=(Date.now()-ts)/1000;if(s<60)return'الآن';if(s<3600
 function cleanPrice(i){let v=arNum(i.value).replace(/\D/g,'');if(v&&+v>MAXP)v=String(MAXP);i.value=v}
 function fmtPhone(s){let c=arNum(s).replace(/\D/g,'');if(c.startsWith('00964'))c=c.slice(5);else if(c.startsWith('964'))c=c.slice(3);else if(c.startsWith('0'))c=c.slice(1);return /^7\d{9}$/.test(c)?{raw:'0'+c,wa:'964'+c}:null}
 
-function save(){if(!store.set(KEY,JSON.stringify(ads)))toast('تعذر الحفظ: المساحة ممتلئة، احذف بعض الإعلانات')}
+function save(){const ok=store.set(KEY,JSON.stringify(ads));if(!ok)toast('تعذر الحفظ: المساحة ممتلئة، قلّل عدد الصور أو احذف إعلانات');return ok}
 function load(){try{const a=JSON.parse(store.get(KEY)||'[]');ads=Array.isArray(a)?a:[]}catch(e){ads=[]}}
 
 function init(){
@@ -263,7 +335,7 @@ function init(){
   $('fCode').value=store.get('u_code')||'964';$('fDob').value=store.get('u_dob')||'';$('fDob').max=new Date().toISOString().slice(0,10);
   const g=store.get('u_gender');if(g){const r=document.querySelector(`input[name=gender][value=${g}]`);if(r)r.checked=true}
   ['Email','Phone'].forEach(t=>{if(store.get('u_ver_'+t)===$('f'+t).value&&$('f'+t).value)setVer(t,true)});
-  load();render();icons();refreshProfile();
+  load();renderPrev();render();icons();refreshProfile();
   showPage(location.hash.slice(1),false);
 }
 
@@ -276,9 +348,57 @@ function pick(id,fromList){
 function card(a){
   const d=document.createElement('div');d.className='ad';d.tabIndex=0;d.onclick=()=>openAd(a.id);
   d.onkeydown=e=>{if(e.key==='Enter')openAd(a.id)};
-  d.innerHTML=`<img alt="${esc(a.title)}" loading="lazy" src="${a.img||NOIMG}"><div class="ai"><div class="at">${esc(a.title)}</div><div class="ap">${a.price.toLocaleString('en-US')} ${esc(a.currency)}</div><div class="am"><span>${esc(a.city)} • ${ago(a.id)}</span><span>${a.views} مشاهدة</span></div></div>`;
+  d.innerHTML=`<div class="im"><img alt="${esc(a.title)}" loading="lazy" src="${imgsOf(a)[0]}"><button type="button" class="hb ${isFav(a.id)?'on':''}" aria-label="إضافة للمفضلة" onclick="toggleFav(${a.id},event)">${HEART}</button></div><div class="ai"><div class="at">${esc(a.title)}</div><div class="ap">${a.price.toLocaleString('en-US')} ${esc(a.currency)}</div><div class="am"><span>${esc(a.city)} • ${ago(a.id)}</span><span>${a.views} مشاهدة</span></div></div>`;
   return d;
 }
+
+function toggleFav(id,e){
+  if(e)e.stopPropagation();
+  favs=isFav(id)?favs.filter(x=>x!==id):[...favs,id];store.set(FKEY,JSON.stringify(favs));
+  toast(isFav(id)?'أُضيف إلى المفضلة':'أُزيل من المفضلة');render();
+  const fb=$('favBtn');if(fb)fb.classList.toggle('on',isFav(id));
+}
+function openCity(){const s=$('cityF');try{s.showPicker()}catch(e){s.focus()}}
+function toggleFavF(){favOnly=!favOnly;$('favF').classList.toggle('on',favOnly);render()}
+
+async function shareAd(id){
+  const a=ads.find(x=>x.id===id);if(!a)return;
+  const url=location.href.split('#')[0];
+  const text=a.title+'\n'+a.price.toLocaleString('en-US')+' '+a.currency+' - '+a.city+'\nسوق العراق';
+  try{if(navigator.share){await navigator.share({title:a.title,text,url});return}}catch(e){if(e&&e.name==='AbortError')return}
+  try{await navigator.clipboard.writeText(text+'\n'+url);toast('تم نسخ نص الإعلان والرابط')}catch(e){toast('تعذرت المشاركة')}
+}
+
+function galleryHTML(a){
+  const im=imgsOf(a);
+  return `<div class="gal" id="gal">${im.map((s,i)=>`<img src="${s}" alt="${esc(a.title)}" onclick="openZoom(${a.id},${i})">`).join('')}</div>`
+    +(im.length>1?`<div class="dots">${im.map((s,i)=>`<img src="${s}" alt="صورة ${i+1}" onclick="galTo(${i})">`).join('')}</div>`:'')
+    +`<div class="hint">اضغط على الصورة لتكبيرها</div><div class="acts"><button type="button" id="favBtn" class="act ${isFav(a.id)?'on':''}" onclick="toggleFav(${a.id})">${HEART} مفضلة</button><button type="button" class="act" onclick="shareAd(${a.id})">${SHARE} مشاركة</button></div>`;
+}
+function galTo(i){const g=$('gal');if(g&&g.children[i])g.children[i].scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'})}
+
+const Z={id:0,i:0,s:1,x:0,y:0};
+function zApply(){$('zi').style.transform=`translate(${Z.x}px,${Z.y}px) scale(${Z.s})`}
+function zShow(){const im=imgsOf(ads.find(x=>x.id===Z.id));$('zi').src=im[Z.i];$('zc').textContent=(Z.i+1)+' / '+im.length;Z.s=1;Z.x=Z.y=0;zApply()}
+function openZoom(id,i){Z.id=id;Z.i=i;zShow();openM('zm')}
+function zStep(d){const n=imgsOf(ads.find(x=>x.id===Z.id)).length;Z.i=(Z.i+d+n)%n;zShow()}
+function zoomBy(f){Z.s=Math.min(5,Math.max(1,Z.s*f));if(Z.s===1)Z.x=Z.y=0;zApply()}
+(function(){
+  const zs=$('zs');let last=null,d0=0,s0=1,tap=0;
+  const dist=t=>Math.hypot(t[0].clientX-t[1].clientX,t[0].clientY-t[1].clientY);
+  zs.addEventListener('touchstart',e=>{
+    if(e.touches.length===2){d0=dist(e.touches);s0=Z.s;last=null}
+    else{last={x:e.touches[0].clientX,y:e.touches[0].clientY};const n=Date.now();if(n-tap<300){Z.s=Z.s>1?1:2.5;if(Z.s===1)Z.x=Z.y=0;zApply()}tap=n}
+  },{passive:true});
+  zs.addEventListener('touchmove',e=>{
+    e.preventDefault();
+    if(e.touches.length===2){Z.s=Math.min(5,Math.max(1,s0*dist(e.touches)/d0));if(Z.s===1)Z.x=Z.y=0}
+    else if(last&&Z.s>1){const t=e.touches[0];Z.x+=t.clientX-last.x;Z.y+=t.clientY-last.y;last={x:t.clientX,y:t.clientY}}
+    zApply();
+  },{passive:false});
+  zs.addEventListener('touchend',()=>{last=null});
+  zs.addEventListener('wheel',e=>{e.preventDefault();zoomBy(e.deltaY<0?1.15:1/1.15)},{passive:false});
+})();
 
 function render(){
   const tokens=norm($('q').value).split(/\s+/).filter(Boolean),city=$('cityF').value,mode=$('sortF').value;
@@ -290,7 +410,7 @@ function render(){
     const cn=(CATS.find(c=>c[0]===a.category)||[])[1]||'';
     const hay=norm(`${a.title} ${a.desc} ${a.city} ${cn} ${a.condition}`);
     if(a.mine){m++;v+=a.views;mine.appendChild(card(a))}
-    if((selCat==='all'||a.category===selCat)&&(!city||a.city===city)&&tokens.every(t=>hay.includes(t))){n++;box.appendChild(card(a))}
+    if((selCat==='all'||a.category===selCat)&&(!city||a.city===city)&&(!favOnly||isFav(a.id))&&tokens.every(t=>hay.includes(t))){n++;box.appendChild(card(a))}
   });
   if(!n){
     const filtered=ads.length>0;
@@ -300,17 +420,35 @@ function render(){
   $('myCount').textContent=m;$('myViews').textContent=v;icons();
 }
 
-function pickImage(e){
-  const f=e.target.files[0];if(!f)return;$('pub').disabled=true;
-  const r=new FileReader();
-  r.onload=ev=>{const im=new Image();im.onload=()=>{
-    let w=im.width,h=im.height;const M=600;
-    if(w>=h&&w>M){h*=M/w;w=M}else if(h>M){w*=M/h;h=M}
-    const c=document.createElement('canvas');c.width=w;c.height=h;
-    const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,w,h);x.drawImage(im,0,0,w,h);
-    imgData=c.toDataURL('image/jpeg',.6);$('prev').innerHTML=`<img alt="معاينة" src="${imgData}">`;$('pub').disabled=false};
-    im.onerror=()=>{toast('تعذر قراءة الصورة');$('pub').disabled=false};im.src=ev.target.result};
-  r.readAsDataURL(f);
+function renderPrev(){
+  const p=$('prev');p.classList.toggle('none',!imgs.length);
+  p.innerHTML=imgs.map((s,i)=>`<div class="pt"><img src="${s}" alt="صورة ${i+1}"><button type="button" class="px" aria-label="حذف الصورة" onclick="rmImg(${i})">×</button></div>`).join('')
+    +(imgs.length<MAXI?`<button type="button" class="pa" onclick="imgIn.click()">${CAM}<span>${imgs.length?'أضف صورة':'اضغط لرفع الصور'}</span></button>`:'');
+}
+function rmImg(i){imgs.splice(i,1);renderPrev()}
+
+async function processFile(f){
+  const src=await new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;r.readAsDataURL(f)});
+  const im=await new Promise((res,rej)=>{const i=new Image();i.onload=()=>res(i);i.onerror=rej;i.src=src});
+  let w=im.width,h=im.height;const M=800;
+  if(w>=h&&w>M){h=Math.round(h*M/w);w=M}else if(h>M){w=Math.round(w*M/h);h=M}
+  const c=document.createElement('canvas');c.width=w;c.height=h;const x=c.getContext('2d');
+  x.fillStyle='#fff';x.fillRect(0,0,w,h);x.drawImage(im,0,0,w,h);
+  const T='سوق العراق',fs=Math.max(16,Math.round(Math.min(w,h)*0.06));
+  x.font='bold '+fs+'px Tajawal,sans-serif';x.direction='rtl';
+  const tw=x.measureText(T).width,bw=tw+fs*1.4,bh=fs*1.6,m=Math.round(fs*.6),bx=w-bw-m,by=h-bh-m;
+  x.fillStyle='rgba(0,0,0,.5)';x.beginPath();
+  if(x.roundRect)x.roundRect(bx,by,bw,bh,bh/2);else x.rect(bx,by,bw,bh);
+  x.fill();x.fillStyle='#fff';x.textAlign='center';x.textBaseline='middle';x.fillText(T,bx+bw/2,by+bh/2+1);
+  return c.toDataURL('image/jpeg',.62);
+}
+async function pickImages(e){
+  const files=[...e.target.files];e.target.value='';if(!files.length)return;
+  const room=MAXI-imgs.length;if(files.length>room)toast('الحد الأقصى '+MAXI+' صور');
+  $('pub').disabled=true;
+  try{await document.fonts.load('bold 20px Tajawal','سوق العراق')}catch(_){}
+  for(const f of files.slice(0,room)){try{imgs.push(await processFile(f))}catch(_){toast('تعذرت قراءة إحدى الصور')}}
+  renderPrev();$('pub').disabled=false;
 }
 
 function createAd(e){
@@ -319,9 +457,9 @@ function createAd(e){
   if(!(price>0))return toast('أدخل سعراً صحيحاً أكبر من صفر');
   const ph=fmtPhone($('phone').value);
   if(!ph)return toast('أدخل رقماً عراقياً صحيحاً يبدأ بـ 07');
-  ads.unshift({id:Date.now(),title:$('t').value.trim(),category:$('cat').value,price:Math.min(price,MAXP),currency:$('cur').value,city:$('city').value,condition:$('cond').value,phone:ph.raw,wa:ph.wa,desc:$('desc').value.trim(),img:imgData,views:0,mine:true});
-  save();$('addForm').reset();imgData=null;
-  $('prev').innerHTML='<i data-lucide="camera"></i><span>اضغط لرفع صورة</span>';cnt($('t'),'tc',80);cnt($('desc'),'dc',1000);
+  ads.unshift({id:Date.now(),title:$('t').value.trim(),category:$('cat').value,price:Math.min(price,MAXP),currency:$('cur').value,city:$('city').value,condition:$('cond').value,phone:ph.raw,wa:ph.wa,desc:$('desc').value.trim(),img:imgs[0]||null,imgs:[...imgs],views:0,mine:true});
+  if(!save()){ads.shift();return}
+  $('addForm').reset();imgs=[];renderPrev();cnt($('t'),'tc',80);cnt($('desc'),'dc',1000);
   toast('تم نشر إعلانك بنجاح');render();showPage('home');
 }
 
@@ -329,7 +467,7 @@ function openAd(id){
   const a=ads.find(x=>x.id===id);if(!a)return;
   a.views++;save();render();
   $('dt').textContent=a.title;
-  $('db').innerHTML=`<img class="big" alt="${esc(a.title)}" src="${a.img||NOIMG}"><h2 style="color:var(--p)">${a.price.toLocaleString('en-US')} ${esc(a.currency)}</h2><div>${esc(a.city)} • ${esc(a.condition)} • ${ago(a.id)}</div><p class="desc">${esc(a.desc)}</p><a class="btn" href="tel:${a.phone}"><i data-lucide="phone"></i> اتصال بالبائع (${a.phone})</a><a class="btn acc" href="https://wa.me/${a.wa}" target="_blank" rel="noopener"><i data-lucide="message-circle"></i> مراسلة عبر واتساب</a>`;
+  $('db').innerHTML=`${galleryHTML(a)}<h2 style="color:var(--p)">${a.price.toLocaleString('en-US')} ${esc(a.currency)}</h2><div>${esc(a.city)} • ${esc(a.condition)} • ${ago(a.id)}</div><p class="desc">${esc(a.desc)}</p><a class="btn" href="tel:${a.phone}"><i data-lucide="phone"></i> اتصال بالبائع (${a.phone})</a><a class="btn acc" href="https://wa.me/${a.wa}" target="_blank" rel="noopener"><i data-lucide="message-circle"></i> مراسلة عبر واتساب</a>`;
   if(a.mine){const b=document.createElement('button');b.className='btn red';b.innerHTML='<i data-lucide="trash-2"></i> حذف الإعلان';
     b.onclick=()=>{if(confirm('هل أنت متأكد من حذف هذا الإعلان؟')){ads=ads.filter(x=>x.id!==id);save();render();closeM('dm');toast('تم حذف الإعلان')}};
     $('db').appendChild(b)}
@@ -343,7 +481,7 @@ function showPage(p,push=true){
   if(!['home','catpage','myads','add','account'].includes(p))p='home';
   document.querySelectorAll('.page').forEach(x=>x.classList.toggle('on',x.id===p));
   document.querySelectorAll('.ni').forEach(x=>x.classList.toggle('on',x.id==='n_'+p));
-  scrollTo(0,0);if(push&&location.hash!=='#'+p)location.hash=p;
+  document.querySelectorAll('.hdr').forEach(h=>h.classList.remove('gone'));scrollTo(0,0);if(push&&location.hash!=='#'+p)location.hash=p;
 }
 addEventListener('hashchange',()=>showPage(location.hash.slice(1),false));
 
@@ -387,7 +525,22 @@ function confirmOTP(){
 
 $('phone').addEventListener('input',e=>e.target.value=arNum(e.target.value));
 $('fPhone').addEventListener('input',e=>e.target.value=arNum(e.target.value));
+(function(){
+  let ly=0,tick=false;
+  addEventListener('scroll',()=>{
+    if(tick)return;tick=true;
+    requestAnimationFrame(()=>{
+      const y=Math.max(0,scrollY),d=y-ly;
+      const typing=document.activeElement&&document.activeElement.closest&&document.activeElement.closest('.hdr');
+      if(!typing){
+        if(d>6&&y>120)document.querySelectorAll('.hdr').forEach(h=>h.classList.add('gone'));
+        else if(d<-6||y<80)document.querySelectorAll('.hdr').forEach(h=>h.classList.remove('gone'));
+      }
+      ly=y;tick=false;
+    });
+  },{passive:true});
+})();
 addEventListener('DOMContentLoaded',init);
 </script>
 </body>
-                                                     </html>
+      </html>
