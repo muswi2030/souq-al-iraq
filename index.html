@@ -1,118 +1,105 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>سوق العراق</title>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Tajawal',Tahoma}
 body{background:#f6f3eb;padding-bottom:85px}
 .header{background:#0a0a0a;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid #d9b76d;position:sticky;top:0;z-index:10}
-.logo{color:#d9b76d;font-weight:900}
+.logo{color:#d9b76d;font-weight:900;font-size:18px}
 .page{display:none}.page.active{display:block}
 .section{padding:20px 14px}.section h2{text-align:center;color:#5a4220;font-weight:900}
-.cat-card{background:#0a0a0a;border:1.5px solid #d9b76d;border-radius:14px;padding:16px;text-align:center;margin-bottom:12px;color:#d9b76d}
 .form-card{background:#111;border:1.5px solid #d9b76d;border-radius:16px;padding:18px}
 .form-card label{display:block;color:#d9b76d;font-size:13px;margin:12px 0 5px}
 .form-card input,.form-card select{width:100%;padding:12px;border-radius:10px;border:1px solid #333;background:#000;color:#fff}
-.btn-save{width:100%;background:linear-gradient(180deg,#e8c17a,#c9a46a);color:#000;padding:14px;border:none;border-radius:12px;font-weight:900;margin-top:18px}
+.btn-save{width:100%;background:#d9b76d;color:#000;padding:14px;border:none;border-radius:12px;font-weight:900;margin-top:18px}
 .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#0a0a0a;border-top:1.5px solid #d9b76d;display:flex;justify-content:space-around;padding:8px 0 12px;z-index:100}
 .nav-item{flex:1;text-align:center;color:#888;text-decoration:none;font-size:11px;display:flex;flex-direction:column;align-items:center}.nav-item.active{color:#d9b76d}.nav-item span{font-size:22px}
-.chat-float{position:fixed;bottom:92px;left:16px;background:linear-gradient(180deg,#e8c17a,#c9a46a);width:58px;height:58px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;box-shadow:0 6px 20px rgba(0,0,0,.4);z-index:200;border:none;cursor:pointer}
+.chat-float{position:fixed;bottom:92px;left:16px;background:#d9b76d;width:58px;height:58px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;z-index:200;border:none}
 .chat-window{position:fixed;inset:0;background:#f9f4f0;z-index:500;display:none;flex-direction:column;overflow-y:auto}
 .chat-window.open{display:flex}
-.chat-top{background:#fff;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #eee}
-.welcome-box{background:linear-gradient(180deg,#ffd9c8,#f9f4f0);padding:30px 20px;text-align:right}
-.welcome-box h1{font-size:26px;line-height:1.5}
-.white-card{background:#fff;border-radius:14px;margin:12px;padding:0 14px;box-shadow:0 2px 8px rgba(0,0,0,.06)}
-.white-card .row{padding:16px 0;display:flex;justify-content:space-between;border-bottom:1px solid #f0f0f0;cursor:pointer}
-.white-card .row:last-child{border:none}
-.search-box{background:#f0f0f0;border-radius:10px;padding:12px;display:flex;justify-content:space-between;margin:10px 0}
-.faq{padding:14px 0;border-bottom:1px solid #f0f0f0;display:flex;justify-content:space-between;cursor:pointer;font-size:14px}
-.faq-ans{display:none;padding:10px;background:#fafafa;border-radius:8px;font-size:12px;color:#555;margin-bottom:8px}.faq-ans.open{display:block}
-.empty-msg{text-align:center;padding:100px 20px}
-.btn-red{background:#e11d2d;color:#fff;border:none;padding:12px 22px;border-radius:10px;font-weight:800;margin-top:14px}
+.row{padding:16px 0;display:flex;justify-content:space-between;border-bottom:1px solid #eee;cursor:pointer}
 </style>
 </head>
 <body>
-<div class="header"><div style="color:#d9b76d">☰</div><div class="logo">👑 سوق العراق</div></div>
-<div id="home" class="page active"><div class="section"><h2>مرحباً بك في سوق العراق</h2><p style="text-align:center;margin-top:8px;font-size:13px">الوجهة الأولى للتسوق الفاخر</p></div></div>
-<div id="cats" class="page"><div class="section"><h2>التصنيفات</h2><div class="cat-card">🚗 سيارات - 🏢 عقارات - 📱 موبايلات</div></div></div>
-<div id="cart" class="page"><div class="section"><h2>سلة التسوق</h2><p style="text-align:center;padding:40px;color:#888">🛒 فارغة</p></div></div>
-<div id="account" class="page"><div class="section"><h2>حسابي</h2><div id="formWrap" class="form-card"><label>الاسم الكامل</label><input id="f_name" placeholder="اسمك"><label>العنوان</label><input id="f_address"><label>البريد</label><input id="f_email" type="email"><label>تاريخ الميلاد</label><input id="f_dob" type="date"><label>الجنس</label><select id="f_gender"><option value="">اختر الجنس</option><option>ذكر</option><option>أنثى</option></select><button class="btn-save" onclick="saveAcc()">حفظ الحساب 👑</button></div><div id="accView" style="display:none"></div></div></div>
+<div class="header"><div style="color:#d9b76d">☰</div><div class="logo">سوق العراق</div></div>
+
+<div id="home" class="page active"><div class="section"><h2>مرحبا بك في سوق العراق</h2></div></div>
+<div id="cats" class="page"><div class="section"><h2>التصنيفات</h2><div style="background:#0a0a0a;color:#d9b76d;border:1.5px solid #d9b76d;border-radius:14px;padding:16px;text-align:center">سيارات - عقارات - موبايلات</div></div></div>
+<div id="cart" class="page"><div class="section"><h2>السلة</h2><p style="text-align:center;padding:40px">فارغة</p></div></div>
+<div id="account" class="page"><div class="section"><h2>حسابي</h2><div id="formWrap" class="form-card"><label>الاسم الكامل</label><input id="f_name"><label>العنوان</label><input id="f_address"><label>البريد</label><input id="f_email" type="email"><label>تاريخ الميلاد</label><input id="f_dob" type="date"><label>الجنس</label><select id="f_gender"><option value="">اختر</option><option>ذكر</option><option>انثى</option></select><button class="btn-save" onclick="saveAcc()">حفظ الحساب</button></div><div id="accView" style="display:none"></div></div></div>
 
 <button class="chat-float" onclick="openChat()">💬</button>
 
 <div id="chatWindow" class="chat-window">
-<div class="chat-top"><span onclick="closeChat()" style="font-size:26px;cursor:pointer">✕</span><div style="display:flex;align-items:center;gap:8px"><b>👑 سوق العراق</b><span style="font-size:20px">👑</span></div></div>
+<div style="background:#fff;padding:12px 16px;display:flex;justify-content:space-between;border-bottom:1px solid #eee"><span onclick="closeChat()" style="font-size:26px;cursor:pointer">X</span><b>سوق العراق</b></div>
 
-<!-- الجزء 1: الترحيب مثل صورتك الاولى -->
 <div id="mainChat">
-<div class="welcome-box"><h1 id="welcomeName">زائرنا العزيز 👋 مرحباً<br>كيف يمكننا مساعدتك؟</h1></div>
-<div class="white-card">
-<div class="row" onclick="showHelp()"><span>❓</span><b>المساعدة</b></div>
-<div class="row" onclick="showMsgs()"><span>💬</span><b>الرسائل</b></div>
+<div style="background:linear-gradient(180deg,#ffd9c8,#f9f4f0);padding:30px 20px"><h1 id="welcomeName" style="font-size:24px">زائرنا العزيز مرحبا<br>كيف يمكننا مساعدتك؟</h1></div>
+<div style="background:#fff;border-radius:14px;margin:12px;padding:0 14px">
+<div class="row" onclick="showHelp()"><b>المساعدة</b><span>؟</span></div>
+<div class="row" onclick="showMsgs()" style="border:none"><b>الرسائل</b><span>..</span></div>
 </div>
-<div class="white-card">
-<div class="search-box"><span>🔍</span><b>البحث عن مساعدة</b></div>
-<div class="faq" onclick="toggle('q1')"><span>أكدر ألغي الطلب؟ أو أعدّل العنوان/المنتجات؟</span><span style="color:#c00">›</span></div><div id="q1" class="faq-ans">نعم تكدر تلغي الطلب خلال ساعتين من طلباتي في حسابك.</div>
-<div class="faq" onclick="toggle('q2')"><span>شوكت يوصل طلبي؟</span><span style="color:#c00">›</span></div><div id="q2" class="faq-ans">داخل بغداد 24 ساعة والمحافظات 2-3 أيام.</div>
-<div class="faq" onclick="toggle('q3')"><span>شلون أتواصل وي فريق سوق العراق؟</span><span style="color:#c00">›</span></div><div id="q3" class="faq-ans">من هذه المراسلة مباشرة، فريقنا يرد خلال دقائق.</div>
-<div class="faq" onclick="toggle('q4')"><span>وين طلبي؟</span><span style="color:#c00">›</span></div><div id="q4" class="faq-ans">تابع طلبك من حسابك > طلباتي.</div>
+<div style="background:#fff;border-radius:14px;margin:12px;padding:12px">
+<div onclick="toggleQ('q1')" class="row">أكدر ألغي الطلب؟ <span>></span></div><div id="q1" style="display:none;background:#fafafa;padding:10px;font-size:12px">نعم خلال ساعتين.</div>
+<div onclick="toggleQ('q2')" class="row">شوكت يوصل طلبي؟ <span>></span></div><div id="q2" style="display:none;background:#fafafa;padding:10px;font-size:12px">بغداد 24 ساعة.</div>
+<div onclick="toggleQ('q3')" class="row" style="border:none">وين طلبي؟ <span>></span></div><div id="q3" style="display:none;background:#fafafa;padding:10px;font-size:12px">من حسابك.</div>
 </div>
-<div class="white-card" style="padding:14px"><b style="font-size:14px">اذا كان عندي مشكلة بشحنتي بعد استلامها، شلون اكدر أبلّغ عليها؟</b><p style="font-size:12px;color:#666;margin-top:8px">الجواب: * تكدر ترسل مشكلة واحدة فقط لكل شحنة. * تكدر تبلغ ع...</p></div>
-<div class="white-card" style="padding:14px"><b style="font-size:14px">شنو المعلومات المطلوبة حتى أرسل مشكلة على الشحنة؟</b><p style="font-size:12px;color:#666;margin-top:8px">الجواب:</p></div>
+<div style="background:#fff;margin:12px;border-radius:14px;padding:14px">
+<div style="background:#f3f3f3;border-radius:14px;padding:12px"><b>روبوت سوق العراق</b><br><span id="robotText">مرحبا، شلون نكدر نساعدك اليوم؟</span></div>
+<div id="chatMsgs"></div>
+<div style="display:flex;gap:8px;margin-top:12px"><input id="chatInput" placeholder="اكتب رسالة..." style="flex:1;padding:12px;border-radius:20px;border:1px solid #ddd"><button onclick="sendMsg()" style="background:#0a0a0a;color:#d9b76d;border:none;padding:10px 16px;border-radius:20px">ارسال</button></div>
+</div>
 </div>
 
-<!-- الجزء 2: الرسائل -->
 <div id="msgsPage" style="display:none">
-<div style="padding:16px;display:flex;justify-content:space-between;align-items:center;background:#fff;border-bottom:1px solid #eee"><span onclick="backMain()" style="cursor:pointer">→</span><b>الرسائل</b><span></span></div>
-<div class="empty-msg"><div style="font-size:40px">💬</div><h3>لا توجد رسائل</h3><p style="font-size:12px;color:#666;margin-top:6px">ستُعرض الرسائل الواردة من الفريق هنا</p><button class="btn-red" onclick="backMain()">▶ أطرح سؤالاً</button></div>
+<div style="padding:16px;background:#fff;display:flex;justify-content:space-between;border-bottom:1px solid #eee"><b>الرسائل</b><span onclick="backMain()" style="cursor:pointer">رجوع</span></div>
+<div style="text-align:center;padding:80px 20px"><h3>لا توجد رسائل</h3><p style="font-size:12px;color:#666">ستعرض الرسائل هنا</p><button onclick="backMain()" style="background:#e11d2d;color:#fff;border:none;padding:12px 22px;border-radius:10px;margin-top:14px;font-weight:800">اطرح سؤالا</button></div>
 </div>
 
-<!-- الجزء 3: المساعدة -->
 <div id="helpPage" style="display:none">
-<div style="padding:16px;display:flex;justify-content:space-between;align-items:center;background:#fff;border-bottom:1px solid #eee"><span>🔍</span><b>المساعدة</b><span onclick="backMain()" style="cursor:pointer">→</span></div>
-<div style="background:#fff;padding:16px;border-bottom:1px solid #f0f0f0"><b>🔄 القسم: الإرجاع والضمان (Returns & Warranty)</b><br><small style="color:#666">معلومات حول الصيانة/ الإرجاع/ الإستبدال والضمان - 3 مقالات</small></div>
-<div style="background:#fff;padding:16px;border-bottom:1px solid #f0f0f0"><b>القسم: التقييمات والمراجعات (Reviews & Ratings)</b><br><small style="color:#666">معلومات حول التقييمات والمراجعات - 5 مقالات</small></div>
-<div style="background:#fff;padding:16px;border-bottom:1px solid #f0f0f0"><b>⭐ القسم: النقاط والمكافآت (Points & Rewards)</b><br><small style="color:#666">معلومات حول نظام النقاط وكيفية الحصول عليها والإستفادة منها - 6 مقالات</small></div>
-<div style="background:#fff;padding:16px;border-bottom:1px solid #f0f0f0"><b>📱 القسم: التطبيق والدعم التقني (App & Technical)</b><br><small style="color:#666">معلومات حول سوق العراق والدعم التقني - 9 مقالات</small></div>
-<div style="background:#fff;padding:16px"><b>☎️ القسم: تواصل ويانه (Contact Us)</b><br><small style="color:#666">معلومات حول طرق التواصل ويانا - مقال واحد</small></div>
-<div style="text-align:center;padding:20px"><button class="btn-red" style="background:#fff;color:#000;border:1px solid #ddd">▶ أطرح سؤالاً</button><p style="font-size:11px;color:#888;margin-top:10px">يستطيع الفريق تقديم مساعدة إذا لزم الأمر</p></div>
+<div style="padding:16px;background:#fff;display:flex;justify-content:space-between;border-bottom:1px solid #eee"><b>المساعدة</b><span onclick="backMain()" style="cursor:pointer">رجوع</span></div>
+<div style="background:#fff;padding:16px;border-bottom:1px solid #eee">الارجاع والضمان - 3 مقالات</div>
+<div style="background:#fff;padding:16px;border-bottom:1px solid #eee">التقييمات - 5 مقالات</div>
+<div style="background:#fff;padding:16px;border-bottom:1px solid #eee">النقاط والمكافآت - 6 مقالات</div>
+<div style="background:#fff;padding:16px;border-bottom:1px solid #eee">الدعم التقني - 9 مقالات</div>
+<div style="background:#fff;padding:16px">تواصل ويانه</div>
+<div style="text-align:center;padding:20px"><button onclick="backMain()" style="border:1px solid #ddd;background:#fff;padding:10px 18px;border-radius:10px">اطرح سؤالا</button></div>
 </div>
-
 </div>
 
 <div class="bottom-nav">
 <a href="#" class="nav-item active" id="n_home" onclick="showPage('home')"><span>🏠</span>الرئيسية</a>
-<a href="#" class="nav-item" id="n_cats" onclick="showPage('cats')"><span>📁</span>الأقسام</a>
+<a href="#" class="nav-item" id="n_cats" onclick="showPage('cats')"><span>📁</span>الاقسام</a>
 <a href="#" class="nav-item" id="n_cart" onclick="showPage('cart')"><span>🛒</span>السلة</a>
 <a href="#" class="nav-item" id="n_account" onclick="showPage('account')"><span>👤</span>الحساب</a>
 </div>
 
 <script>
-function showPage(p){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById(p).classList.add('active');document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));document.getElementById('n_'+p).classList.add('active');if(p==='account')checkAcc();}
+function showPage(p){document.querySelectorAll('.page').forEach(function(x){x.classList.remove('active')});document.getElementById(p).classList.add('active');document.querySelectorAll('.nav-item').forEach(function(x){x.classList.remove('active')});document.getElementById('n_'+p).classList.add('active');if(p==='account'){checkAcc()}}
 function openChat(){
- let d=JSON.parse(localStorage.getItem('userAcc')||'null');
- let el=document.getElementById('welcomeName');
- if(d&&d.name){el.innerHTML=`${d.name} 👋 مرحباً<br>كيف يمكننا مساعدتك؟`;}else{el.innerHTML=`زائرنا العزيز 👋 مرحباً<br>كيف يمكننا مساعدتك؟`;}
+ var d=null;try{d=JSON.parse(localStorage.getItem('userAcc'))}catch(e){}
+ var el=document.getElementById('welcomeName');var rt=document.getElementById('robotText');
+ if(d && d.name){el.innerHTML=d.name+' مرحبا<br>كيف يمكننا مساعدتك؟';rt.innerHTML='مرحبا '+d.name+'، شلون نكدر نساعدك اليوم؟';}
+ else{el.innerHTML='زائرنا العزيز مرحبا<br>كيف يمكننا مساعدتك؟';rt.innerHTML='مرحبا، شلون نكدر نساعدك اليوم؟';}
  document.getElementById('chatWindow').classList.add('open');backMain();
 }
 function closeChat(){document.getElementById('chatWindow').classList.remove('open')}
 function showHelp(){document.getElementById('mainChat').style.display='none';document.getElementById('msgsPage').style.display='none';document.getElementById('helpPage').style.display='block';}
 function showMsgs(){document.getElementById('mainChat').style.display='none';document.getElementById('helpPage').style.display='none';document.getElementById('msgsPage').style.display='block';}
 function backMain(){document.getElementById('helpPage').style.display='none';document.getElementById('msgsPage').style.display='none';document.getElementById('mainChat').style.display='block';}
-function toggle(id){document.getElementById(id).classList.toggle('open')}
-function saveAcc(){
- let d={name:f_name.value,address:f_address.value,email:f_email.value,dob:f_dob.value,gender:f_gender.value};
- if(!d.name||!d.email){alert('اكتب الاسم والبريد');return}
- localStorage.setItem('userAcc',JSON.stringify(d));checkAcc();
+function toggleQ(id){var e=document.getElementById(id);if(e.style.display==='none'){e.style.display='block'}else{e.style.display='none'}}
+function sendMsg(){
+ var inp=document.getElementById('chatInput');var t=inp.value.trim();if(!t){return}
+ var box=document.getElementById('chatMsgs');box.innerHTML+='<div style="background:#0a0a0a;color:#fff;border-radius:18px 18px 4px 18px;margin:8px 0 0 auto;max-width:70%;padding:10px 14px;font-size:13px">'+t+'</div>';inp.value='';
+ setTimeout(function(){var r='فريق سوق العراق سيرد قريبا.';if(t.indexOf('مشكلة')>-1){r='فهمت، وضح رقم الطلب؟'}if(t.indexOf('وين')>-1 || t.indexOf('يوصل')>-1){r='التوصيل بغداد 24 ساعة والمحافظات 2-3 ايام';}box.innerHTML+='<div style="background:#f3f3f3;border-radius:14px;padding:10px;margin-top:8px"><b>روبوت سوق العراق</b><br>'+r+'</div>';},600);
 }
-function checkAcc(){
- let d=JSON.parse(localStorage.getItem('userAcc')||'null');
- if(d){formWrap.style.display='none';accView.style.display='block';accView.innerHTML=`<div style="background:#0a0a0a;color:#fff;padding:14px;border-radius:12px;border:1.5px solid #d9b76d"><p><b>الاسم:</b> ${d.name}</p><p><b>العنوان:</b> ${d.address}</p><p><b>البريد:</b> ${d.email}</p><p><b>الميلاد:</b> ${d.dob}</p><p><b>الجنس:</b> ${d.gender}</p><button class="btn-save" onclick="localStorage.removeItem('userAcc');location.reload()">تسجيل خروج</button></div>`;}else{formWrap.style.display='block';accView.style.display='none';}
-}
+function saveAcc(){var d={name:document.getElementById('f_name').value,address:document.getElementById('f_address').value,email:document.getElementById('f_email').value,dob:document.getElementById('f_dob').value,gender:document.getElementById('f_gender').value};if(!d.name||!d.email){alert('اكتب الاسم والبريد');return}localStorage.setItem('userAcc',JSON.stringify(d));checkAcc();}
+function checkAcc(){var d=null;try{d=JSON.parse(localStorage.getItem('userAcc'))}catch(e){}var fw=document.getElementById('formWrap');var av=document.getElementById('accView');if(d){fw.style.display='none';av.style.display='block';av.innerHTML='<div style="background:#0a0a0a;color:#fff;padding:14px;border-radius:12px;border:1.5px solid #d9b76d"><p>الاسم: '+d.name+'</p><p>البريد: '+d.email+'</p><button onclick="localStorage.removeItem(\'userAcc\');location.reload()" style="width:100%;margin-top:10px;padding:10px;border-radius:8px">خروج</button></div>'}else{fw.style.display='block';av.style.display='none'}}
 checkAcc();
 </script>
 </body>
-  </html>
+ </html>
