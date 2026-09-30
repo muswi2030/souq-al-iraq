@@ -1,23 +1,24 @@
 {
   "name": "سوق العراق",
   "short_name": "سوق العراق",
-  "description": "منصة البيع والشراء الأولى في العراق - من قلب الرافدين",
-  "start_url": "./index.html",
+  "description": "منصة البيع والشراء الأولى في العراق",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#0A1931",
-  "theme_color": "#C5A36A",
+  "background_color": "#f4f7fb",
+  "theme_color": "#007bff",
   "dir": "rtl",
   "lang": "ar",
   "icons": [
     {
-      "src": "icon-192.png",
+      "src": "./icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "icon-512.png",
+      "src": "./icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
