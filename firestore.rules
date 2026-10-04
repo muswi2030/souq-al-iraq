@@ -1,0 +1,119 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ───────── دوال مساعدة ─────────
+    function signedIn() {
+      return request.auth != null;   // يشمل الدخول المجهول المستخدم في المزامنة
+    }
+    function isSelf(uid) {
+      return signedIn() && request.auth.uid == uid;
+    }
+    function userDoc(uid) {
+      return /databases/$(database)/documents/users/$(uid);
+    }
+    function isAdmin() {
+      return signedIn()
+        && exists(userDoc(request.auth.uid))
+        && get(userDoc(request.auth.uid)).data.role == 'admin';
+    }
+    // هل بقيت هذه الحقول كما هي عند التعديل؟
+    function untouched(fields) {
+      return !request.resource.data.diff(resource.data).affectedKeys().hasAny(fields);
+    }
+
+    // ───────── الإعلانات ─────────
+    match /ads/{adId} {
+      allow read: if true;                                         // التصفح متاح للجميع
+      allow create: if signedIn()
+                    && request.resource.data.owner == request.auth.uid;
+      allow update: if signedIn()
+                    && resource.data.owner == request.auth.uid
+                    && untouched(['owner']);                       // لا يمكن نقل الملكية
+      allow delete: if signedIn()
+                    && resource.data.owner == request.auth.uid;
+    }
+
+    // ───────── المحادثات (مشترٍ/بائع فقط) ─────────
+    match /chats/{chatId} {
+      allow read: if signedIn()
+                  && (resource.data.buyerId == request.auth.uid
+                      || resource.data.sellerId == request.auth.uid);
+      allow create: if signedIn()
+                    && (request.resource.data.buyerId == request.auth.uid
+                        || request.resource.data.sellerId == request.auth.uid);
+      allow update: if signedIn()
+                    && (resource.data.buyerId == request.auth.uid
+                        || resource.data.sellerId == request.auth.uid)
+                    && untouched(['buyerId', 'sellerId', 'adId']);
+      allow delete: if false;
+    }
+
+    // ───────── المستخدمون ─────────
+    match /users/{uid} {
+      allow get: if isSelf(uid) || isAdmin();
+      allow list: if isAdmin();
+
+      // ينشئ المستخدم ملفه بدور user وغير محظور فقط (لا يرقّي نفسه)،
+      // و phoneVerified=true لا تُقبل إلا إن كانت الجلسة موثّقة برقم هاتف فعلاً
+      allow create: if isSelf(uid)
+                    && request.resource.data.role == 'user'
+                    && request.resource.data.banned == false
+                    && (request.resource.data.get('phoneVerified', false) == false
+                        || request.auth.token.phone_number != null);
+
+      // المستخدم يعدّل بياناته دون role/banned/ts، والمشرف يعدّل role/banned فقط
+      allow update: if (isSelf(uid) && untouched(['role', 'banned', 'ts', 'phoneVerified']))
+                    || (isAdmin() && request.auth.uid != uid
+                        && request.resource.data.diff(resource.data).affectedKeys()
+                             .hasOnly(['role', 'banned']));
+      allow delete: if false;
+
+      // الإعدادات: users/{uid}/settings/main — لصاحبها فقط
+      match /settings/{docId} {
+        allow read, write: if isSelf(uid);
+      }
+    }
+
+    // ───────── المجموعات ─────────
+    match /groups/{gid} {
+      allow read: if true;
+      allow create: if signedIn()
+                    && request.auth.uid in request.resource.data.members
+                    && request.resource.data.createdBy == request.auth.uid;
+      allow update: if signedIn()
+                    && request.auth.uid in resource.data.members
+                    && untouched(['createdAt', 'createdBy']);
+      allow delete: if signedIn()
+                    && resource.data.createdBy == request.auth.uid;
+
+      // رسائل المجموعة
+      match /messages/{mid} {
+        function isMember() {
+          return signedIn()
+            && request.auth.uid in get(/databases/$(database)/documents/groups/$(gid)).data.members;
+        }
+        allow read: if isMember();
+        allow create: if isMember()
+                      && request.resource.data.senderId == request.auth.uid;
+        allow update: if signedIn()
+                      && resource.data.senderId == request.auth.uid
+                      && untouched(['senderId', 'createdAt']);
+        allow delete: if false;
+      }
+    }
+
+    // ───────── اللافتات: قراءة عامة، وكتابة للمشرف فقط ─────────
+    match /banners/{bid} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
+    // ───────── أي شيء آخر ممنوع ─────────
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
+
