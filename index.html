@@ -2659,9 +2659,9 @@ function fmtPhone(s){let c=arNum(s).replace(/\D/g,'');if(c.startsWith('00964'))c
 /* إضافة 1: فحص اكتمال الحساب: اسم + رقم هاتف صحيح + محافظة */
 function hasAccount(){
   const name=(store.get('u_name')||'').trim();
-  const phone=(store.get('u_phone')||'').trim();
   const city=(store.get('u_city')||'').trim();
-  return name.length>=2 && !!fmtPhone(arNum(phone)) && !!city;
+  // ✅ بدون طلب رقم هاتف (يتجنب مشكلة OTP)
+  return name.length>=2 && !!city;
 }
 /* تعديل 1: حُذفت refreshAccBar مع الشريط */
 
