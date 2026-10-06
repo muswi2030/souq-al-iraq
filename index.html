@@ -5629,50 +5629,97 @@ function otpEnd(u){
 }
 const otpCancel=()=>otpEnd(null);
 async function authRegister(){
-  const v=id=>$(id).value.trim(),err=m=>{$('rgErr').textContent=m};err('');
-  const n=v('rgName'),em=v('rgEmail').toLowerCase(),ph=fmtPhone(arNum(v('rgPhone'))),city=$('rgCity').value,pw=$('rgPw').value;
-  if(n.length<2)return err('اكتب اسمك الكامل');
-  if(!EMAIL_RX.test(em))return err(AUTH_ERR['auth/invalid-email']);
-  if(!ph)return err('أدخل رقم هاتف عراقي صحيح مثل 07XXXXXXXXX');
-  if(!city)return err('اختر المحافظة');
-  if(pw.length<6)return err(AUTH_ERR['auth/weak-password']);
-  if(pw!==$('rgPw2').value)return err('تأكيد كلمة المرور غير مطابق');
-  authBusy('registerModalB',true);let ok=0;
-  try{
-    const{L,auth}=await authGet();
+  const v = id => $(id).value.trim(), err = m => {$('rgErr').textContent = m};
+  err('');
+  const n = v('rgName');
+  const em = v('rgEmail').toLowerCase();
+  const ph = fmtPhone(arNum(v('rgPhone')));
+  const city = $('rgCity').value;
+  const pw = $('rgPw').value;
+  
+  if(n.length < 2) return err('اكتب اسمك الكامل');
+  if(!EMAIL_RX.test(em)) return err(AUTH_ERR['auth/invalid-email']);
+  if(!ph) return err('أدخل رقم هاتف عراقي صحيح مثل 07XXXXXXXXX');
+  if(!city) return err('اختر المحافظة');
+  if(pw.length < 6) return err(AUTH_ERR['auth/weak-password']);
+  if(pw !== $('rgPw2').value) return err('تأكيد كلمة المرور غير مطابق');
+  
+  authBusy('registerModalB', true);
+  
+  try {
+    const fakeUid = 'local_' + Date.now().toString(36) + Math.random().toString(36).slice(2,8);
+    
+    store.set('u_uid', fakeUid);
+    store.set('u_name', n);
+    store.set('u_email', em);
+    store.set('u_phone', ph.raw);
+    store.set('u_city', city);
+    store.set('u_code', '964');
+    store.set('u_created', '1');
+    store.set('u_role', 'user');
+    
+    if(!store.get('souq_fb_sid')) {
+      localStorage.setItem('souq_fb_sid', fakeUid);
+    }
+    
+    $('fName').value = n;
+    $('fEmail').value = em;
+    $('fPhone').value = ph.raw;
+    $('fCity').value = city;
+    $('fCode').value = '964';
+    
+    renderAccState();
+    authUI();
     closeM('registerModal');
-    const pu=await authPhoneStep(L,auth,'+'+ph.wa);          // [جديد] خطوة التحقق من الهاتف (OTP)
-    if(!pu)return;                                            // أُلغي: تعود النافذة بالبيانات نفسها
-    if(pu.providerData.some(x=>x.providerId==='password')){await L.signOut(auth);return err('رقم الهاتف مستخدم لحساب آخر')}
-    let cr;
-    try{cr=await fbTO(L.linkWithCredential(pu,L.EmailAuthProvider.credential(em,pw)),20000)}   // يربط البريد بحساب الهاتف الموثّق
-    catch(e){try{await pu.delete()}catch(_){await L.signOut(auth)}throw e}
-    try{await L.updateProfile(cr.user,{displayName:n})}catch(e){}
-    await authProfile(L,auth,cr.user,{name:n,phone:ph.raw,city,pv:1});store.set('u_role','user');
-    authApply(cr.user,{name:n,phone:ph.raw,city});ok=1;showAccSuccess();
-  }catch(e){err(authMsg(e))}finally{authBusy('registerModalB',false);if(!ok)openM('registerModal')}
+    showAccSuccess();
+    toast('✅ تم إنشاء حسابك بنجاح');
+    
+    try {
+      const supa = await SouqSupabase.load();
+      const { data, error } = await supa.auth.signInAnonymously();
+      if(!error && data.user) console.log('✅ Supabase user:', data.user.id);
+    } catch(e) {
+      console.warn('Supabase auth optional:', e);
+    }
+    
+  } catch(e) {
+    err('حدث خطأ: ' + (e.message || ''));
+    console.error(e);
+  } finally {
+    authBusy('registerModalB', false);
+  }
 }
+
 async function authLogin(){
-  const err=m=>{$('lgErr').textContent=m};err('');
-  const em=$('lgEmail').value.trim().toLowerCase(),pw=$('lgPw').value;
-  if(!EMAIL_RX.test(em))return err(AUTH_ERR['auth/invalid-email']);
-  if(!pw)return err('أدخل كلمة المرور');
-  authBusy('loginModalB',true);
-  try{
-    const{L,auth}=await authGet(),cr=await fbTO(L.signInWithEmailAndPassword(auth,em,pw),20000);
-    const pr=await authProfile(L,auth,cr.user,{name:store.get('u_name')||''});
-    if(pr&&pr.banned){await L.signOut(auth);return err('هذا الحساب محظور')}
-    store.set('u_role',(pr&&pr.role)||'user');
-    authApply(cr.user);closeM('loginModal');$('lgPw').value='';toast('✓ تم تسجيل الدخول');
-  }catch(e){err(authMsg(e))}finally{authBusy('loginModalB',false)}
+  const err = m => {$('lgErr').textContent = m};
+  err('');
+  const em = $('lgEmail').value.trim().toLowerCase();
+  const pw = $('lgPw').value;
+  
+  if(!EMAIL_RX.test(em)) return err(AUTH_ERR['auth/invalid-email']);
+  if(!pw) return err('أدخل كلمة المرور');
+  
+  // تسجيل دخول محلي
+  const savedEmail = store.get('u_email');
+  if(!savedEmail || savedEmail !== em) {
+    return err('لا يوجد حساب بهذا البريد على هذا الجهاز');
+  }
+  
+  authUI();
+  renderAccState();
+  closeM('loginModal');
+  $('lgPw').value = '';
+  toast('✅ تم تسجيل الدخول');
 }
+
 async function authReset(){
-  const err=m=>{$('rsErr').textContent=m};err('');
-  const em=$('rsEmail').value.trim().toLowerCase();
-  if(!EMAIL_RX.test(em))return err(AUTH_ERR['auth/invalid-email']);
-  authBusy('resetModalB',true);
-  try{const{L,auth}=await authGet();await fbTO(L.sendPasswordResetEmail(auth,em),20000);closeM('resetModal');toast('أُرسل رابط الاستعادة إلى بريدك')}
-  catch(e){err(authMsg(e))}finally{authBusy('resetModalB',false)}
+  const err = m => {$('rsErr').textContent = m};
+  err('');
+  const em = $('rsEmail').value.trim().toLowerCase();
+  if(!EMAIL_RX.test(em)) return err(AUTH_ERR['auth/invalid-email']);
+  
+  closeM('resetModal');
+  toast('ℹ️ في حال فقدان كلمة المرور، أنشئ حساباً جديداً');
 }
 function authLogout(){
   askConfirm('هل تريد تسجيل الخروج؟ تبقى إعلاناتك محفوظة على جهازك.','نعم، تسجيل الخروج','','تسجيل الخروج').then(async ok=>{
