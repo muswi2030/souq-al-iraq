@@ -1458,11 +1458,36 @@ html.dark #account.edit-mode .acc-settings .set-card{border-color:rgba(56,189,24
 }
 </style>
 <script type="module">
-/* Firebase v10 (Modular) - يُحمَّل عند الحاجة فقط، فلا يؤثر على التطبيق إذا كانت المزامنة معطّلة */
-window.SouqFB={async load(){
-  const B='https://www.gstatic.com/firebasejs/10.12.0/';
-  const [app,fs,auth,stg,msg]=await Promise.all([import(B+'firebase-app.js'),import(B+'firebase-firestore.js'),import(B+'firebase-auth.js'),import(B+'firebase-storage.js').catch(()=>({})),import(B+'firebase-messaging.js').catch(()=>({}))]);
-  return{...app,...fs,...auth,...stg,...msg};
+/* ============================================
+   Supabase (الجديد) + Firebase (احتياطي)
+   ============================================ */
+const SUPA_URL = 'https://ftmdbqdpzvhrftkuiiuuq.supabase.co';
+const SUPA_KEY = 'sb_publishable_BRu-D3jLPrnbLx1DZbsFSw_kkaG0Kcj';
+
+window.SouqSupabase = {
+  client: null,
+  ready: false,
+  async load() {
+    if (this.ready && this.client) return this.client;
+    const { createClient } = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
+    this.client = createClient(SUPA_URL, SUPA_KEY);
+    this.ready = true;
+    console.log('✅ Supabase client loaded');
+    return this.client;
+  }
+};
+
+/* Firebase v10 (Modular) - احتياطي */
+window.SouqFB = {async load(){
+  const B = 'https://www.gstatic.com/firebasejs/10.12.0/';
+  const [app,fs,auth,stg,msg] = await Promise.all([
+    import(B+'firebase-app.js'),
+    import(B+'firebase-firestore.js'),
+    import(B+'firebase-auth.js'),
+    import(B+'firebase-storage.js').catch(()=>({})),
+    import(B+'firebase-messaging.js').catch(()=>({}))
+  ]);
+  return {...app, ...fs, ...auth, ...stg, ...msg};
 }};
 </script>
 </head>
