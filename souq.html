@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>سوق العراق</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Tajawal',sans-serif}
+body{background:#f4f7fb;color:#212529;padding-bottom:40px}
+.hdr{background:linear-gradient(135deg,#007bff,#0056b3);color:#fff;padding:20px;text-align:center;box-shadow:0 4px 14px rgba(0,86,179,.28)}
+.hdr h1{font-size:24px;font-weight:900;margin-bottom:4px}
+.hdr p{font-size:13px;opacity:.9}
+.status{background:#fff8e6;border-bottom:1px solid #fde3a7;padding:8px 16px;font-size:12px;text-align:center;color:#8a5a00}
+.status.ok{background:#e6f4ea;border-color:#b7e1c1;color:#1e8e3e}
+.status.err{background:#fdecee;border-color:#f5c2c7;color:#dc3545}
+.form{background:#fff;margin:16px;padding:16px;border-radius:14px;box-shadow:0 2px 10px rgba(16,24,40,.06)}
+.form h2{font-size:17px;font-weight:900;margin-bottom:14px;color:#007bff;padding-bottom:10px;border-bottom:2px solid #e3e8ef}
+.form label{display:block;font-weight:700;font-size:13px;margin-bottom:6px;color:#495057}
+.form input,.form select,.form textarea{width:100%;padding:12px;border:1px solid #e3e8ef;border-radius:10px;font-size:14px;font-family:inherit;margin-bottom:12px;outline:0;background:#f8f9fb}
+.form input:focus,.form select:focus,.form textarea:focus{border-color:#007bff;box-shadow:0 0 0 3px rgba(0,123,255,.15);background:#fff}
+.form textarea{resize:vertical;min-height:70px}
+.form button{width:100%;background:#007bff;color:#fff;border:0;padding:14px;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit}
+.form button:hover{background:#0056b3}
+.form button:disabled{background:#ccc;cursor:not-allowed}
+.ads-header{display:flex;justify-content:space-between;align-items:center;margin:0 16px 10px}
+.ads-header h2{font-size:18px;font-weight:900}
+.ads-header span{background:#007bff;color:#fff;font-size:12px;font-weight:700;padding:4px 12px;border-radius:999px}
+.ads{padding:0 16px}
+.ad{background:#fff;border-radius:14px;padding:14px;margin-bottom:12px;box-shadow:0 2px 8px rgba(16,24,40,.06);display:flex;gap:12px;border:1px solid #e3e8ef}
+.ad img{width:100px;height:100px;border-radius:10px;object-fit:cover;background:#eee;flex-shrink:0}
+.ad-info{flex:1;display:flex;flex-direction:column;justify-content:space-between;min-width:0}
+.ad-title{font-size:15px;font-weight:700;margin-bottom:6px;word-break:break-word}
+.ad-price{color:#007bff;font-weight:900;font-size:18px;margin-bottom:6px}
+.ad-meta{font-size:12px;color:#6c757d;display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px}
+.ad-del{background:#dc3545;color:#fff;border:0;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;margin-top:8px;align-self:flex-start;font-family:inherit}
+.empty{text-align:center;padding:40px 20px;background:#fff;border-radius:14px;margin:0 16px;color:#6c757d}
+.empty h3{font-size:16px;font-weight:900;color:#212529;margin-bottom:6px}
+.toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#212529;color:#fff;padding:12px 24px;border-radius:20px;font-size:14px;font-weight:700;z-index:9999;opacity:0;visibility:hidden;transition:all .3s;max-width:90%;text-align:center}
+.toast.on{opacity:1;visibility:visible}
+.toast.ok{background:#16a34a}
+.toast.err{background:#dc3545}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <h1>🛒 سوق العراق</h1>
+  <p>انشر إعلانك واعرضه للجميع</p>
+</div>
+
+<div id="status" class="status">⏳ جاري الاتصال بالخادم...</div>
+
+<div class="form">
+  <h2>➕ نشر إعلان جديد</h2>
+  <label>عنوان الإعلان *</label>
+  <input id="fTitle" maxlength="100" placeholder="مثال: بيت للبيع في الناصرية">
+  
+  <label>القسم *</label>
+  <select id="fCat">
+    <option value="">اختر القسم</option>
+    <option value="cars">سيارات</option>
+    <option value="real">عقارات</option>
+    <option value="mobiles">موبايلات</option>
+    <option value="electronics">إلكترونيات</option>
+    <option value="home">أثاث ومنزل</option>
+    <option value="jobs">وظائف</option>
+    <option value="other">أخرى</option>
+  </select>
+  
+  <label>السعر (دينار عراقي) *</label>
+  <input id="fPrice" type="number" inputmode="numeric" placeholder="0" min="0">
+  
+  <label>المحافظة *</label>
+  <select id="fCity">
+    <option value="">اختر المحافظة</option>
+    <option value="بغداد">بغداد</option>
+    <option value="البصرة">البصرة</option>
+    <option value="نينوى">نينوى</option>
+    <option value="أربيل">أربيل</option>
+    <option value="النجف">النجف</option>
+    <option value="كربلاء">كربلاء</option>
+    <option value="ذي قار">ذي قار</option>
+    <option value="بابل">بابل</option>
+    <option value="الأنبار">الأنبار</option>
+    <option value="كركوك">كركوك</option>
+    <option value="ديالى">ديالى</option>
+    <option value="واسط">واسط</option>
+    <option value="ميسان">ميسان</option>
+    <option value="المثنى">المثنى</option>
+    <option value="القادسية">القادسية</option>
+    <option value="صلاح الدين">صلاح الدين</option>
+    <option value="السليمانية">السليمانية</option>
+    <option value="دهوك">دهوك</option>
+  </select>
+  
+  <label>رقم الهاتف *</label>
+  <input id="fPhone" type="tel" inputmode="numeric" placeholder="07XXXXXXXXX" maxlength="11">
+  
+  <label>الوصف *</label>
+  <textarea id="fDesc" maxlength="500" placeholder="اكتب تفاصيل الإعلان..."></textarea>
+  
+  <button id="btnPublish" disabled onclick="publishAd()">🚀 نشر الإعلان</button>
+</div>
+
+<div class="ads-header">
+  <h2>📋 الإعلانات المنشورة</h2>
+  <span id="adCount">0</span>
+</div>
+<div id="adsList" class="ads">
+  <div class="empty">
+    <h3>جاري التحميل...</h3>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+const SUPABASE_URL = 'https://ftmdbqdpzvhrftkuiiuuq.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_BRu-D3jLPrnbLx1DZbsFSw_kkaG0Kcj';
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+let currentUser = null;
+const $ = id => document.getElementById(id);
+const toast = (msg, type='') => {
+  const t = $('toast');
+  t.textContent = msg;
+  t.className = 'toast on ' + type;
+  setTimeout(() => t.className = 'toast ' + type, 3500);
+};
+const status = (msg, type='') => {
+  const s = $('status');
+  s.textContent = msg;
+  s.className = 'status ' + type;
+};
+
+async function init() {
+  try {
+    status('⏳ جاري الاتصال...');
+    const { data, error } = await supabase.auth.signInAnonymously();
+    if (error) throw error;
+    currentUser = data.user;
+    console.log('✅ متصل كـ:', currentUser.id);
+    status('✅ متصل - يمكنك النشر الآن', 'ok');
+    $('btnPublish').disabled = false;
+    loadAds();
+    supabase.channel('ads-ch')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'ads' }, () => loadAds())
+      .subscribe();
+  } catch (e) {
+    console.error('❌ خطأ:', e);
+    status('❌ فشل الاتصال: ' + (e.message || ''), 'err');
+    toast('تعذر الاتصال: ' + (e.message || ''), 'err');
+  }
+}
+
+async function loadAds() {
+  const adsList = $('adsList');
+  const { data, error } = await supabase
+    .from('ads').select('*')
+    .order('created_at', { ascending: false }).limit(100);
+  if (error) {
+    adsList.innerHTML = `<div class="empty"><h3>⚠️ خطأ</h3><p>${error.message}</p></div>`;
+    return;
+  }
+  if (!data || !data.length) {
+    adsList.innerHTML = `<div class="empty"><h3>لا توجد إعلانات بعد</h3><p>كن أول من ينشر!</p></div>`;
+    $('adCount').textContent = '0';
+    return;
+  }
+  adsList.innerHTML = '';
+  data.forEach(ad => {
+    const isMine = currentUser && ad.owner === currentUser.id;
+    const div = document.createElement('div');
+    div.className = 'ad';
+    const img = document.createElement('img');
+    const def = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect width="100%" height="100%" fill="%23e9ecef"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-size="14" fill="%236c757d">لا صورة</text></svg>';
+    img.src = (ad.imgs && ad.imgs.length) ? ad.imgs[0] : def;
+    img.onerror = () => img.src = def;
+    const info = document.createElement('div');
+    info.className = 'ad-info';
+    const title = document.createElement('div');
+    title.className = 'ad-title';
+    title.textContent = ad.title || '';
+    const price = document.createElement('div');
+    price.className = 'ad-price';
+    price.textContent = Number(ad.price || 0).toLocaleString('en-US') + ' د.ع';
+    const meta = document.createElement('div');
+    meta.className = 'ad-meta';
+    meta.innerHTML = `<span>📍 ${ad.city || ''}</span><span>📞 ${ad.phone || ''}</span>`;
+    info.appendChild(title);
+    info.appendChild(price);
+    info.appendChild(meta);
+    if (isMine) {
+      const del = document.createElement('button');
+      del.className = 'ad-del';
+      del.textContent = '🗑️ حذف';
+      del.onclick = () => deleteAd(ad.id);
+      info.appendChild(del);
+    }
+    div.appendChild(img);
+    div.appendChild(info);
+    adsList.appendChild(div);
+  });
+  $('adCount').textContent = data.length;
+}
+
+async function publishAd() {
+  if (!currentUser) return toast('⏳ انتظر', 'err');
+  const title = $('fTitle').value.trim();
+  const category = $('fCat').value;
+  const price = parseFloat($('fPrice').value) || 0;
+  const city = $('fCity').value;
+  const phone = $('fPhone').value.trim();
+  const desc = $('fDesc').value.trim();
+  if (!title || title.length < 4) return toast('❌ عنوان غير صحيح', 'err');
+  if (!category) return toast('❌ اختر القسم', 'err');
+  if (!(price > 0)) return toast('❌ سعر غير صحيح', 'err');
+  if (!city) return toast('❌ اختر المحافظة', 'err');
+  if (!phone) return toast('❌ أدخل الهاتف', 'err');
+  if (!desc || desc.length < 5) return toast('❌ وصف قصير', 'err');
+  const btn = $('btnPublish');
+  btn.disabled = true;
+  btn.textContent = '⏳ جاري النشر...';
+  try {
+    const { error } = await supabase.from('ads').insert({
+      title, category, price, city, phone,
+      description: desc, owner: currentUser.id, imgs: []
+    });
+    if (error) throw error;
+    toast('✅ تم نشر إعلانك!', 'ok');
+    $('fTitle').value = ''; $('fCat').value = '';
+    $('fPrice').value = ''; $('fCity').value = '';
+    $('fPhone').value = ''; $('fDesc').value = '';
+    loadAds();
+    window.scrollTo({ top: 400, behavior: 'smooth' });
+  } catch (e) {
+    toast('❌ فشل: ' + (e.message || ''), 'err');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '🚀 نشر الإعلان';
+  }
+}
+
+async function deleteAd(adId) {
+  if (!confirm('حذف الإعلان؟')) return;
+  try {
+    const { error } = await supabase.from('ads').delete().eq('id', adId);
+    if (error) throw error;
+    toast('✅ تم الحذف', 'ok');
+    loadAds();
+  } catch (e) {
+    toast('❌ فشل: ' + (e.message || ''), 'err');
+  }
+}
+
+window.publishAd = publishAd;
+window.deleteAd = deleteAd;
+init();
+</script>
+</body>
+    </html>
