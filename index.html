@@ -1457,9 +1457,8 @@ html.dark #account.edit-mode .acc-settings .set-card{border-color:rgba(56,189,24
   .cnt-card:hover,.acc-create-card:hover,.acc-create-btn:hover,.set-save-btn:hover{transform:none}
 }
 </style>
-<script type="module">
 /* ============================================
-   Supabase (الجديد) + Firebase (احتياطي)
+   Supabase (النظام الجديد - Publishable Key)
    ============================================ */
 const SUPA_URL = 'https://ftmdbqdpzvhrftkuiiuuq.supabase.co';
 const SUPA_KEY = 'sb_publishable_BRu-D3jLPrnbLx1DZbsFSw_kkaG0Kcj';
@@ -1469,35 +1468,30 @@ window.SouqSupabase = {
   ready: false,
   async load() {
     if (this.ready && this.client) return this.client;
+    
     const { createClient } = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
-    this.client = createClient(SUPA_URL, SUPA_KEY);
+    
+    // الحل الجذري: إخبار المكتبة بعدم استخدام هذا المفتاح كـ JWT في رأس Authorization
+    this.client = createClient(SUPA_URL, SUPA_KEY, {
+      auth: {
+        // هذا الإعداد يمنع المكتبة من محاولة تحويل المفتاح إلى JWT
+        autoRefreshToken: false,
+        persistSession: true,
+        detectSessionInUrl: false
+      },
+      global: {
+        headers: {
+          // التأكيد على إرسال المفتاح فقط في رأس apikey
+          'apikey': SUPA_KEY
+        }
+      }
+    });
+    
     this.ready = true;
-    console.log('✅ Supabase client loaded');
+    console.log('✅ Supabase client loaded (Publishable Key mode)');
     return this.client;
   }
 };
-
-/* Firebase v10 (Modular) - احتياطي */
-window.SouqFB = {async load(){
-  const B = 'https://www.gstatic.com/firebasejs/10.12.0/';
-  const [app,fs,auth,stg,msg] = await Promise.all([
-    import(B+'firebase-app.js'),
-    import(B+'firebase-firestore.js'),
-    import(B+'firebase-auth.js'),
-    import(B+'firebase-storage.js').catch(()=>({})),
-    import(B+'firebase-messaging.js').catch(()=>({}))
-  ]);
-  return {...app, ...fs, ...auth, ...stg, ...msg};
-}};
-</script>
-</head>
-<body>
-<style>
-#splash{position:fixed;inset:0;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:linear-gradient(135deg,#0a6cf0,#0056b3);color:#fff;text-align:center;transition:opacity .45s ease,visibility .45s ease}
-#splash.hide{opacity:0;visibility:hidden;pointer-events:none}
-#splash img{width:180px;height:180px;border-radius:40px;object-fit:cover;animation:splashPulse 1.2s ease-in-out infinite alternate}
-#splash h1{font-weight:900;font-size:24px;color:#fff;margin:0}
-#splash p{font-size:14px;opacity:.85;margin:0}
 #splash .sbar{width:200px;height:4px;border-radius:4px;background:rgba(255,255,255,.25);overflow:hidden;margin-top:10px}
 #splash .sbar i{display:block;height:100%;width:0;background:#f5a623;border-radius:4px;animation:splashLoad 1.5s linear forwards}
 @keyframes splashPulse{from{transform:scale(1)}to{transform:scale(1.05)}}
