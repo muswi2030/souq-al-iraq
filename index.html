@@ -1471,17 +1471,15 @@ window.SouqSupabase = {
     
     const { createClient } = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
     
-    // الحل الجذري: إخبار المكتبة بعدم استخدام هذا المفتاح كـ JWT في رأس Authorization
+    // ✅ الحل الجذري: تمرير كائن التكوين (options) لتوافق المفتاح الجديد
     this.client = createClient(SUPA_URL, SUPA_KEY, {
       auth: {
-        // هذا الإعداد يمنع المكتبة من محاولة تحويل المفتاح إلى JWT
         autoRefreshToken: false,
         persistSession: true,
         detectSessionInUrl: false
       },
       global: {
         headers: {
-          // التأكيد على إرسال المفتاح فقط في رأس apikey
           'apikey': SUPA_KEY
         }
       }
@@ -1492,11 +1490,6 @@ window.SouqSupabase = {
     return this.client;
   }
 };
-#splash .sbar{width:200px;height:4px;border-radius:4px;background:rgba(255,255,255,.25);overflow:hidden;margin-top:10px}
-#splash .sbar i{display:block;height:100%;width:0;background:#f5a623;border-radius:4px;animation:splashLoad 1.5s linear forwards}
-@keyframes splashPulse{from{transform:scale(1)}to{transform:scale(1.05)}}
-@keyframes splashLoad{from{width:0}to{width:100%}}
-@media (prefers-reduced-motion:reduce){#splash img{animation:none}}
 </style>
 <div id="splash" role="presentation" aria-hidden="true">
   <img src="splash.png" width="180" height="180" alt="">
