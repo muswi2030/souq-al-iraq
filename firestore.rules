@@ -3,9 +3,11 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // ───────── دوال مساعدة ─────────
+    // ═══════════════════════════════════════════════════════════
+    // دوال مساعدة
+    // ═══════════════════════════════════════════════════════════
     function signedIn() {
-      return request.auth != null;   // يشمل الدخول المجهول المستخدم في المزامنة
+      return request.auth != null;
     }
     function isSelf(uid) {
       return signedIn() && request.auth.uid == uid;
@@ -13,107 +15,252 @@ service cloud.firestore {
     function userDoc(uid) {
       return /databases/$(database)/documents/users/$(uid);
     }
+    function userExists(uid) {
+      return exists(userDoc(uid));
+    }
     function isAdmin() {
       return signedIn()
-        && exists(userDoc(request.auth.uid))
+        && userExists(request.auth.uid)
         && get(userDoc(request.auth.uid)).data.role == 'admin';
     }
-    // هل بقيت هذه الحقول كما هي عند التعديل؟
+    function isBanned() {
+      return signedIn()
+        && userExists(request.auth.uid)
+        && get(userDoc(request.auth.uid)).data.banned == true;
+    }
+    function safeUser() {
+      return signedIn() && !isBanned();
+    }
     function untouched(fields) {
       return !request.resource.data.diff(resource.data).affectedKeys().hasAny(fields);
     }
-
-    // ───────── الإعلانات ─────────
-    match /ads/{adId} {
-      allow read: if true;                                         // التصفح متاح للجميع
-      allow create: if signedIn()
-                    && request.resource.data.owner == request.auth.uid;
-      allow update: if signedIn()
-                    && resource.data.owner == request.auth.uid
-                    && untouched(['owner']);                       // لا يمكن نقل الملكية
-      allow delete: if signedIn()
-                    && resource.data.owner == request.auth.uid;
+    function onlyChanged(fields) {
+      return request.resource.data.diff(resource.data).affectedKeys().hasOnly(fields);
     }
 
-    // ───────── المحادثات (مشترٍ/بائع فقط) ─────────
-    match /chats/{chatId} {
-      allow read: if signedIn()
-                  && (resource.data.buyerId == request.auth.uid
-                      || resource.data.sellerId == request.auth.uid);
-      allow create: if signedIn()
-                    && (request.resource.data.buyerId == request.auth.uid
-                        || request.resource.data.sellerId == request.auth.uid);
-      allow update: if signedIn()
-                    && (resource.data.buyerId == request.auth.uid
-                        || resource.data.sellerId == request.auth.uid)
-                    && untouched(['buyerId', 'sellerId', 'adId']);
-      allow delete: if false;
-    }
-
-    // ───────── المستخدمون ─────────
+    // ═══════════════════════════════════════════════════════════
+    // users/{uid} — ملف المستخدم
+    // ═══════════════════════════════════════════════════════════
     match /users/{uid} {
       allow get: if isSelf(uid) || isAdmin();
       allow list: if isAdmin();
 
-      // ينشئ المستخدم ملفه بدور user وغير محظور فقط (لا يرقّي نفسه)،
-      // و phoneVerified=true لا تُقبل إلا إن كانت الجلسة موثّقة برقم هاتف فعلاً
+      // إنشاء الملف الشخصي
       allow create: if isSelf(uid)
-                    && request.resource.data.role == 'user'
-                    && request.resource.data.banned == false
-                    && (request.resource.data.get('phoneVerified', false) == false
-                        || request.auth.token.phone_number != null);
+        && request.resource.data.role == 'user'
+        && request.resource.data.banned == false
+        && (request.resource.data.get('phoneVerified', false) == false
+            || request.auth.token.phone_number != null);
 
-      // المستخدم يعدّل بياناته دون role/banned/ts، والمشرف يعدّل role/banned فقط
+      // التحديث: المستخدم لبياناته، الأدمن للدور/الحظر
       allow update: if (isSelf(uid) && untouched(['role', 'banned', 'ts', 'phoneVerified']))
-                    || (isAdmin() && request.auth.uid != uid
-                        && request.resource.data.diff(resource.data).affectedKeys()
-                             .hasOnly(['role', 'banned']));
+                    || (isAdmin() && request.auth.uid != uid && onlyChanged(['role', 'banned']));
+
       allow delete: if false;
 
-      // الإعدادات: users/{uid}/settings/main — لصاحبها فقط
+      // ─── users/{uid}/settings/{docId} — الإعدادات ───
       match /settings/{docId} {
         allow read, write: if isSelf(uid);
       }
+
+      // ─── users/{uid}/tokens/{deviceId} — FCM Tokens ───
+      match /tokens/{deviceId} {
+        allow read: if isSelf(uid);
+        allow create, update: if isSelf(uid)
+          && request.resource.data.keys().hasOnly([
+            'token', 'platform', 'userAgent', 'lastSeen', 'enabled'
+          ])
+          && request.resource.data.token is string
+          && request.resource.data.token.size() <= 500;
+        allow delete: if isSelf(uid);
+      }
     }
 
-    // ───────── المجموعات ─────────
+    // ═══════════════════════════════════════════════════════════
+    // ads/{adId} — الإعلانات
+    // الحقل المميّز: userId
+    // ═══════════════════════════════════════════════════════════
+    match /ads/{adId} {
+      allow read: if true;
+
+      allow create: if safeUser()
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.keys().hasOnly([
+          'title', 'description', 'price', 'category', 'city', 'phone',
+          'images', 'img', 'meta', 'userId', 'createdAt', 'updatedAt'
+        ])
+        && request.resource.data.title is string
+        && request.resource.data.title.size() >= 4
+        && request.resource.data.title.size() <= 200
+        && request.resource.data.price is number
+        && request.resource.data.price >= 0
+        && request.resource.data.price <= 10000000000000
+        && request.resource.data.category is string
+        && request.resource.data.city is string
+        && request.resource.data.phone is string
+        && request.resource.data.images is list
+        && request.resource.data.images.size() <= 5;
+
+      allow update: if safeUser()
+        && resource.data.userId == request.auth.uid
+        && request.resource.data.userId == request.auth.uid
+        && onlyChanged([
+          'title', 'description', 'price', 'category', 'city', 'phone',
+          'images', 'img', 'meta', 'updatedAt'
+        ]);
+
+      allow delete: if signedIn()
+        && (resource.data.userId == request.auth.uid || isAdmin());
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // chats/{chatId} — المحادثات
+    // ═══════════════════════════════════════════════════════════
+    match /chats/{chatId} {
+      allow read: if signedIn()
+        && (resource.data.buyerId == request.auth.uid
+            || resource.data.sellerId == request.auth.uid);
+
+      allow create: if safeUser()
+        && (request.resource.data.buyerId == request.auth.uid
+            || request.resource.data.sellerId == request.auth.uid)
+        && request.resource.data.keys().hasOnly([
+          'adId', 'buyerId', 'sellerId', 'adTitle',
+          'lastMessage', 'lastMessageTime', 'messages'
+        ]);
+
+      allow update: if safeUser()
+        && (resource.data.buyerId == request.auth.uid
+            || resource.data.sellerId == request.auth.uid)
+        && untouched(['buyerId', 'sellerId', 'adId']);
+
+      allow delete: if false;
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // groups/{gid} — المجموعات
+    // ═══════════════════════════════════════════════════════════
     match /groups/{gid} {
       allow read: if true;
-      allow create: if signedIn()
-                    && request.auth.uid in request.resource.data.members
-                    && request.resource.data.createdBy == request.auth.uid;
-      allow update: if signedIn()
-                    && request.auth.uid in resource.data.members
-                    && untouched(['createdAt', 'createdBy']);
-      allow delete: if signedIn()
-                    && resource.data.createdBy == request.auth.uid;
 
-      // رسائل المجموعة
+      // الإنشاء: العضو الجديد يضيف نفسه
+      allow create: if signedIn()
+        && request.auth.uid in request.resource.data.members;
+
+      // التحديث: أي عضو (للانضمام، المغادرة، الأدوار، آخر رسالة، التثبيت)
+      allow update: if signedIn()
+        && request.auth.uid in resource.data.members
+        && untouched(['createdAt', 'createdBy']);
+
+      allow delete: if false;
+
+      // ─── groups/{gid}/messages/{mid} — رسائل المجموعة ───
       match /messages/{mid} {
         function isMember() {
           return signedIn()
             && request.auth.uid in get(/databases/$(database)/documents/groups/$(gid)).data.members;
         }
+
         allow read: if isMember();
+
         allow create: if isMember()
-                      && request.resource.data.senderId == request.auth.uid;
-        allow update: if signedIn()
-                      && resource.data.senderId == request.auth.uid
-                      && untouched(['senderId', 'createdAt']);
+          && request.resource.data.senderId == request.auth.uid
+          && request.resource.data.keys().hasOnly([
+            'text', 'senderId', 'senderName', 'senderAvatar', 'ts',
+            'likes', 'reports', 'reportedBy', 'reasons', 'readBy',
+            'deleted', 'replyTo', 'editedAt', 'type', 'ad', 'mentions'
+          ])
+          && request.resource.data.text is string
+          && request.resource.data.text.size() <= 500
+          && request.resource.data.ts is number
+          && (!('senderAvatar' in request.resource.data)
+              || (request.resource.data.senderAvatar is string
+                  && request.resource.data.senderAvatar.size() <= 8000));
+
+        // التحديث: المُرسِل يعدّل النص/الحذف، وأي عضو يعدّل likes/readBy/reports
+        allow update: if isMember()
+          && onlyChanged([
+            'text', 'likes', 'reports', 'reportedBy', 'reasons',
+            'readBy', 'deleted', 'editedAt'
+          ])
+          && (!('text' in request.resource.data.diff(resource.data).affectedKeys())
+              || resource.data.senderId == request.auth.uid)
+          && (!('deleted' in request.resource.data.diff(resource.data).affectedKeys())
+              || resource.data.senderId == request.auth.uid);
+
         allow delete: if false;
+      }
+
+      // ─── groups/{gid}/typing/{uid} — مؤشر "يكتب..." ───
+      match /typing/{uid} {
+        allow read: if signedIn();
+        allow create, update: if isSelf(uid);
+        allow delete: if isSelf(uid);
       }
     }
 
-    // ───────── اللافتات: قراءة عامة، وكتابة للمشرف فقط ─────────
+    // ═══════════════════════════════════════════════════════════
+    // clinics_directory/{id} — دليل الأطباء والصيدليات
+    // ═══════════════════════════════════════════════════════════
+    match /clinics_directory/{id} {
+      allow read: if true;
+      allow create: if safeUser()
+        && request.resource.data.ownerUid == request.auth.uid
+        && request.resource.data.keys().hasOnly([
+          'name', 'specialty', 'address', 'phone', 'type', 'ownerUid', 'createdAt'
+        ])
+        && request.resource.data.type in ['clinic', 'pharmacy']
+        && request.resource.data.name is string
+        && request.resource.data.name.size() >= 2
+        && request.resource.data.name.size() <= 80
+        && request.resource.data.phone is string
+        && request.resource.data.phone.size() >= 8;
+      allow update, delete: if isAdmin();
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // travel_campaigns/{id} — دليل السفر والسياحة
+    // ═══════════════════════════════════════════════════════════
+    match /travel_campaigns/{id} {
+      allow read: if true;
+      allow create: if safeUser()
+        && request.resource.data.ownerUid == request.auth.uid
+        && request.resource.data.keys().hasOnly([
+          'name', 'destination', 'details', 'phone', 'ownerUid', 'createdAt'
+        ])
+        && request.resource.data.name is string
+        && request.resource.data.name.size() >= 2;
+      allow update, delete: if isAdmin();
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // lawyers_directory/{id} — دليل المحامين
+    // ═══════════════════════════════════════════════════════════
+    match /lawyers_directory/{id} {
+      allow read: if true;
+      allow create: if safeUser()
+        && request.resource.data.ownerUid == request.auth.uid
+        && request.resource.data.keys().hasOnly([
+          'name', 'specialty', 'court', 'phone', 'ownerUid', 'createdAt'
+        ])
+        && request.resource.data.name is string
+        && request.resource.data.name.size() >= 2;
+      allow update, delete: if isAdmin();
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // banners/{bid} — اللافتات (للأدمن فقط)
+    // ═══════════════════════════════════════════════════════════
     match /banners/{bid} {
       allow read: if true;
       allow create, update, delete: if isAdmin();
     }
 
-    // ───────── أي شيء آخر ممنوع ─────────
+    // ═══════════════════════════════════════════════════════════
+    // القاعدة الافتراضية: منع أي وصول غير مصرّح
+    // ═══════════════════════════════════════════════════════════
     match /{document=**} {
       allow read, write: if false;
     }
   }
 }
-
